@@ -1,5 +1,9 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
-  return <div>얍</div>;
+import {useRouter} from 'next/navigation';
+
+export default function Page() {
+  const router = useRouter();
+  router.replace('main');
+  return null;
 }
