@@ -1,7 +1,6 @@
 'use client';
 import {auth} from '@/firebase';
 import {signInWithEmailAndPassword} from 'firebase/auth/cordova';
-
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 
@@ -10,7 +9,7 @@ const AuthPage = () => {
   const [password, setPassword] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
-  const handleSubmit = async (event: React.FormEvent) => {
+  const clickLoginHandler = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -25,7 +24,7 @@ const AuthPage = () => {
 
   console.log(isLoggedIn);
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={clickLoginHandler}>
       <label htmlFor="email">이메일</label>
       <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="이메일 입력" />
       <label htmlFor="password">비밀번호</label>
