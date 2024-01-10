@@ -13,7 +13,30 @@ const JoinPage = () => {
   const [birthDate, setBirthDate] = useState('');
   const [nickname, setNickname] = useState('');
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
+  const [isEmailAvailable, setIsEmailAvailable] = useState(false);
   const router = useRouter();
+
+  // 이메일 중복 확인 함수
+  const clickEmailCheckHandler = async () => {
+    if (!email.trim()) {
+      alert('이메일을 입력해주세요.');
+      return;
+    }
+
+    try {
+      const q = query(collection(db, 'users'), where('email', '==', email));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        alert('현재 입력하신 이메일은 사용 중입니다.다른 이메일을 입력해주세요.');
+        setIsEmailAvailable(false);
+      } else {
+        alert('사용 가능한 이메일입니다.');
+        setIsEmailAvailable(true);
+      }
+    } catch (error) {
+      console.error('이메일 중복 확인 중 오류 발생:', error);
+    }
+  };
   // 닉네임 중복 확인 함수
   const checkNicknameCheckHandler = async () => {
     // 닉네임이 빈칸인 경우
@@ -39,14 +62,42 @@ const JoinPage = () => {
   // 회원가입 함수
   const clickJoinHandler = async (event: React.FormEvent) => {
     event.preventDefault();
-    //닉네임 중복 확인 필수
-    if (!isNicknameAvailable) {
-      alert('닉네임 중복 확인이 필요합니다.');
+    // 각각 입력 했는지 확인
+    if (!email.trim()) {
+      alert('이메일을 입력해주세요.');
       return;
     }
+    if (!password.trim()) {
+      alert('비밀번호를 입력해주세요.');
+      return;
+    }
+    if (!confirmPassword.trim()) {
+      alert('비밀번호를 입력해주세요.');
+      return;
+    }
+
     //비밀번호 일치 확인
     if (password !== confirmPassword) {
       alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    if (!birthDate.trim()) {
+      alert('생년월일을 입력해주세요.');
+      return;
+    }
+    if (!nickname.trim()) {
+      alert('닉네임을 입력해주세요.');
+      return;
+    }
+    //이메일 중복 확인 필수
+    if (!isEmailAvailable) {
+      alert('이메일 중복 확인이 필요합니다.');
+      return;
+    }
+    //닉네임 중복 확인 필수
+    if (!isNicknameAvailable) {
+      alert('닉네임 중복 확인이 필요합니다.');
       return;
     }
     try {
@@ -55,6 +106,7 @@ const JoinPage = () => {
 
       // Firestore에 사용자 추가 정보 저장
       await setDoc(doc(db, 'users', user.uid), {
+        email,
         birthdate: birthDate,
         nickname,
       });
@@ -62,6 +114,7 @@ const JoinPage = () => {
       alert('가입완료');
       router.replace('auth');
     } catch (error) {
+      setNickname('');
       console.error(error);
       alert(error);
     }
@@ -71,6 +124,9 @@ const JoinPage = () => {
     <form onSubmit={clickJoinHandler}>
       <label htmlFor="email">이메일</label>
       <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="이메일" />
+      <button onClick={clickEmailCheckHandler} type="button">
+        이메일 중복 확인
+      </button>
       <label htmlFor="password">비밀번호</label>
       <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="비밀번호" />
       <label htmlFor="confirmPassword">비밀번호 확인</label>
