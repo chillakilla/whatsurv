@@ -1,10 +1,10 @@
 'use client';
 import {auth, db} from '@/firebase';
 import {createUserWithEmailAndPassword} from 'firebase/auth/cordova';
-import {doc, setDoc} from 'firebase/firestore';
-import React, {useState} from 'react';
 
+import {collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
+import React, {useState} from 'react';
 
 const JoinPage = () => {
   const [email, setEmail] = useState('');
@@ -12,9 +12,33 @@ const JoinPage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [nickname, setNickname] = useState('');
+  const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
   const router = useRouter();
+  // 닉네임 중복 확인 함수
+  const checkNicknameCheckHandler = async () => {
+    try {
+      const q = query(collection(db, 'users'), where('nickname', '==', nickname));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        alert('현재 입력하신 닉네임은 사용중입니다. 다른 닉네임을 입력해주세요.');
+        setIsNicknameAvailable(false);
+      } else {
+        alert('사용 가능한 닉네임입니다.');
+        setIsNicknameAvailable(true);
+      }
+    } catch (error) {
+      console.error('닉네임 중복 확인 중 오류 발생:', error);
+    }
+  };
+
+  // 회원가입 함수
   const clickJoinHandler = async (event: React.FormEvent) => {
     event.preventDefault();
+    //닉네임 중복 확인 필수
+    if (!isNicknameAvailable) {
+      alert('닉네임 중복 확인이 필요합니다.');
+      return;
+    }
     //비밀번호 일치 확인
     if (password !== confirmPassword) {
       alert('비밀번호가 일치하지 않습니다.');
@@ -51,10 +75,13 @@ const JoinPage = () => {
         onChange={e => setConfirmPassword(e.target.value)}
         placeholder="비밀번호 확인"
       />
-      <label htmlFor="birthdate">생년월일</label>{' '}
+      <label htmlFor="birthdate">생년월일</label>
       <input type="date" value={birthDate} onChange={e => setBirthDate(e.target.value)} placeholder="생년월일" />
-      <label htmlFor="nickname">닉네임</label>{' '}
-      <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} placeholder="닉네임" />
+      <label htmlFor="nickname">닉네임</label>
+      <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} placeholder="닉네임" />{' '}
+      <button onClick={checkNicknameCheckHandler} type="button">
+        닉네임 중복 확인
+      </button>
       <button type="submit">회원가입</button>
     </form>
   );
