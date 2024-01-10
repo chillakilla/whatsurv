@@ -178,6 +178,7 @@ const JoinPage = () => {
           value={nickname}
           onChange={e => setNickname(e.target.value)}
           placeholder="닉네임을 입력해주세요. "
+          maxLength={10}
         />{' '}
         <Button onClick={checkNicknameCheckHandler} type="button">
           닉네임 중복 확인
