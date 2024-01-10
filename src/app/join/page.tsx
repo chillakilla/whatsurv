@@ -16,6 +16,11 @@ const JoinPage = () => {
   const router = useRouter();
   // 닉네임 중복 확인 함수
   const checkNicknameCheckHandler = async () => {
+    // 닉네임이 빈칸인 경우
+    if (nickname.trim() === '') {
+      alert('닉네임을 입력해주세요.');
+      return;
+    }
     try {
       const q = query(collection(db, 'users'), where('nickname', '==', nickname));
       const querySnapshot = await getDocs(q);
