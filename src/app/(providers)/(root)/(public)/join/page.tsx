@@ -14,6 +14,11 @@ const JoinPage = () => {
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
   const [isEmailAvailable, setIsEmailAvailable] = useState(false);
   const router = useRouter();
+  // 이메일 유효성 검사를 위한 정규 표현식
+  const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+  // 비밀번호 유효성 검사를 위한 정규 표현식 (예: 최소 8자, 하나 이상의 숫자와 특수문자 포함)
+  const passwordValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
 
   // 이메일 중복 확인 함수
   const clickEmailCheckHandler = async () => {
@@ -61,6 +66,18 @@ const JoinPage = () => {
   // 회원가입 함수
   const clickJoinHandler = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    // 이메일 유효성 검사
+    if (!emailValidation.test(email)) {
+      alert('유효한 이메일 주소를 입력해주세요.');
+      return;
+    }
+
+    // 비밀번호 유효성 검사
+    if (!passwordValidation.test(password)) {
+      alert('비밀번호는 8자 이상이어야 하며, 숫자와 특수문자를 포함해야 합니다.');
+      return;
+    }
     // 각각 입력 했는지 확인
     if (!email.trim()) {
       alert('이메일을 입력해주세요.');
