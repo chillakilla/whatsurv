@@ -1,10 +1,10 @@
 'use client';
 import {auth, db} from '@/firebase';
+import {Button, Input} from '@nextui-org/react';
 import {createUserWithEmailAndPassword} from 'firebase/auth/cordova';
 import {collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
-
 const JoinPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -120,29 +120,55 @@ const JoinPage = () => {
   };
 
   return (
-    <form onSubmit={clickJoinHandler}>
-      <label htmlFor="email">이메일</label>
-      <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="이메일" />
-      <button onClick={clickEmailCheckHandler} type="button">
-        이메일 중복 확인
-      </button>
-      <label htmlFor="password">비밀번호</label>
-      <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="비밀번호" />
-      <label htmlFor="confirmPassword">비밀번호 확인</label>
-      <input
+    <form onSubmit={clickJoinHandler} className="w-2/3 flex flex-wrap  justify-center m-auto">
+      <div className="flex w-full items-center">
+        <Input
+          type="email"
+          label="이메일"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="이메일을 입력해주세요."
+        />
+        <Button onClick={clickEmailCheckHandler} type="button">
+          이메일 중복 확인
+        </Button>
+      </div>
+      <Input
+        type="password"
+        label="비밀번호"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        placeholder="비밀번호를 입력해주세요."
+      />
+      <Input
         type="password"
         value={confirmPassword}
         onChange={e => setConfirmPassword(e.target.value)}
-        placeholder="비밀번호 확인"
+        placeholder="다시 한번 비밀번호를 입력해주세요."
+        label="비밀번호 확인"
       />
-      <label htmlFor="birthdate">생년월일</label>
-      <input type="date" value={birthDate} onChange={e => setBirthDate(e.target.value)} placeholder="생년월일" />
-      <label htmlFor="nickname">닉네임</label>
-      <input type="text" value={nickname} onChange={e => setNickname(e.target.value)} placeholder="닉네임" />{' '}
-      <button onClick={checkNicknameCheckHandler} type="button">
-        닉네임 중복 확인
-      </button>
-      <button type="submit">회원가입</button>
+      <Input
+        type="date"
+        label="생년월일"
+        value={birthDate}
+        onChange={e => setBirthDate(e.target.value)}
+        placeholder="생년월일"
+      />
+      <div className="flex w-full items-center">
+        <Input
+          type="text"
+          label="닉네임"
+          value={nickname}
+          onChange={e => setNickname(e.target.value)}
+          placeholder="닉네임을 입력해주세요. "
+        />{' '}
+        <Button onClick={checkNicknameCheckHandler} type="button">
+          닉네임 중복 확인
+        </Button>
+      </div>
+      <Button color="primary" type="submit" className="w-3/4">
+        회원가입
+      </Button>
     </form>
   );
 };
