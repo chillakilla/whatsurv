@@ -1,7 +1,6 @@
 'use client';
 import {auth, db} from '@/firebase';
 import {createUserWithEmailAndPassword} from 'firebase/auth/cordova';
-
 import {collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';

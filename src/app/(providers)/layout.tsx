@@ -6,9 +6,9 @@ type Props = {
   children: React.ReactNode;
 };
 
-const Provider = ({children}: Props) => {
+const ProvidersLayout = ({children}: Props) => {
   const client = new QueryClient();
   return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
 };
 
-export default Provider;
+export default ProvidersLayout;
