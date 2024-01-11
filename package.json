@@ -12,7 +12,7 @@
     "@nextui-org/react": "^2.2.9",
     "@tanstack/react-query": "^5.17.9",
     "firebase": "^10.7.1",
-    "framer-motion": "^10.17.12",
+    "framer-motion": "^10.18.0",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
