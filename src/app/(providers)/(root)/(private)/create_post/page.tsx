@@ -1,9 +1,9 @@
 'use client';
 
-import React, {useState} from 'react';
-import {useQuery} from '@tanstack/react-query';
-import {fetchPosts, addPost} from '@/app/api/firebaseApi';
+import {addPost, fetchPosts} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
+import {useQuery} from '@tanstack/react-query';
+import React, {useState} from 'react';
 
 export default function PostPage() {
   const {

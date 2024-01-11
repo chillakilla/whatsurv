@@ -15,24 +15,31 @@ export default function SurveyItPage() {
     queryFn: fetchPosts,
   });
 
+  // FE 카테고리만 필터링 하도록 설정 (추후에 IT로 변경)
+  const selectedCategory = 'FE';
+
+  const filteredSurveyData = surveyData?.filter(item => item.category === selectedCategory) || [];
+
   return (
-    <div>
-      <h1>Survey Data</h1>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">IT 설문조사</h1>
       {isLoading && <div>Loading...</div>}
       {isError && <div>Error fetching survey data</div>}
-      {surveyData && (
-        <ul>
-          {surveyData.map(item => (
-            <li key={item.id}>
-              <p>{item.category}</p>
+      {filteredSurveyData.length > 0 ? (
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {filteredSurveyData.map(item => (
+            <li key={item.id} className="p-4 bg-gray-100 rounded shadow">
+              <p className="text-lg font-bold mb-2">{item.category}</p>
               <p>{item.createdAt.toDate().toLocaleString()}</p>
-              <p>{item.imageUrl}</p>
-              <p>{item.title}</p>
+              <img src={item.imageUrl} alt="Post Image" />
+              <p className="text-lg font-semibold">{item.title}</p>
               <p>{item.content}</p>
-              <p>{item.likes}</p>
+              <p className="mt-2">{item.likes}</p>
             </li>
           ))}
         </ul>
+      ) : (
+        <div> 설문조사 목록이 없습니다. </div>
       )}
     </div>
   );
