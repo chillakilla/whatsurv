@@ -3,6 +3,7 @@
 import {fetchPosts} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
+import Link from 'next/link';
 
 export default function SurveyItPage() {
   const {
@@ -29,12 +30,14 @@ export default function SurveyItPage() {
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {filteredSurveyData.map(item => (
             <li key={item.id} className="p-4 bg-gray-100 rounded shadow">
-              <p className="text-lg font-bold mb-2">{item.category}</p>
-              <p>{item.createdAt.toDate().toLocaleString()}</p>
-              <p>{item.imageUrl}</p>
-              <p className="text-lg font-semibold">{item.title}</p>
-              <p>{item.content}</p>
-              <p className="mt-2">{item.likes}</p>
+              <Link href={`/survey_it=${item.id}`}>
+                <p className="text-lg font-bold mb-2">{item.category}</p>
+                <p>{item.createdAt.toDate().toLocaleString()}</p>
+                <p>{item.imageUrl}</p>
+                <p className="text-lg font-semibold">{item.title}</p>
+                <p>{item.content}</p>
+                <p className="mt-2">{item.likes}</p>
+              </Link>
             </li>
           ))}
         </ul>

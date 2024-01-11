@@ -15,7 +15,7 @@ const SurveyItDetailPage: NextPage = () => {
     refetch,
   } = useQuery<Post>({
     queryKey: ['surveyItDetail', id],
-    // queryFn: () => fetchPostDetail(id as string),
+    // queryFn: () => fetchPostById(id as string),
   });
 
   if (isLoading) return <div>Loading...</div>;
