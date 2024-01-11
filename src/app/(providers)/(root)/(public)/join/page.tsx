@@ -67,17 +67,6 @@ const JoinPage = () => {
   const clickJoinHandler = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // 이메일 유효성 검사
-    if (!emailValidation.test(email)) {
-      alert('유효한 이메일 주소를 입력해주세요.');
-      return;
-    }
-
-    // 비밀번호 유효성 검사
-    if (!passwordValidation.test(password)) {
-      alert('비밀번호는 8자 이상이어야 하며, 숫자와 특수문자를 포함해야 합니다.');
-      return;
-    }
     // 각각 입력 했는지 확인
     if (!email.trim()) {
       alert('이메일을 입력해주세요.');
@@ -114,6 +103,17 @@ const JoinPage = () => {
     //닉네임 중복 확인 필수
     if (!isNicknameAvailable) {
       alert('닉네임 중복 확인이 필요합니다.');
+      return;
+    }
+    // 이메일 유효성 검사
+    if (!emailValidation.test(email)) {
+      alert('유효한 이메일 주소를 입력해주세요.');
+      return;
+    }
+
+    // 비밀번호 유효성 검사
+    if (!passwordValidation.test(password)) {
+      alert('비밀번호는 8자 이상이어야 하며, 숫자와 특수문자를 포함해야 합니다.');
       return;
     }
     try {
@@ -179,7 +179,7 @@ const JoinPage = () => {
           onChange={e => setNickname(e.target.value)}
           placeholder="닉네임을 입력해주세요. "
           maxLength={10}
-        />{' '}
+        />
         <Button onClick={checkNicknameCheckHandler} type="button">
           닉네임 중복 확인
         </Button>
