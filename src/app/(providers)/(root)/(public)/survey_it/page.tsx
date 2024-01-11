@@ -16,7 +16,7 @@ export default function SurveyItPage() {
   });
 
   // FE 카테고리만 필터링 하도록 설정 (추후에 IT로 변경)
-  const selectedCategory = 'FE';
+  const selectedCategory = 'It';
 
   const filteredSurveyData = surveyData?.filter(item => item.category === selectedCategory) || [];
 
