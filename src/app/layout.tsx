@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 import Header from './(providers)/(root)/_components/Header';
 import Footer from './(providers)/(root)/_components/Footer';
->>>>>>> 527eb3c3b7469f99aea75ddd46d1de338b4a07ea
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
 import Footer from './(providers)/(root)/_components/Footer';
