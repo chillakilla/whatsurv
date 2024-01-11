@@ -1,7 +1,9 @@
 import {getApp, initializeApp} from 'firebase/app';
+import {getAuth} from 'firebase/auth';
 import {Firestore, getFirestore} from 'firebase/firestore';
 import {getStorage} from 'firebase/storage';
 // TODO: Add SDKs for Firebase products that you want to use
+
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -12,6 +14,7 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
 export const db: Firestore = getFirestore(app);
 export const firebaseApp = getApp();
 export const storage = getStorage(firebaseApp, 'gs://whatsurv-f25bc.appspot.com');
