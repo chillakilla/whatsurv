@@ -26,10 +26,10 @@ export default function PostIt() {
 
   return (
     <div>
-      <h2 className="font-bold text-lg mb-[8px]">IT 전체</h2>
+      <h2 className="font-bold text-lg mb-[8px] ml-[10px]">IT 전체</h2>
       <div className="post-container grid grid-cols-4">
         {posts.map(post => (
-          <div key={post.id} className=" h-64 border-2 border-[#ddd] rounded-xl p-2 gap-4">
+          <div key={post.id} className=" h-64 border-2 border-[#ddd] rounded-xl p-2 m-[10px]">
             <div className="bg-amber-300 w-20 text-center rounded-lg font-semibold text-sm mb-[10px]">
               {post.category}
             </div>
