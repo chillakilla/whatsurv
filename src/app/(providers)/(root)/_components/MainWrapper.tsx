@@ -5,5 +5,5 @@ type Props = {
 };
 
 export default function MainWrapper({children}: Props) {
-  return <div className="w-[1200px] m-auto">{children}</div>;
+  return <div className="w-[1200px] m-auto mb-20">{children}</div>;
 }

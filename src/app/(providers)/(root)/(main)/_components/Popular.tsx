@@ -20,22 +20,22 @@ export default function Popular() {
     <div className="mt-20 h-[340px]">
       <h2 className="font-bold text-lg mb-[8px]">인기 게시글</h2>
       <StSlider {...settings}>
-        <div className="bg-gray-100 h-48 p-4">
+        <div className="bg-gray-100 h-48 p-4 rounded-xl">
           <h3>지겨운</h3>
         </div>
-        <div className="bg-gray-100 h-48 p-4">
+        <div className="bg-gray-100 h-48 p-4 rounded-xl">
           <h3>카르셀</h3>
         </div>
-        <div className="bg-gray-100 h-48 p-4">
+        <div className="bg-gray-100 h-48 p-4 rounded-xl">
           <h3>커스텀</h3>
         </div>
-        <div className="bg-gray-100 h-48 p-4">
+        <div className="bg-gray-100 h-48 p-4 rounded-xl">
           <h3>구현하기</h3>
         </div>
-        <div className="bg-gray-100 h-48 p-4">
+        <div className="bg-gray-100 h-48 p-4 rounded-xl">
           <h3>흑흑</h3>
         </div>
-        <div className="bg-gray-100 h-48 p-4">
+        <div className="bg-gray-100 h-48 p-4 rounded-xl">
           <h3>흑흑</h3>
         </div>
       </StSlider>
