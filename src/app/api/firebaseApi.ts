@@ -10,11 +10,12 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  getDoc,
 } from 'firebase/firestore';
 import {db} from '@/firebase';
 import {Post} from './typePost';
 
-// 게시글 불러오기 fetchPost
+// 게시글 목록 불러오기 fetchPosts
 export const fetchPosts = async (): Promise<Post[]> => {
   try {
     const postsQuery = query(collection(db, 'posts'));
@@ -23,6 +24,25 @@ export const fetchPosts = async (): Promise<Post[]> => {
       (doc: DocumentSnapshot<DocumentData>) => ({id: doc.id, ...(doc.data() as any)} as Post),
     );
     return posts;
+  } catch (error) {
+    console.error('에러', error);
+    throw new Error('게시글을 불러오는 것에 실패했습니다.');
+  }
+};
+
+// 단일 게시글 불러오기 fetchPostById
+export const fetchPostById = async (postId: string): Promise<Post | null> => {
+  try {
+    const postRef = doc(db, 'posts', postId);
+    const postDoc: DocumentSnapshot<DocumentData> = await getDoc(postRef);
+
+    if (postDoc.exists()) {
+      const postData: Post = {id: postDoc.id, ...(postDoc.data() as any)} as Post;
+      return postData;
+    } else {
+      console.error('게시글을 찾을 수 없습니다.');
+      return null;
+    }
   } catch (error) {
     console.error('에러', error);
     throw new Error('게시글을 불러오는 것에 실패했습니다.');
