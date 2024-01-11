@@ -21,17 +21,10 @@ const JoinPage = () => {
   const router = useRouter();
   const progressBarStyle = {
     width: `${progress}%`,
-    backgroundColor: 'blue',
-    height: '10px',
     // 진행률이 변경될 때 부드럽게 애니메이션 적용
     transition: 'width 0.3s ease-in-out',
   };
 
-  const progressBarContainerStyle = {
-    width: '100%',
-    backgroundColor: '#ddd',
-    height: '10px',
-  };
   // 다음 단계로 이동하는 함수
   const moveToNextStep = () => {
     setStep(step + 1);
@@ -160,8 +153,8 @@ const JoinPage = () => {
     <div>
       {/* 프로그래스 바 */}
       <div className="progress-bar">
-        <div style={progressBarContainerStyle}>
-          <div style={progressBarStyle}></div>
+        <div className="bg-gray-200 w-full h-4">
+          <div className="bg-blue-500 h-4" style={progressBarStyle}></div>
         </div>
       </div>
       <form onSubmit={clickJoinHandler} className="w-2/3 flex flex-wrap justify-center m-auto">
