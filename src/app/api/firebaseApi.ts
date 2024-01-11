@@ -1,17 +1,17 @@
+import {db} from '@/firebase';
 import {
   DocumentData,
+  DocumentReference,
   DocumentSnapshot,
+  QuerySnapshot,
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
   getDocs,
   query,
-  QuerySnapshot,
-  collection,
-  addDoc,
-  DocumentReference,
-  doc,
   updateDoc,
-  deleteDoc,
 } from 'firebase/firestore';
-import {db} from '@/firebase';
 import {Post} from './typePost';
 
 // 게시글 불러오기 fetchPost
