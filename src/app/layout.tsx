@@ -5,6 +5,7 @@ import Header from './(providers)/(root)/_components/Header';
 
 import ProvidersLayout from './(providers)/layout';
 import './globals.css';
+import MainWrapper from './(providers)/(root)/_components/MainWrapper';
 
 const inter = Inter({subsets: ['latin']});
 
@@ -19,7 +20,7 @@ export default function HTMLLayout({children}: {children: React.ReactNode}) {
       <body className={inter.className}>
         <ProvidersLayout>
           <Header />
-          {children}
+          <MainWrapper>{children}</MainWrapper>
           <Footer />
         </ProvidersLayout>
       </body>

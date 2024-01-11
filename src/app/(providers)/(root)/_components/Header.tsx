@@ -6,9 +6,7 @@ export default function Header() {
     <header className="flex justify-between items-center border-b-2 p-4">
       <section className="flex items-center justify-evenly w-1/2">
         <div>
-          <Link href="/">
-            <h1 className="font-bold text-xl">What Surv?</h1>
-          </Link>
+          <h1 className="font-bold text-xl">What Surv?</h1>
         </div>
         <Navigation />
       </section>
