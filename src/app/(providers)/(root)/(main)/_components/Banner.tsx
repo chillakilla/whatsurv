@@ -68,10 +68,10 @@ const StSlider = styled(Slider)`
 
     font-weight: 600;
     li {
-      display: none; //기본적으로 li 태그들이 안보이게 설정을 해주고
+      display: none;
     }
     .slick-active {
-      display: block; //활성화된 dot만 표시해준다.
+      display: block;
     }
     .customPaging {
       gap: 10px;
