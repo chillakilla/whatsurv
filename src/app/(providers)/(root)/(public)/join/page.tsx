@@ -8,6 +8,7 @@ import React, {useState} from 'react';
 
 const JoinPage = () => {
   const [step, setStep] = useState<number>(1); // 회원가입 진행 단계
+  //가입시 필요한 상태
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -18,7 +19,60 @@ const JoinPage = () => {
   const [progress, setProgress] = useState<number>(20);
   // 비밀번호 일치 여부를 저장할 상태 추가
   const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(true);
+
+  //빈칸에 대한 유효성검사 관련 상태
+  const [emailCheck, setEmailCheck] = useState<string>('');
+  const [passwordCheck, setPasswordCheck] = useState<string>('');
+  const [confirmPasswordCheck, setConfirmPasswordCheck] = useState<string>('');
+  const [birthDateCheck, setBirthDateCheck] = useState<string>('');
+  const [nicknameCheck, setNicknameCheck] = useState<string>('');
   const router = useRouter();
+
+  //빈칸에 대한 유효성 검사
+  const validateInput = (): boolean => {
+    // isVaild는 각 단계에서 입력값의 유효성을 나타낼때 사용함
+    let isValid = true;
+
+    //* !email은 email이 빈 문자열이거나 undefined일 경우 true가 됨
+    if (step === 1 && !email) {
+      setEmailCheck('이메일을 입력해주세요');
+      isValid = false;
+    } else {
+      setEmailCheck('');
+    }
+
+    if (step === 2) {
+      if (!password) {
+        setPasswordCheck('비밀번호를 입력해주세요');
+        isValid = false;
+      } else {
+        setPasswordCheck('');
+      }
+
+      if (!confirmPassword) {
+        setConfirmPasswordCheck('비밀번호 확인을 입력해주세요');
+        isValid = false;
+      } else {
+        setConfirmPasswordCheck('');
+      }
+    }
+
+    if (step === 3 && !birthDate) {
+      setBirthDateCheck('생년월일을 입력해주세요');
+      isValid = false;
+    } else {
+      setBirthDateCheck('');
+    }
+
+    if (step === 4 && !nickname) {
+      setNicknameCheck('닉네임을 입력해주세요');
+      isValid = false;
+    } else {
+      setNicknameCheck('');
+    }
+    return isValid;
+  };
+
   const progressBarStyle = {
     width: `${progress}%`,
     // 진행률이 변경될 때 부드럽게 애니메이션 적용
@@ -35,6 +89,10 @@ const JoinPage = () => {
   // 회원가입 함수
   const clickJoinHandler = async (event: React.FormEvent) => {
     event.preventDefault();
+    // 빈칸에 대한 유효성 검사 수행
+    if (!validateInput()) {
+      return; // 유효성 검사 실패 시, 함수 종료
+    }
 
     if (step !== 4) {
       alert('모든 단계를 완료해야 회원가입이 가능합니다.');
@@ -71,12 +129,21 @@ const JoinPage = () => {
           <div>
             <Input
               type="email"
+              className="mt-[20px]"
               label="이메일"
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder="이메일을 입력해주세요."
             />
-            <Button onClick={moveToNextStep} type="button">
+            {emailCheck && <p className="text-red-500 text-center mt-2">{emailCheck}</p>}
+
+            <Button
+              className="mt-[20px]"
+              onClick={() => {
+                if (validateInput()) moveToNextStep();
+              }}
+              type="button"
+            >
               다음
             </Button>
           </div>
@@ -86,19 +153,29 @@ const JoinPage = () => {
           <div>
             <Input
               type="password"
+              className="mt-[20px]"
               label="비밀번호"
               value={password}
               onChange={e => setPassword(e.target.value)}
               placeholder="비밀번호를 입력해주세요."
             />
+            {passwordCheck && <p className="text-red-500 text-center mt-2">{passwordCheck}</p>}
             <Input
               type="password"
               value={confirmPassword}
+              className="mt-[20px]"
               onChange={e => setConfirmPassword(e.target.value)}
               placeholder="다시 한번 비밀번호를 입력해주세요."
               label="비밀번호 확인"
             />
-            <Button onClick={moveToNextStep} type="button">
+            {confirmPasswordCheck && <p className="text-red-500 text-center mt-2">{confirmPasswordCheck}</p>}
+            <Button
+              className="mt-[20px]"
+              onClick={() => {
+                if (validateInput()) moveToNextStep();
+              }}
+              type="button"
+            >
               다음
             </Button>
           </div>
@@ -108,12 +185,20 @@ const JoinPage = () => {
           <div>
             <Input
               type="date"
+              className="mt-[20px]"
               label="생년월일"
               value={birthDate}
               onChange={e => setBirthDate(e.target.value)}
               placeholder="생년월일"
             />
-            <Button onClick={moveToNextStep} type="button">
+            {birthDateCheck && <p className="text-red-500 text-center mt-2">{birthDateCheck}</p>}
+            <Button
+              onClick={() => {
+                if (validateInput()) moveToNextStep();
+              }}
+              type="button"
+              className="mt-[20px]"
+            >
               다음
             </Button>
           </div>
@@ -124,12 +209,14 @@ const JoinPage = () => {
             <Input
               type="text"
               label="닉네임"
+              className="mt-[20px]"
               value={nickname}
               onChange={e => setNickname(e.target.value)}
               placeholder="닉네임을 입력해주세요. "
               maxLength={10}
             />
-            <Button onClick={clickJoinHandler} type="button">
+            {nicknameCheck && <p className="text-red-500 text-center mt-2">{nicknameCheck}</p>}
+            <Button onClick={clickJoinHandler} className="mt-[20px]" type="button">
               회원가입
             </Button>
           </div>
