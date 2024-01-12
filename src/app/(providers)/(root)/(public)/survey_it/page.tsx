@@ -3,9 +3,11 @@
 import {fetchPosts} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
-import Link from 'next/link';
+import {useRouter} from 'next/navigation';
 
 export default function SurveyItPage() {
+  const router = useRouter();
+
   const {
     data: surveyData,
     isLoading,
@@ -16,8 +18,8 @@ export default function SurveyItPage() {
     queryFn: fetchPosts,
   });
 
-  // FE 카테고리만 필터링 하도록 설정 (추후에 IT로 변경)
-  const selectedCategory = 'It';
+  // It 카테고리만 필터링 하도록 설정
+  const selectedCategory = 'IT';
 
   const filteredSurveyData = surveyData?.filter(item => item.category === selectedCategory) || [];
 
@@ -30,19 +32,19 @@ export default function SurveyItPage() {
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {filteredSurveyData.map(item => (
             <li key={item.id} className="p-4 bg-gray-100 rounded shadow">
-              <Link href={`/survey_it=${item.id}`}>
+              <a onClick={() => router.push(`/survey_it/${item.id}`)} className="cursor-pointer">
                 <p className="text-lg font-bold mb-2">{item.category}</p>
                 <p>{item.createdAt.toDate().toLocaleString()}</p>
                 <img src={item.imageUrl} alt="Post Image" />
                 <p className="text-lg font-semibold">{item.title}</p>
                 <p>{item.content}</p>
                 <p className="mt-2">{item.likes}</p>
-              </Link>
+              </a>
             </li>
           ))}
         </ul>
       ) : (
-        <div> 설문조사 목록이 없습니다. </div>
+        <div>설문조사 목록이 없습니다.</div>
       )}
     </div>
   );
