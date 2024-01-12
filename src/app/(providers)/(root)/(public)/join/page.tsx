@@ -2,10 +2,9 @@
 import {auth, db} from '@/firebase';
 import {Button, Input} from '@nextui-org/react';
 import {createUserWithEmailAndPassword} from 'firebase/auth/cordova';
-import {doc, setDoc} from 'firebase/firestore';
+import {collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
-
 const JoinPage = () => {
   const [step, setStep] = useState<number>(1); // 회원가입 진행 단계
   //가입시 필요한 상태
@@ -14,10 +13,13 @@ const JoinPage = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [birthDate, setBirthDate] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
+
+  //정규표현식 유효성상태
   const [isEmailAvailable, setIsEmailAvailable] = useState<boolean>(false);
   const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(20);
-  // 비밀번호 일치 여부를 저장할 상태 추가
+
+  // 비밀번호 일치 여부 상태
   const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(true);
 
   //빈칸에 대한 유효성검사 관련 상태
@@ -27,6 +29,9 @@ const JoinPage = () => {
   const [birthDateCheck, setBirthDateCheck] = useState<string>('');
   const [nicknameCheck, setNicknameCheck] = useState<string>('');
   const router = useRouter();
+
+  //이메일 중복확인 할 경우에 컬러 관련 필요한 상태
+  const [emailCheckClass, setEmailCheckClass] = useState<string>('');
 
   // 정규표현식 이메일과 비밀번호 유효성검사
   const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -44,6 +49,9 @@ const JoinPage = () => {
         isValid = false;
       } else if (!emailValidation.test(email)) {
         setEmailCheck('유효한 이메일 형식이 아닙니다');
+        isValid = false;
+      } else if (!isEmailAvailable) {
+        setEmailCheck('이메일 중복 확인이 필요합니다');
         isValid = false;
       } else {
         setEmailCheck('');
@@ -91,6 +99,26 @@ const JoinPage = () => {
       setNicknameCheck('');
     }
     return isValid;
+  };
+
+  const checkEmailAvailability = async () => {
+    try {
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('email', '==', email));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        setIsEmailAvailable(true);
+        setEmailCheck('사용 가능한 이메일입니다');
+        setEmailCheckClass('text-green-500'); // 초록색 텍스트
+      } else {
+        setIsEmailAvailable(false);
+        setEmailCheck('이미 사용 중인 이메일입니다');
+        setEmailCheckClass('text-red-500'); // 빨간색 텍스트
+      }
+    } catch (error) {
+      console.error('이메일 중복확인 중 오류: ', error);
+    }
   };
 
   const progressBarStyle = {
@@ -155,7 +183,8 @@ const JoinPage = () => {
               onChange={e => setEmail(e.target.value)}
               placeholder="이메일을 입력해주세요."
             />
-            {emailCheck && <p className="text-red-500 text-center mt-2">{emailCheck}</p>}
+            <Button onClick={checkEmailAvailability}>이메일 중복 확인</Button>
+            {emailCheck && <p className={`${emailCheckClass} text-red-500 text-center mt-2`}>{emailCheck}</p>}
 
             <Button
               className="mt-[20px]"
