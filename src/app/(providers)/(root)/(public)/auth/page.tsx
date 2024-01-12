@@ -1,6 +1,8 @@
 'use client';
 import {auth} from '@/firebase';
+import {Button, Input} from '@nextui-org/react';
 import {signInWithEmailAndPassword} from 'firebase/auth/cordova';
+import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 
@@ -26,13 +28,22 @@ const AuthPage = () => {
 
   console.log(isLoggedIn);
   return (
-    <form onSubmit={clickLoginHandler}>
-      <label htmlFor="email">이메일</label>
-      <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="이메일 입력" />
-      <label htmlFor="password">비밀번호</label>
-      <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="비밀번호 입력" />
-      <button type="submit">로그인</button>
-    </form>
+    <div className="flex flex-wrap justify-center">
+      <h3 className="text-center w-full text-2xl mt-[20px] mb-[20px] font-bold">로그인</h3>
+      <form onSubmit={clickLoginHandler} className="w-2/4 ">
+        <label htmlFor="email">이메일</label>
+        <Input type="email" value={email} onChange={e => setEmail(e.target.value)} className="mb-[20px]" />
+        <label htmlFor="password">비밀번호</label>
+        <Input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+        <Button className="mr-[20px] mt-[20px]">비밀번호 재설정</Button>
+        <Button>
+          <Link href="/join">회원가입</Link>
+        </Button>
+        <Button type="submit" className="mt-[20px] w-full">
+          로그인
+        </Button>
+      </form>
+    </div>
   );
 };
 
