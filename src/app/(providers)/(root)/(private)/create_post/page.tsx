@@ -15,6 +15,7 @@ export default function PostPage() {
     queryKey: ['posts'],
     queryFn: fetchPosts,
   });
+  console.log(posts);
 
   const [formData, setFormData] = useState({
     title: '',
