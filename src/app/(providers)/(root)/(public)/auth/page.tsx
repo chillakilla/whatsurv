@@ -1,40 +1,77 @@
 'use client';
 import {auth} from '@/firebase';
 import {Button, Input} from '@nextui-org/react';
-import {signInWithEmailAndPassword} from 'firebase/auth/cordova';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {User, signInWithEmailAndPassword, signOut} from 'firebase/auth';
 import Link from 'next/link';
-import {useRouter} from 'next/navigation';
-import React, {useState} from 'react';
+import React, {FormEvent, useEffect, useState} from 'react';
 
-const AuthPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const router = useRouter();
-  //로그인 버튼 함수
-  const clickLoginHandler = async (event: React.FormEvent) => {
+// 사용자 인증 상태 관리 Hook
+const useAuthStatus = () => {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user: User | null) => {
+      queryClient.setQueryData(['auth'], user); // React Query 캐시 업데이트
+    });
+
+    return () => unsubscribe();
+  }, [queryClient]);
+
+  return useQuery<User | null>({
+    queryKey: ['auth'],
+    initialData: null,
+  });
+};
+
+// 로그인 컴포넌트
+const AuthPage: React.FC = () => {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const {data: user} = useAuthStatus();
+
+  // 로그인 버튼 클릭 시 실행되는 함수
+  const clickLoginHandler = async (event: FormEvent) => {
     event.preventDefault();
     try {
-      // Firebase의 signInWithEmailAndPassword 함수를 사용하여 이메일과 비밀번호로 로그인 시도
       await signInWithEmailAndPassword(auth, email, password);
-      setIsLoggedIn(true);
-      alert('로그인완료');
-      router.replace('main');
+      alert('로그인 성공!');
     } catch (error) {
       console.error(error);
-      alert(error);
+      alert('로그인 실패');
     }
   };
 
-  console.log(isLoggedIn);
+  // 로그아웃 버튼 클릭시 실행되는 함수
+  const clickLogoutHandler = async () => {
+    try {
+      await signOut(auth); // Firebase에서 로그아웃 요청
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  if (user) {
+    return (
+      <div>
+        로그인 상태입니다! 사용자 이메일: {user.email} &nbsp;
+        <Button onClick={clickLogoutHandler}>로그아웃</Button>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-wrap justify-center">
       <h3 className="text-center w-full text-2xl mt-[20px] mb-[20px] font-bold">로그인</h3>
-      <form onSubmit={clickLoginHandler} className="w-2/4 ">
-        <label htmlFor="email">이메일</label>
-        <Input type="email" value={email} onChange={e => setEmail(e.target.value)} className="mb-[20px]" />
-        <label htmlFor="password">비밀번호</label>
-        <Input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+      <form onSubmit={clickLoginHandler}>
+        <Input
+          type="email"
+          className="mb-[20px]"
+          label="이메일"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <Input type="password" label="비밀번호" value={password} onChange={e => setPassword(e.target.value)} />
         <Button className="mr-[20px] mt-[20px]">비밀번호 재설정</Button>
         <Button>
           <Link href="/join">회원가입</Link>
