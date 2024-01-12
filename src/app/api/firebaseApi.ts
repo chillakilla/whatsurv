@@ -14,6 +14,8 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import {Post} from './typePost';
+import firebase from 'firebase/compat/app';
+import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
 
 // 게시글 목록 불러오기 fetchPosts
 export const fetchPosts = async (): Promise<Post[]> => {
@@ -50,10 +52,10 @@ export const fetchPostById = async (postId: string): Promise<Post | null> => {
 };
 
 // 게시글 추가하기 addPost
-export const addPost = async (newPost: Omit<Post, 'id' | 'createdAt'>, userId: string): Promise<DocumentReference> => {
+export const addPost = async (newPost: Omit<Post, 'id' | 'createdAt'>): Promise<DocumentReference> => {
   try {
     const createdAt = new Date();
-    const docRef = await addDoc(collection(db, 'posts'), {...newPost, createdAt, userId});
+    const docRef = await addDoc(collection(db, 'posts'), {...newPost, createdAt});
 
     return docRef;
   } catch (error) {
@@ -82,6 +84,17 @@ export const deletePost = async (postId: string): Promise<void> => {
     console.error('Error deleting document: ', error);
     throw new Error('게시글을 삭제하는 것에 실패했습니다.');
   }
+};
+
+// 업로드한 이미지 storage에 저장
+export const uploadImageToStorage = async (file: File): Promise<string> => {
+  const storage = getStorage();
+  const storageRef = ref(storage, `images/${file.name}`);
+  await uploadBytes(storageRef, file);
+
+  const downloadUrl = await getDownloadURL(storageRef);
+
+  return downloadUrl;
 };
 
 // 게시글+사용자(작성자) 정보 불러오기 fetchPostWithUser
