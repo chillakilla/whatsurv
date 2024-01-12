@@ -1,6 +1,6 @@
 'use client';
 
-import {addPost, fetchPosts} from '@/app/api/firebaseApi';
+import {addPost, fetchPosts, uploadImageToStorage} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import React, {useState} from 'react';
@@ -15,7 +15,6 @@ export default function PostPage() {
     queryKey: ['posts'],
     queryFn: fetchPosts,
   });
-  console.log(posts);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -23,6 +22,10 @@ export default function PostPage() {
     imageUrl: '',
     likes: 0,
     category: '',
+    requirements: '',
+    deadlineDate: '',
+    participationDate: '',
+    rewards: 0,
   });
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -65,7 +68,15 @@ export default function PostPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await addPost(formData);
+      let imageUrl = formData.imageUrl;
+
+      if (selectedFile) {
+        imageUrl = await uploadImageToStorage(selectedFile);
+      }
+
+      const updatedFormData = {...formData, imageUrl};
+
+      await addPost(updatedFormData);
 
       setFormData({
         title: '',
@@ -73,6 +84,10 @@ export default function PostPage() {
         imageUrl: '',
         likes: 0,
         category: '',
+        requirements: '',
+        deadlineDate: '',
+        participationDate: '',
+        rewards: 0,
       });
 
       refetch();
@@ -88,7 +103,7 @@ export default function PostPage() {
       </div>
       <div>
         <form onSubmit={handleSubmit} className="flex flex-col items-center">
-          <label>Title: </label>
+          <label>제목: </label>
           <input
             className="border-solid border-2   border-#ccc"
             type="text"
@@ -98,7 +113,7 @@ export default function PostPage() {
             required
             placeholder="제목 입력창"
           />
-          <label>Content: </label>
+          <label>내용: </label>
           <textarea
             className="border-solid border-2   border-#ccc"
             name="content"
@@ -106,7 +121,7 @@ export default function PostPage() {
             onChange={handleInputChange}
             required
           />
-          <label>ImageUrl: </label>
+          <label>이미지 Url: </label>
           <input
             className="border-solid border-2   border-#ccc"
             type="text"
@@ -126,13 +141,45 @@ export default function PostPage() {
               <img src={previewImage} alt="Image Preview" />
             </div>
           )}
-          <label>category: </label>
+          <label>카테고리: </label>
           <input
             className="border-solid border-2  border-#ccc"
             type="text"
             name="category"
             value={formData.category}
             required
+            onChange={handleInputChange}
+          />
+          <label>자격요건: </label>
+          <input
+            className="border-solid border-2  border-#ccc"
+            type="text"
+            name="requirements"
+            value={formData.requirements}
+            onChange={handleInputChange}
+          />
+          <label>신청마감일: </label>
+          <input
+            className="border-solid border-2  border-#ccc"
+            type="date"
+            name="deadlineDate"
+            value={formData.deadlineDate}
+            onChange={handleInputChange}
+          />
+          <label>참여일: </label>
+          <input
+            className="border-solid border-2  border-#ccc"
+            type="date"
+            name="participationDate"
+            value={formData.participationDate}
+            onChange={handleInputChange}
+          />
+          <label>보상: </label>
+          <input
+            className="border-solid border-2  border-#ccc"
+            type="number"
+            name="rewards"
+            value={formData.rewards}
             onChange={handleInputChange}
           />
           <button type="submit" className="w-[50px] h-[50px] mt-[10px] border-solid border-2  border-black">
