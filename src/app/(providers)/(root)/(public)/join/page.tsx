@@ -28,22 +28,34 @@ const JoinPage = () => {
   const [nicknameCheck, setNicknameCheck] = useState<string>('');
   const router = useRouter();
 
+  // 정규표현식 이메일과 비밀번호 유효성검사
+  const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+  const passwordValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+
   //빈칸에 대한 유효성 검사
   const validateInput = (): boolean => {
     // isVaild는 각 단계에서 입력값의 유효성을 나타낼때 사용함
     let isValid = true;
 
     //* !email은 email이 빈 문자열이거나 undefined일 경우 true가 됨
-    if (step === 1 && !email) {
-      setEmailCheck('이메일을 입력해주세요');
-      isValid = false;
-    } else {
-      setEmailCheck('');
+    if (step === 1) {
+      if (!email) {
+        setEmailCheck('이메일을 입력해주세요');
+        isValid = false;
+      } else if (!emailValidation.test(email)) {
+        setEmailCheck('유효한 이메일 형식이 아닙니다');
+        isValid = false;
+      } else {
+        setEmailCheck('');
+      }
     }
 
     if (step === 2) {
       if (!password) {
         setPasswordCheck('비밀번호를 입력해주세요');
+        isValid = false;
+      } else if (!passwordValidation.test(password)) {
+        setPasswordCheck('비밀번호는 8자 이상, 숫자 및 특수문자를 포함해야 합니다');
         isValid = false;
       } else {
         setPasswordCheck('');
@@ -54,6 +66,14 @@ const JoinPage = () => {
         isValid = false;
       } else {
         setConfirmPasswordCheck('');
+      }
+
+      if (password !== confirmPassword) {
+        setIsPasswordMatch(false);
+        setConfirmPasswordCheck('비밀번호가 일치하지 않습니다');
+        isValid = false;
+      } else {
+        setIsPasswordMatch(true);
       }
     }
 
