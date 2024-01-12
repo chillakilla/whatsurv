@@ -2,120 +2,45 @@
 import {auth, db} from '@/firebase';
 import {Button, Input} from '@nextui-org/react';
 import {createUserWithEmailAndPassword} from 'firebase/auth/cordova';
-import {collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore';
+import {doc, setDoc} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
+
 const JoinPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [birthDate, setBirthDate] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
-  const [isEmailAvailable, setIsEmailAvailable] = useState(false);
+  const [step, setStep] = useState<number>(1); // 회원가입 진행 단계
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [birthDate, setBirthDate] = useState<string>('');
+  const [nickname, setNickname] = useState<string>('');
+  const [isEmailAvailable, setIsEmailAvailable] = useState<boolean>(false);
+  const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(20);
+  // 비밀번호 일치 여부를 저장할 상태 추가
+  const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(true);
   const router = useRouter();
-  // 이메일 유효성 검사를 위한 정규 표현식
-  const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-
-  // 비밀번호 유효성 검사를 위한 정규 표현식 (예: 최소 8자, 하나 이상의 숫자와 특수문자 포함)
-  const passwordValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
-
-  // 이메일 중복 확인 함수
-  const clickEmailCheckHandler = async () => {
-    if (!email.trim()) {
-      alert('이메일을 입력해주세요.');
-      return;
-    }
-
-    try {
-      const q = query(collection(db, 'users'), where('email', '==', email));
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        alert('현재 입력하신 이메일은 사용 중입니다.다른 이메일을 입력해주세요.');
-        setIsEmailAvailable(false);
-      } else {
-        alert('사용 가능한 이메일입니다.');
-        setIsEmailAvailable(true);
-      }
-    } catch (error) {
-      console.error('이메일 중복 확인 중 오류 발생:', error);
-    }
+  const progressBarStyle = {
+    width: `${progress}%`,
+    // 진행률이 변경될 때 부드럽게 애니메이션 적용
+    transition: 'width 0.3s ease-in-out',
   };
-  // 닉네임 중복 확인 함수
-  const checkNicknameCheckHandler = async () => {
-    // 닉네임이 빈칸인 경우
-    if (nickname.trim() === '') {
-      alert('닉네임을 입력해주세요.');
-      return;
-    }
-    try {
-      const q = query(collection(db, 'users'), where('nickname', '==', nickname));
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        alert('현재 입력하신 닉네임은 사용중입니다. 다른 닉네임을 입력해주세요.');
-        setIsNicknameAvailable(false);
-      } else {
-        alert('사용 가능한 닉네임입니다.');
-        setIsNicknameAvailable(true);
-      }
-    } catch (error) {
-      console.error('닉네임 중복 확인 중 오류 발생:', error);
-    }
+
+  // 다음 단계로 이동하는 함수
+  const moveToNextStep = () => {
+    setStep(step + 1);
+    // 진행률 갱신
+    setProgress((step + 1) * 20);
   };
 
   // 회원가입 함수
   const clickJoinHandler = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // 각각 입력 했는지 확인
-    if (!email.trim()) {
-      alert('이메일을 입력해주세요.');
-      return;
-    }
-    if (!password.trim()) {
-      alert('비밀번호를 입력해주세요.');
-      return;
-    }
-    if (!confirmPassword.trim()) {
-      alert('비밀번호를 입력해주세요.');
+    if (step !== 4) {
+      alert('모든 단계를 완료해야 회원가입이 가능합니다.');
       return;
     }
 
-    //비밀번호 일치 확인
-    if (password !== confirmPassword) {
-      alert('비밀번호가 일치하지 않습니다.');
-      return;
-    }
-
-    if (!birthDate.trim()) {
-      alert('생년월일을 입력해주세요.');
-      return;
-    }
-    if (!nickname.trim()) {
-      alert('닉네임을 입력해주세요.');
-      return;
-    }
-    //이메일 중복 확인 필수
-    if (!isEmailAvailable) {
-      alert('이메일 중복 확인이 필요합니다.');
-      return;
-    }
-    //닉네임 중복 확인 필수
-    if (!isNicknameAvailable) {
-      alert('닉네임 중복 확인이 필요합니다.');
-      return;
-    }
-    // 이메일 유효성 검사
-    if (!emailValidation.test(email)) {
-      alert('유효한 이메일 주소를 입력해주세요.');
-      return;
-    }
-
-    // 비밀번호 유효성 검사
-    if (!passwordValidation.test(password)) {
-      alert('비밀번호는 8자 이상이어야 하며, 숫자와 특수문자를 포함해야 합니다.');
-      return;
-    }
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -127,8 +52,11 @@ const JoinPage = () => {
         nickname,
       });
 
-      alert('가입완료');
-      router.replace('auth');
+      // 회원가입 성공 메시지 표시
+      alert('회원가입 성공!');
+      setStep(5);
+      // 프로그래스 바 완료 상태로 설정
+      setProgress(100);
     } catch (error) {
       setNickname('');
       console.error(error);
@@ -136,58 +64,103 @@ const JoinPage = () => {
     }
   };
 
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <div>
+            <Input
+              type="email"
+              label="이메일"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="이메일을 입력해주세요."
+            />
+            <Button onClick={moveToNextStep} type="button">
+              다음
+            </Button>
+          </div>
+        );
+      case 2:
+        return (
+          <div>
+            <Input
+              type="password"
+              label="비밀번호"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="비밀번호를 입력해주세요."
+            />
+            <Input
+              type="password"
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+              placeholder="다시 한번 비밀번호를 입력해주세요."
+              label="비밀번호 확인"
+            />
+            <Button onClick={moveToNextStep} type="button">
+              다음
+            </Button>
+          </div>
+        );
+      case 3:
+        return (
+          <div>
+            <Input
+              type="date"
+              label="생년월일"
+              value={birthDate}
+              onChange={e => setBirthDate(e.target.value)}
+              placeholder="생년월일"
+            />
+            <Button onClick={moveToNextStep} type="button">
+              다음
+            </Button>
+          </div>
+        );
+      case 4:
+        return (
+          <div>
+            <Input
+              type="text"
+              label="닉네임"
+              value={nickname}
+              onChange={e => setNickname(e.target.value)}
+              placeholder="닉네임을 입력해주세요. "
+              maxLength={10}
+            />
+            <Button onClick={clickJoinHandler} type="button">
+              회원가입
+            </Button>
+          </div>
+        );
+      case 5:
+        return (
+          <div>
+            <p>회원가입 완료</p>
+            <Button color="primary" type="button" onClick={() => router.replace('auth')}>
+              로그인하러가기
+            </Button>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
-    <form onSubmit={clickJoinHandler} className="w-2/3 flex flex-wrap  justify-center m-auto">
-      <div className="flex w-full items-center">
-        <Input
-          type="email"
-          label="이메일"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder="이메일을 입력해주세요."
-        />
-        <Button onClick={clickEmailCheckHandler} type="button">
-          이메일 중복 확인
-        </Button>
+    <div>
+      {/* 프로그래스 바 */}
+      <div className="progress-bar">
+        <div className="bg-gray-200 w-full h-4">
+          <div className="bg-blue-500 h-4" style={progressBarStyle}></div>
+        </div>
       </div>
-      <Input
-        type="password"
-        label="비밀번호"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        placeholder="비밀번호를 입력해주세요."
-      />
-      <Input
-        type="password"
-        value={confirmPassword}
-        onChange={e => setConfirmPassword(e.target.value)}
-        placeholder="다시 한번 비밀번호를 입력해주세요."
-        label="비밀번호 확인"
-      />
-      <Input
-        type="date"
-        label="생년월일"
-        value={birthDate}
-        onChange={e => setBirthDate(e.target.value)}
-        placeholder="생년월일"
-      />
-      <div className="flex w-full items-center">
-        <Input
-          type="text"
-          label="닉네임"
-          value={nickname}
-          onChange={e => setNickname(e.target.value)}
-          placeholder="닉네임을 입력해주세요. "
-          maxLength={10}
-        />
-        <Button onClick={checkNicknameCheckHandler} type="button">
-          닉네임 중복 확인
-        </Button>
-      </div>
-      <Button color="primary" type="submit" className="w-3/4">
-        회원가입
-      </Button>
-    </form>
+      <form onSubmit={clickJoinHandler} className="w-2/3 flex flex-wrap justify-center m-auto">
+        {renderStep()}
+      </form>
+    </div>
   );
 };
 
