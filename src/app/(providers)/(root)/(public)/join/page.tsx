@@ -30,8 +30,9 @@ const JoinPage = () => {
   const [nicknameCheck, setNicknameCheck] = useState<string>('');
   const router = useRouter();
 
-  //이메일 중복확인 할 경우에 컬러 관련 필요한 상태
-  const [emailCheckClass, setEmailCheckClass] = useState<string>('');
+  //이메일과 닉네임 중복확인 할 경우에 컬러 관련 필요한 상태
+  const [emailValidationClass, setEmailValidationClass] = useState<string>('');
+  const [nicknameValidationClass, setNicknameValidationClass] = useState<string>('');
 
   // 정규표현식 이메일과 비밀번호 유효성검사
   const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -92,15 +93,21 @@ const JoinPage = () => {
       setBirthDateCheck('');
     }
 
-    if (step === 4 && !nickname) {
-      setNicknameCheck('닉네임을 입력해주세요');
-      isValid = false;
-    } else {
-      setNicknameCheck('');
+    if (step === 4) {
+      if (!nickname) {
+        setNicknameCheck('닉네임을 입력해주세요');
+        isValid = false;
+      } else if (!isNicknameAvailable) {
+        setNicknameCheck('닉네임 중복 확인이 필요합니다');
+        isValid = false;
+      } else {
+        setNicknameCheck('');
+      }
     }
     return isValid;
   };
 
+  //이메일 중복확인 함수
   const checkEmailAvailability = async () => {
     try {
       const usersRef = collection(db, 'users');
@@ -110,14 +117,32 @@ const JoinPage = () => {
       if (querySnapshot.empty) {
         setIsEmailAvailable(true);
         setEmailCheck('사용 가능한 이메일입니다');
-        setEmailCheckClass('text-green-500'); // 초록색 텍스트
+        setEmailValidationClass('text-green-500'); // 초록색 텍스트
       } else {
         setIsEmailAvailable(false);
         setEmailCheck('이미 사용 중인 이메일입니다');
-        setEmailCheckClass('text-red-500'); // 빨간색 텍스트
+        setEmailValidationClass('text-red-500'); // 빨간색 텍스트
       }
     } catch (error) {
       console.error('이메일 중복확인 중 오류: ', error);
+    }
+  };
+
+  // 닉네임 중복확인 함수
+  const checkNicknameAvailability = async (): Promise<void> => {
+    try {
+      const querySnapshot = await getDocs(query(collection(db, 'users'), where('nickname', '==', nickname)));
+      if (querySnapshot.empty) {
+        setIsNicknameAvailable(true);
+        setNicknameCheck('사용 가능한 닉네임입니다');
+        setNicknameValidationClass('text-green-500');
+      } else {
+        setIsNicknameAvailable(false);
+        setNicknameCheck('이미 사용 중인 닉네임입니다');
+        setNicknameValidationClass('text-red-500');
+      }
+    } catch (error) {
+      console.error('Error checking nickname availability: ', error);
     }
   };
 
@@ -184,7 +209,7 @@ const JoinPage = () => {
               placeholder="이메일을 입력해주세요."
             />
             <Button onClick={checkEmailAvailability}>이메일 중복 확인</Button>
-            {emailCheck && <p className={`${emailCheckClass} text-red-500 text-center mt-2`}>{emailCheck}</p>}
+            {emailCheck && <p className={`${emailValidationClass} text-red-500 text-center mt-2`}>{emailCheck}</p>}
 
             <Button
               className="mt-[20px]"
@@ -264,7 +289,11 @@ const JoinPage = () => {
               placeholder="닉네임을 입력해주세요. "
               maxLength={10}
             />
-            {nicknameCheck && <p className="text-red-500 text-center mt-2">{nicknameCheck}</p>}
+            <Button onClick={checkNicknameAvailability}>닉네임 중복 확인</Button>
+            {nicknameCheck && (
+              <p className={`${nicknameValidationClass} text-red-500 text-center mt-2`}>{nicknameCheck}</p>
+            )}
+
             <Button onClick={clickJoinHandler} className="mt-[20px]" type="button">
               회원가입
             </Button>
