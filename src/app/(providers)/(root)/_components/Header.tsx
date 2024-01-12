@@ -10,12 +10,12 @@ export default function Header() {
         </Link>
         <Navigation />
       </section>
-      <section className="w-1/2 flex justify-end gap-4 p-4">
+      <section className="w-80 flex justify-start gap-4 p-4">
         <Link href="/join">
-          <button className="w-[80px] h-[35px] border-2 border-[#ddd] rounded-xl ">Join</button>
+          <button className="w-[80px] h-[35px] border-2 border-[#ddd] rounded-full text-sm">Join</button>
         </Link>
         <Link href="/auth">
-          <button className="w-[80px] h-[35px] bg-[#00709F] rounded-xl text-white">Login</button>
+          <button className="w-[80px] h-[35px] bg-[#0051FF] rounded-full text-white text-sm">Login</button>
         </Link>
       </section>
     </header>

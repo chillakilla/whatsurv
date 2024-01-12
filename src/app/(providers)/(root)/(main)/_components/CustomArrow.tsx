@@ -9,7 +9,7 @@ type ArrowProps = {
 
 export const NextArrow = ({onClick}: ArrowProps) => {
   return (
-    <button onClick={onClick} type="button" className="absolute bottom-[-24px] left-[1185px] z-1 w-[30px]">
+    <button onClick={onClick} type="button" className="absolute bottom-[-24px] left-[1070px] z-1 w-[30px]">
       <GrNext />
     </button>
   );
@@ -17,7 +17,7 @@ export const NextArrow = ({onClick}: ArrowProps) => {
 
 export const PrevArrow = ({onClick}: ArrowProps) => {
   return (
-    <button onClick={onClick} type="button" className="absolute bottom-[-24px] left-[1088px] z-1 w-[30px]">
+    <button onClick={onClick} type="button" className="absolute bottom-[-24px] left-[990px] z-1 w-[30px]">
       <GrPrevious />
     </button>
   );

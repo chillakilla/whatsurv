@@ -18,7 +18,7 @@ export default function Popular() {
   };
   return (
     <div className="mt-20 h-[340px]">
-      <h2 className="font-bold text-lg mb-[8px]">인기 게시글</h2>
+      <h2 className="font-bold text-xl mb-[8px]">인기 게시글</h2>
       <StSlider {...settings}>
         <div className="bg-gray-100 h-48 p-4 rounded-xl">
           <h3>지겨운</h3>

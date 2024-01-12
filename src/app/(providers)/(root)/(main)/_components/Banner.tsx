@@ -51,7 +51,7 @@ export default function Banner() {
 }
 
 const StSlider = styled(Slider)`
-  height: 300px;
+  height: 13.4375rem;
   background-color: #e5e7eb;
   position: relative;
   .slick-slide div {
