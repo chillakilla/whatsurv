@@ -8,4 +8,5 @@ export type Post = {
   likes: number;
   category: string;
   createdAt: Timestamp;
+  // userId: string;
 };

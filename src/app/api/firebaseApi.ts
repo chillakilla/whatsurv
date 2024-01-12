@@ -8,13 +8,14 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   updateDoc,
 } from 'firebase/firestore';
 import {Post} from './typePost';
 
-// 게시글 불러오기 fetchPost
+// 게시글 목록 불러오기 fetchPosts
 export const fetchPosts = async (): Promise<Post[]> => {
   try {
     const postsQuery = query(collection(db, 'posts'));
@@ -29,11 +30,30 @@ export const fetchPosts = async (): Promise<Post[]> => {
   }
 };
 
+// 단일 게시글 정보 불러오기 fetchPostById
+export const fetchPostById = async (postId: string): Promise<Post | null> => {
+  try {
+    const postRef = doc(db, 'posts', postId);
+    const postDoc: DocumentSnapshot<DocumentData> = await getDoc(postRef);
+
+    if (postDoc.exists()) {
+      const postData: Post = {id: postDoc.id, ...(postDoc.data() as any)} as Post;
+      return postData;
+    } else {
+      console.error('게시글을 찾을 수 없습니다.');
+      return null;
+    }
+  } catch (error) {
+    console.error('에러', error);
+    throw new Error('게시글을 불러오는 것에 실패했습니다.');
+  }
+};
+
 // 게시글 추가하기 addPost
-export const addPost = async (newPost: Omit<Post, 'id' | 'createdAt'>): Promise<DocumentReference> => {
+export const addPost = async (newPost: Omit<Post, 'id' | 'createdAt'>, userId: string): Promise<DocumentReference> => {
   try {
     const createdAt = new Date();
-    const docRef = await addDoc(collection(db, 'posts'), {...newPost, createdAt});
+    const docRef = await addDoc(collection(db, 'posts'), {...newPost, createdAt, userId});
 
     return docRef;
   } catch (error) {
@@ -63,3 +83,29 @@ export const deletePost = async (postId: string): Promise<void> => {
     throw new Error('게시글을 삭제하는 것에 실패했습니다.');
   }
 };
+
+// 게시글+사용자(작성자) 정보 불러오기 fetchPostWithUser
+//TODO: 240111 할 것 = 유저 정보 불러오는 로직 작성
+//TODO: 해당 로직은 미완성.
+// export const fetchPostsWithUser = async (): Promise<PostWithUser[]> => {
+//   try {
+//     const postsQuery = query(collection(db, 'posts'));
+//     const snapshot: QuerySnapshot<DocumentData> = await getDocs(postsQuery);
+//     const postsWithUser: PostWithUser[] = [];
+
+//     for (const doc of snapshot.docs) {
+//       const postData: Post = { id: doc.id, ...(doc.data() as any) } as Post;
+//       const user = await fetchUserById(postData.userId); // Implement fetchUserById
+
+//       if (user) {
+//         const postWithUser: PostWithUser = { ...postData, user };
+//         postsWithUser.push(postWithUser);
+//       }
+//     }
+
+//     return postsWithUser;
+//   } catch (error) {
+//     console.error('에러', error);
+//     throw new Error('게시글을 불러오는 것에 실패했습니다.');
+//   }
+// };
