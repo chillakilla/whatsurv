@@ -34,6 +34,9 @@ const JoinPage = () => {
   const [emailValidationClass, setEmailValidationClass] = useState<string>('');
   const [nicknameValidationClass, setNicknameValidationClass] = useState<string>('');
 
+  //회원가입 진행중 상태 표시
+  const [isJoining, setIsJoining] = useState<boolean>(false);
+
   // 정규표현식 이메일과 비밀번호 유효성검사
   const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
   const passwordValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
@@ -172,6 +175,8 @@ const JoinPage = () => {
       return;
     }
 
+    setIsJoining(true); // 회원가입 시작
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -192,6 +197,8 @@ const JoinPage = () => {
       setNickname('');
       console.error(error);
       alert(error);
+    } finally {
+      setIsJoining(false); // 회원가입 종료
     }
   };
 
@@ -280,23 +287,25 @@ const JoinPage = () => {
       case 4:
         return (
           <div>
-            <Input
-              type="text"
-              label="닉네임"
-              className="mt-[20px]"
-              value={nickname}
-              onChange={e => setNickname(e.target.value)}
-              placeholder="닉네임을 입력해주세요. "
-              maxLength={10}
-            />
-            <Button onClick={checkNicknameAvailability}>닉네임 중복 확인</Button>
-            {nicknameCheck && (
-              <p className={`${nicknameValidationClass} text-red-500 text-center mt-2`}>{nicknameCheck}</p>
+            {!isJoining && (
+              <>
+                <Input
+                  type="text"
+                  label="닉네임"
+                  className="mt-[20px]"
+                  value={nickname}
+                  onChange={e => setNickname(e.target.value)}
+                  placeholder="닉네임을 입력해주세요."
+                  maxLength={10}
+                />
+                <Button onClick={checkNicknameAvailability}>닉네임 중복 확인</Button>
+                {nicknameCheck && <p className={`${nicknameValidationClass} text-center mt-2`}>{nicknameCheck}</p>}
+                <Button onClick={clickJoinHandler} className="mt-[20px]" type="button">
+                  회원가입
+                </Button>
+              </>
             )}
-
-            <Button onClick={clickJoinHandler} className="mt-[20px]" type="button">
-              회원가입
-            </Button>
+            {isJoining && <p className="text-center mt-2">회원가입이 진행중입니다. 잠시만 기다려주세요...</p>}
           </div>
         );
       case 5:
