@@ -28,7 +28,15 @@ const useAuthStatus = () => {
 const AuthPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const {data: user} = useAuthStatus();
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+  const {data: user, isFetching} = useAuthStatus();
+
+  useEffect(() => {
+    // 사용자의 인증 상태가 확인되면 로딩 상태를 종료합니다.
+    if (!isFetching) {
+      setIsLoading(false);
+    }
+  }, [isFetching]);
 
   // 로그인 버튼 클릭 시 실행되는 함수
   const clickLoginHandler = async (event: FormEvent) => {
@@ -50,6 +58,10 @@ const AuthPage: React.FC = () => {
       console.error(error);
     }
   };
+
+  if (isLoading) {
+    return <div>로딩 중...</div>; // 로딩 인디케이터 표시
+  }
 
   if (user) {
     return (
