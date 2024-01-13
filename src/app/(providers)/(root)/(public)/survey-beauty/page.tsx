@@ -18,21 +18,21 @@ export default function SurveyItPage() {
     queryFn: fetchPosts,
   });
 
-  // Medical 카테고리만 필터링 하도록 설정
-  const selectedCategory = 'Medical';
+  // Beauty 카테고리만 필터링 하도록 설정
+  const selectedCategory = 'Beauty';
 
   const filteredSurveyData = surveyData?.filter(item => item.category === selectedCategory) || [];
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Medical 설문조사</h1>
+      <h1 className="text-2xl font-bold mb-4">Beauty 설문조사</h1>
       {isLoading && <div>Loading...</div>}
       {isError && <div>Error fetching survey data</div>}
       {filteredSurveyData.length > 0 ? (
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {filteredSurveyData.map(item => (
             <li key={item.id} className="p-4 bg-gray-100 rounded shadow">
-              <a onClick={() => router.push(`/survey_medical/${item.id}`)} className="cursor-pointer">
+              <a onClick={() => router.push(`/survey-beauty/${item.id}`)} className="cursor-pointer">
                 <p className="text-lg font-bold mb-2">{item.category}</p>
                 <p>{item.createdAt.toDate().toLocaleString()}</p>
                 <p>{item.imageUrl}</p>

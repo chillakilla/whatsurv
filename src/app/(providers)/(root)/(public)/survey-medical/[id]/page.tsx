@@ -5,7 +5,7 @@ import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import {useParams} from 'next/navigation';
 
-export default function SurveyItDetailPage() {
+export default function SurveyMedicalDetailPage() {
   // URL에서 'id' 매개변수를 가져옵니다.
   const {id} = useParams();
 
@@ -29,11 +29,10 @@ export default function SurveyItDetailPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Post Detail</h1>
+      <h1 className="text-2xl font-bold mb-4">Medical Post Detail Page</h1>
       <p>{post?.title}</p>
       <p>{post?.createdAt.toDate().toLocaleString()}</p>
       <img src={post?.imageUrl} alt="Post Image" />
-      <p className="text-lg font-semibold">{post?.title}</p>
       <p>{post?.content}</p>
       <p className="mt-2">{post?.likes}</p>
     </div>
