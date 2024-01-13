@@ -17,7 +17,7 @@ const JoinPage = () => {
   //정규표현식 유효성상태
   const [isEmailAvailable, setIsEmailAvailable] = useState<boolean>(false);
   const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(20);
+  const [progress, setProgress] = useState<number>(15);
 
   // 비밀번호 일치 여부 상태
   const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(true);
@@ -34,8 +34,13 @@ const JoinPage = () => {
   const [emailValidationClass, setEmailValidationClass] = useState<string>('');
   const [nicknameValidationClass, setNicknameValidationClass] = useState<string>('');
 
-  //회원가입 진행중 상태 표시
+  //회원가입 진행중 상태
   const [isJoining, setIsJoining] = useState<boolean>(false);
+
+  //회원가입이 사용자 구분 상태
+  const [accountType, setAccountType] = useState<string>('');
+  //사용자 유효성 관련
+  const [accountTypeCheck, setAccountTypeCheck] = useState<string>('');
 
   // 정규표현식 이메일과 비밀번호 유효성검사
   const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -48,6 +53,15 @@ const JoinPage = () => {
 
     //* !email은 email이 빈 문자열이거나 undefined일 경우 true가 됨
     if (step === 1) {
+      if (!accountType) {
+        setAccountTypeCheck('계정유형을 선택해주세요!!');
+        isValid = false;
+      } else {
+        setAccountTypeCheck('');
+      }
+    }
+
+    if (step === 2) {
       if (!email) {
         setEmailCheck('이메일을 입력해주세요');
         isValid = false;
@@ -62,7 +76,7 @@ const JoinPage = () => {
       }
     }
 
-    if (step === 2) {
+    if (step === 3) {
       if (!password) {
         setPasswordCheck('비밀번호를 입력해주세요');
         isValid = false;
@@ -89,14 +103,14 @@ const JoinPage = () => {
       }
     }
 
-    if (step === 3 && !birthDate) {
+    if (step === 4 && !birthDate) {
       setBirthDateCheck('생년월일을 입력해주세요');
       isValid = false;
     } else {
       setBirthDateCheck('');
     }
 
-    if (step === 4) {
+    if (step === 5) {
       if (!nickname) {
         setNicknameCheck('닉네임을 입력해주세요');
         isValid = false;
@@ -157,9 +171,11 @@ const JoinPage = () => {
 
   // 다음 단계로 이동하는 함수
   const moveToNextStep = () => {
-    setStep(step + 1);
+    const newStep = step + 1;
+    setStep(newStep);
+
     // 진행률 갱신
-    setProgress((step + 1) * 20);
+    setProgress((newStep / 6) * 100);
   };
 
   // 회원가입 함수
@@ -170,10 +186,10 @@ const JoinPage = () => {
       return; // 유효성 검사 실패 시, 함수 종료
     }
 
-    if (step !== 4) {
-      alert('모든 단계를 완료해야 회원가입이 가능합니다.');
-      return;
-    }
+    // if (step !== 4) {
+    //   alert('모든 단계를 완료해야 회원가입이 가능합니다.');
+    //   return;
+    // }
 
     setIsJoining(true); // 회원가입 시작
 
@@ -186,11 +202,12 @@ const JoinPage = () => {
         email,
         birthdate: birthDate,
         nickname,
+        accountType,
       });
 
       // 회원가입 성공 메시지 표시
       alert('회원가입 성공!');
-      setStep(5);
+      setStep(6);
       // 프로그래스 바 완료 상태로 설정
       setProgress(100);
     } catch (error) {
@@ -204,7 +221,51 @@ const JoinPage = () => {
 
   const renderStep = () => {
     switch (step) {
-      case 1:
+      case 1: // 새로운 초기 단계
+        return (
+          <div>
+            <p>계정 유형을 선택해주세요:</p>
+            <div>
+              <input
+                type="radio"
+                id="business"
+                name="accountType"
+                value="business"
+                checked={accountType === 'business'}
+                onChange={e => setAccountType(e.target.value)}
+              />
+              <label htmlFor="business">비즈니스 사용자</label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                id="normal"
+                name="accountType"
+                value="normal"
+                checked={accountType === 'normal'}
+                onChange={e => setAccountType(e.target.value)}
+              />
+              <label htmlFor="normal">일반 사용자</label>
+            </div>
+            {accountTypeCheck && <p className="text-red-500 text-center mt-2">{accountTypeCheck}</p>}
+            <Button
+              className="mt-[20px]"
+              onClick={() => {
+                if (accountType) {
+                  moveToNextStep(); // moveToNextStep 함수 호출로 변경
+                  setAccountTypeCheck('');
+                } else {
+                  setAccountTypeCheck('계정유형을 선택해주세요.');
+                }
+              }}
+              type="button"
+            >
+              다음
+            </Button>
+          </div>
+        );
+
+      case 2:
         return (
           <div>
             <Input
@@ -229,7 +290,7 @@ const JoinPage = () => {
             </Button>
           </div>
         );
-      case 2:
+      case 3:
         return (
           <div>
             <Input
@@ -261,7 +322,7 @@ const JoinPage = () => {
             </Button>
           </div>
         );
-      case 3:
+      case 4:
         return (
           <div>
             <Input
@@ -284,7 +345,7 @@ const JoinPage = () => {
             </Button>
           </div>
         );
-      case 4:
+      case 5:
         return (
           <div>
             {!isJoining && (
@@ -308,7 +369,7 @@ const JoinPage = () => {
             {isJoining && <p className="text-center mt-2">회원가입이 진행중입니다. 잠시만 기다려주세요...</p>}
           </div>
         );
-      case 5:
+      case 6:
         return (
           <div>
             <p>회원가입 완료</p>
