@@ -21,7 +21,7 @@ export default function SurveyItPage() {
   // Medical 카테고리만 필터링 하도록 설정
   const selectedCategory = 'Medical';
 
-  const filteredSurveyData = surveyData?.filter(item => item.category === selectedCategory) || [];
+  const filteredSurveyData = surveyData?.filter(post => post.category === selectedCategory) || [];
 
   return (
     <div className="container mx-auto p-4">
@@ -30,15 +30,15 @@ export default function SurveyItPage() {
       {isError && <div>Error fetching survey data</div>}
       {filteredSurveyData.length > 0 ? (
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {filteredSurveyData.map(item => (
-            <li key={item.id} className="p-4 bg-gray-100 rounded shadow">
-              <a onClick={() => router.push(`/survey-medical/${item.id}`)} className="cursor-pointer">
-                <p className="text-lg font-bold mb-2">{item.category}</p>
-                <p>{item.createdAt.toDate().toLocaleString()}</p>
-                <p>{item.imageUrl}</p>
-                <p className="text-lg font-semibold">{item.title}</p>
-                <p>{item.content}</p>
-                <p className="mt-2">{item.likes}</p>
+          {filteredSurveyData.map(post => (
+            <li key={post.id} className="p-4 bg-gray-100 rounded shadow">
+              <a onClick={() => router.push(`/survey-medical/${post.id}`)} className="cursor-pointer">
+                <p className="text-lg font-bold mb-2">{post.category}</p>
+                <p>{post.createdAt.toDate().toLocaleString()}</p>
+                <p>{post.imageUrl}</p>
+                <p className="text-lg font-semibold">{post.title}</p>
+                <p>{post.content}</p>
+                <p className="mt-2">{post.likes}</p>
               </a>
             </li>
           ))}
