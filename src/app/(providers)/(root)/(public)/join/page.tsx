@@ -1,10 +1,12 @@
 'use client';
 import {auth, db} from '@/firebase';
 import {Button, Input} from '@nextui-org/react';
+import {signOut} from 'firebase/auth';
 import {createUserWithEmailAndPassword} from 'firebase/auth/cordova';
 import {collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
+
 const JoinPage = () => {
   const [step, setStep] = useState<number>(1); // 회원가입 진행 단계
   //가입시 필요한 상태
@@ -204,6 +206,9 @@ const JoinPage = () => {
         nickname,
         accountType,
       });
+
+      // 회원가입 성공 후 즉시 로그아웃
+      await signOut(auth);
 
       // 회원가입 성공 메시지 표시
       alert('회원가입 성공!');
