@@ -5,7 +5,7 @@ import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {User, signInWithEmailAndPassword, signOut} from 'firebase/auth';
 import Link from 'next/link';
 import React, {FormEvent, useEffect, useState} from 'react';
-
+//TODo 유효성 검사 하나도 안되어 있으니 해야함
 // 사용자 인증 상태 관리 Hook
 const useAuthStatus = () => {
   const queryClient = useQueryClient();
