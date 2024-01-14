@@ -1,10 +1,9 @@
-import Link from 'next/link';
 import React from 'react';
-
-export default function Navigation() {
+import Link from 'next/link';
+export default function Tab() {
   return (
-    <nav>
-      <ul className="flex items-center divide-x-2 text-center">
+    <nav className="h-12 border-b-1">
+      <ul className="flex items-center divide-x-2 text-center h-12 ml-[70px]">
         <Link href="/survey_it">
           <li className="w-24 hover:text-[#0051FF]">IT</li>
         </Link>
