@@ -1,17 +1,22 @@
 'use client';
-import Banner from './_components/Banner';
-import Popular from './_components/Popular';
-import PostIt from './_components/PostIt';
+import Banner from './_components/carousel/Banner';
+import Popular from './_components/carousel/Popular';
+import PostIt from './_components/post/PostIt';
+import FloatingBtn from './_components/FloatingBtn';
+import PostBeauty from './_components/post/PostBeauty';
+import PostMedi from './_components/post/PostMedi';
+import PostLite from './_components/post/PostLite';
 
 export default function MainPage() {
   return (
     <div className="flex-col items-center justify-center">
-      <form className="flex items-center justify-center mt-16">
-        <input placeholder="검색창" className="bg-[#eee] h-[45px] w-[600px] p-2 rounded-xl" />
-      </form>
       <Banner />
       <Popular />
       <PostIt />
+      <PostBeauty />
+      <PostMedi />
+      <PostLite />
+      <FloatingBtn />
     </div>
   );
 }
