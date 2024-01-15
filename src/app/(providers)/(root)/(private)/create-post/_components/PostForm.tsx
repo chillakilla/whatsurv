@@ -1,5 +1,5 @@
 import {Post} from '@/app/api/typePost';
-import React from 'react';
+import React, {ChangeEvent} from 'react';
 
 interface PostFormProps {
   formData: Omit<Post, 'views' | 'id' | 'createdAt' | 'updatedAt'> & {
@@ -10,12 +10,14 @@ interface PostFormProps {
   onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onImgFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent) => void;
+  onDateChange: (e: ChangeEvent<HTMLInputElement>) => void;
   previewImage: string | null;
 }
 
 export default function PostForm({
   formData,
   onInputChange,
+  onDateChange,
   onCategoryChange,
   onImgFileChange,
   onSubmit,
@@ -88,7 +90,7 @@ export default function PostForm({
         type="date"
         name="deadlineDate"
         value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
-        onChange={onInputChange}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
       />
       <label htmlFor="participationDate">참여일: </label>
       <input
@@ -96,7 +98,7 @@ export default function PostForm({
         type="date"
         name="participationDate"
         value={formData.participationDate instanceof Date ? formData.participationDate.toISOString().split('T')[0] : ''}
-        onChange={onInputChange}
+        onChange={onDateChange}
       />
       <label>보상: </label>
       <input

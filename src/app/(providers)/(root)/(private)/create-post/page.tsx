@@ -103,6 +103,14 @@ export default function PostPage() {
     }
   };
 
+  const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, value} = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: new Date(value),
+    }));
+  };
+
   return (
     <div>
       <div>
@@ -115,6 +123,7 @@ export default function PostPage() {
               [name]: value,
             }));
           }}
+          onDateChange={onDateChange}
           onImgFileChange={ImgFileChangeHandler}
           onSubmit={SubmitHandler}
           previewImage={previewImage}
