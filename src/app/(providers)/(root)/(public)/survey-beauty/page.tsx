@@ -1,6 +1,6 @@
 'use client';
 
-import {fetchPosts} from '@/app/api/firebaseApi';
+import {getPosts} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import {useRouter} from 'next/navigation';
@@ -15,7 +15,7 @@ export default function SurveyItPage() {
     refetch,
   } = useQuery<Post[]>({
     queryKey: ['surveyData'],
-    queryFn: fetchPosts,
+    queryFn: getPosts,
   });
 
   // Beauty 카테고리만 필터링 하도록 설정
@@ -34,7 +34,7 @@ export default function SurveyItPage() {
             <li key={post.id} className="p-4 bg-gray-100 rounded shadow">
               <a onClick={() => router.push(`/survey-beauty/${post.id}`)} className="cursor-pointer">
                 <p className="text-lg font-bold mb-2">{post.category}</p>
-                <p>{post.createdAt.toDate().toLocaleString()}</p>
+                <p>{post.createdAt.toLocaleString()}</p>
                 <p>{post.imageUrl}</p>
                 <p className="text-lg font-semibold">{post.title}</p>
                 <p>{post.content}</p>

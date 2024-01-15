@@ -1,4 +1,4 @@
-import {fetchPosts} from '@/app/api/firebaseApi';
+import {getPosts} from '@/app/api/firebaseApi';
 import {useQuery} from '@tanstack/react-query';
 import {Button} from '@nextui-org/react';
 import {FaRegHeart} from 'react-icons/fa';
@@ -13,7 +13,7 @@ export default function PostMedi() {
     isError,
   } = useQuery({
     queryKey: ['posts'],
-    queryFn: fetchPosts,
+    queryFn: getPosts,
   });
 
   if (isLoading) {
@@ -50,9 +50,7 @@ export default function PostMedi() {
                   </div>
                   <p className="text-xs text-[#666]">
                     작성일 |{' '}
-                    {post.createdAt
-                      .toDate()
-                      .toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})}
+                    {post.createdAt.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})}
                   </p>
                   <h3 className="text-lg font-bold">{post.title}</h3>
 
