@@ -2,11 +2,19 @@
 import {auth} from '@/firebase';
 import {Button, Input} from '@nextui-org/react';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
-import {AuthError, User, signInWithEmailAndPassword, signOut} from 'firebase/auth';
+import {
+  AuthError,
+  User,
+  browserSessionPersistence,
+  setPersistence,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'firebase/auth';
 import Link from 'next/link';
 import React, {FormEvent, useEffect, useState} from 'react';
 //TODo 유효성 검사 하나도 안되어 있으니 해야함
 // 사용자 인증 상태 관리 Hook
+
 const useAuthStatus = () => {
   const queryClient = useQueryClient();
 
@@ -74,29 +82,31 @@ const AuthPage: React.FC = () => {
   // 로그인 버튼 클릭 시 실행되는 함수
   const clickLoginHandler = async (event: FormEvent) => {
     event.preventDefault();
-    // 로그인 에러 초기화
     setLoginError('');
     if (!validateInput()) return;
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert('로그인 성공!');
-    } catch (error) {
-      console.error(error);
-      // 로그인 실패 시 에러 처리
-      const authError = error as AuthError;
-      // 로그인 실패 시 에러 처리
-      switch (authError.code) {
-        case 'auth/invalid-credential':
-          setLoginError('이메일 혹은 비밀번호가 틀렸습니다.');
-          break;
-        case 'auth/too-many-requests':
-          setLoginError('비밀번호 실패가 너무 많아 계정이 잠겼습니다. 나중에 다시 시도해주세요.');
-          break;
-        default:
-          setLoginError('로그인 실패: ' + authError.message);
-          break;
-      }
-    }
+
+    setPersistence(auth, browserSessionPersistence)
+      .then(() => {
+        return signInWithEmailAndPassword(auth, email, password);
+      })
+      .then(() => {
+        alert('로그인 성공!');
+      })
+      .catch(error => {
+        const authError = error as AuthError;
+        // 로그인 실패 시 에러 처리
+        switch (authError.code) {
+          case 'auth/invalid-credential':
+            setLoginError('이메일 혹은 비밀번호가 틀렸습니다.');
+            break;
+          case 'auth/too-many-requests':
+            setLoginError('비밀번호 실패가 너무 많아 계정이 잠겼습니다. 나중에 다시 시도해주세요.');
+            break;
+          default:
+            setLoginError('로그인 실패: ' + authError.message);
+            break;
+        }
+      });
   };
 
   // 로그아웃 버튼 클릭시 실행되는 함수
