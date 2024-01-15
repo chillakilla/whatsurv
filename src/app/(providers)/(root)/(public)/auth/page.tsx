@@ -1,18 +1,21 @@
 'use client';
-import {auth} from '@/firebase';
+import {auth, db} from '@/firebase';
 import {Button, Input} from '@nextui-org/react';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {
   AuthError,
+  GoogleAuthProvider,
   User,
   browserSessionPersistence,
   setPersistence,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
 } from 'firebase/auth';
+import {doc, setDoc} from 'firebase/firestore';
 import Link from 'next/link';
 import React, {FormEvent, useEffect, useState} from 'react';
-//TODo 유효성 검사 하나도 안되어 있으니 해야함
+
 // 사용자 인증 상태 관리 Hook
 
 const useAuthStatus = () => {
@@ -52,6 +55,28 @@ const AuthPage: React.FC = () => {
       setIsLoading(false);
     }
   }, [isFetching]);
+
+  // Google 로그인 함수
+  const googleLogin = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const userData = {
+        nickname: user.displayName || '기본닉네임',
+        email: user.email,
+        // 구글API에서 생년월일은 미지원으로 생년월일은 초기에 빈 값으로 설정
+        birthdate: '',
+      };
+
+      // 사용자 정보 저장
+      await setDoc(doc(db, 'users', user.uid), userData);
+
+      alert('Google 로그인 성공!');
+    } catch (error) {
+      console.error('Google 로그인 실패:', error);
+    }
+  };
 
   const validateInput = () => {
     let isValid = true;
@@ -146,6 +171,9 @@ const AuthPage: React.FC = () => {
         <Input type="password" label="비밀번호" value={password} onChange={e => setPassword(e.target.value)} />
         {passwordCheck && <p className="text-red-500">{passwordCheck}</p>}
         {loginError && <p className="text-red-500">{loginError}</p>}
+        <Button onClick={googleLogin} className="mt-[20px] w-full">
+          구글로 로그인하기
+        </Button>
         <Button className="mr-[20px] mt-[20px]">비밀번호 재설정</Button>
         <Button>
           <Link href="/join">회원가입</Link>
