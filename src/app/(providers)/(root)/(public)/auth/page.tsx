@@ -57,11 +57,15 @@ const AuthPage: React.FC = () => {
   }, [isFetching]);
 
   // Google 로그인 함수
+
   const googleLogin = async () => {
     try {
+      await setPersistence(auth, browserSessionPersistence); // 세션 지속성 설정
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+
+      // Firestore에 저장할 사용자 정보
       const userData = {
         nickname: user.displayName || '기본닉네임',
         email: user.email,
