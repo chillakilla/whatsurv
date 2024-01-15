@@ -4,8 +4,8 @@ import React from 'react';
 
 interface PostFormProps {
   formData: Omit<Post, 'views' | 'id' | 'createdAt' | 'updatedAt'> & {
-    deadlineDate: string;
-    participationDate: string;
+    deadlineDate: Date;
+    participationDate: Date;
   };
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onImgFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -14,15 +14,6 @@ interface PostFormProps {
 }
 
 export default function PostForm({formData, onInputChange, onImgFileChange, onSubmit, previewImage}: PostFormProps) {
-  const handleSubmit = (e: React.FormEvent) => {
-    const formDataWithDate: Post = {
-      ...formData,
-      deadlineDate: new Date(formData.deadlineDate),
-      participationDate: new Date(formData.participationDate),
-    };
-    onSubmit(e);
-  };
-
   return (
     <form onSubmit={onSubmit} className="flex flex-col items-center">
       <label>제목: </label>
@@ -85,7 +76,7 @@ export default function PostForm({formData, onInputChange, onImgFileChange, onSu
         className="border-solid border-2  border-#ccc"
         type="date"
         name="deadlineDate"
-        value={formData.deadlineDate.toISOString().split('T')[0]}
+        value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
         onChange={onInputChange}
       />
       <label>참여일: </label>
@@ -93,7 +84,7 @@ export default function PostForm({formData, onInputChange, onImgFileChange, onSu
         className="border-solid border-2  border-#ccc"
         type="date"
         name="participationDate"
-        value={formData.participationDate.toISOString().split('T')[0]}
+        value={formData.participationDate instanceof Date ? formData.participationDate.toISOString().split('T')[0] : ''}
         onChange={onInputChange}
       />
       <label>보상: </label>
