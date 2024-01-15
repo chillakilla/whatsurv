@@ -50,10 +50,8 @@ export default function PostBeauty() {
                     {post.category}
                   </div>
                   <p className="text-xs text-[#666]">
-                    작성일 |{' '}
-                    {post.createdAt
-                      .toDate()
-                      .toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})}
+                    마감일 |
+                    {post.deadlineDate.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})}
                   </p>
                   <h3 className="text-lg font-bold">{post.title}</h3>
 
