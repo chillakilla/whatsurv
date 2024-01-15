@@ -1,4 +1,4 @@
-import {fetchPosts} from '@/app/api/firebaseApi';
+import {getPosts} from '@/app/api/firebaseApi';
 import {useQuery} from '@tanstack/react-query';
 import {Button} from '@nextui-org/react';
 import {FaRegHeart} from 'react-icons/fa';
@@ -13,7 +13,7 @@ export default function PostLite() {
     isError,
   } = useQuery({
     queryKey: ['posts'],
-    queryFn: fetchPosts,
+    queryFn: getPosts,
   });
 
   if (isLoading) {
