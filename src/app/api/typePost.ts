@@ -12,19 +12,8 @@ export type Post = {
   category: string;
   requirements: string;
 
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  createdAt: Date;
+  updatedAt: Date;
   deadlineDate: Date;
   participationDate: Date;
 };
-
-interface PostFormProps {
-  formData: Omit<Post, 'views' | 'id' | 'createdAt' | 'updatedAt'> & {
-    deadlineDate: string;
-    participationDate: string;
-  };
-  onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  onImgFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: (e: React.FormEvent) => void;
-  previewImage: string | null;
-}
