@@ -40,8 +40,8 @@ export const getPosts = async (): Promise<Post[]> => {
         requirements: data?.requirements || '',
         createdAt: data?.createdAt?.toDate() || new Date(),
         updatedAt: data?.updatedAt?.toDate() || new Date(),
-        deadlineDate: data?.deadlineDate?.toDate() || new Date(),
-        participationDate: data?.participationDate?.toDate() || new Date(),
+        deadlineDate: data?.deadlineDate || null,
+        participationDate: data?.participationDate || null,
       };
     });
 
