@@ -1,5 +1,4 @@
 import {Post} from '@/app/api/typePost';
-import {Timestamp} from 'firebase/firestore';
 import React from 'react';
 
 interface PostFormProps {
@@ -8,23 +7,31 @@ interface PostFormProps {
     participationDate: Date;
   };
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onImgFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent) => void;
   previewImage: string | null;
 }
 
-export default function PostForm({formData, onInputChange, onImgFileChange, onSubmit, previewImage}: PostFormProps) {
+export default function PostForm({
+  formData,
+  onInputChange,
+  onCategoryChange,
+  onImgFileChange,
+  onSubmit,
+  previewImage,
+}: PostFormProps) {
   return (
     <form onSubmit={onSubmit} className="flex flex-col items-center">
       <label>제목: </label>
       <input
-        className="border-solid border-2 border-#ccc"
+        className="w-[1094px] h-[72px] bg-slate-300 "
         type="text"
         name="title"
         value={formData.title}
         onChange={onInputChange}
         required
-        placeholder="제목 입력창"
+        placeholder="제목을 입력해주세요."
       />
       <label>내용: </label>
       <textarea
@@ -55,14 +62,18 @@ export default function PostForm({formData, onInputChange, onImgFileChange, onSu
         </div>
       )}
       <label>카테고리: </label>
-      <input
+      <select
         className="border-solid border-2  border-#ccc"
-        type="text"
         name="category"
         value={formData.category}
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onCategoryChange(e)}
         required
-        onChange={onInputChange}
-      />
+      >
+        <option value="">카테고리</option>
+        <option value="IT">IT</option>
+        <option value="Medi">메디컬</option>
+        <option value="Beauty">뷰티</option>
+      </select>
       <label>자격요건: </label>
       <input
         className="border-solid border-2  border-#ccc"
@@ -71,7 +82,7 @@ export default function PostForm({formData, onInputChange, onImgFileChange, onSu
         value={formData.requirements}
         onChange={onInputChange}
       />
-      <label>신청마감일: </label>
+      <label htmlFor="deadlineDate">신청마감일: </label>
       <input
         className="border-solid border-2  border-#ccc"
         type="date"
@@ -79,7 +90,7 @@ export default function PostForm({formData, onInputChange, onImgFileChange, onSu
         value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
         onChange={onInputChange}
       />
-      <label>참여일: </label>
+      <label htmlFor="participationDate">참여일: </label>
       <input
         className="border-solid border-2  border-#ccc"
         type="date"

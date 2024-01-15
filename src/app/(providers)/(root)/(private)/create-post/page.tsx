@@ -44,14 +44,6 @@ export default function PostPage() {
     return <div>불러올 수 있는 게시글이 없습니다.</div>;
   }
 
-  const InputChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const {name, value} = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
   const ImgFileChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imgFile = e.target.files?.[0] || null;
     if (imgFile) {
@@ -90,6 +82,10 @@ export default function PostPage() {
       };
 
       await addPost(updatedFormData);
+
+      setSelectedFile(null);
+      setPreviewImage(null);
+
       setFormData({
         title: '',
         content: '',
@@ -122,6 +118,13 @@ export default function PostPage() {
           onImgFileChange={ImgFileChangeHandler}
           onSubmit={SubmitHandler}
           previewImage={previewImage}
+          onCategoryChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+            const {value} = e.target;
+            setFormData(prevData => ({
+              ...prevData,
+              category: value,
+            }));
+          }}
         />
       </div>
     </div>

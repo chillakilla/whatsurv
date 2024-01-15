@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import {Post} from '@/app/api/typePost';
-import {updatePost, deletePost, fetchPostById} from '@/app/api/firebaseApi';
+import {updatePost, deletePost, getPostById} from '@/app/api/firebaseApi';
 
 export default function PostDetailPage() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function PostDetailPage() {
     const fetchSinglePost = async () => {
       try {
         if (postId && typeof postId === 'string') {
-          const postData = await fetchPostById(postId);
+          const postData = await getPostById(postId);
           setPost(postData);
         }
       } catch (error) {
