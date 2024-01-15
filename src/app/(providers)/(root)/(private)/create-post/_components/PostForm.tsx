@@ -1,4 +1,5 @@
 import {Post} from '@/app/api/typePost';
+import {Timestamp} from 'firebase/firestore';
 import React from 'react';
 
 interface PostFormProps {
@@ -75,7 +76,7 @@ export default function PostForm({formData, onInputChange, onImgFileChange, onSu
         className="border-solid border-2  border-#ccc"
         type="date"
         name="deadlineDate"
-        value={formData.deadlineDate.toISOString().split('T')[0]}
+        value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
         onChange={onInputChange}
       />
       <label>참여일: </label>
@@ -83,7 +84,7 @@ export default function PostForm({formData, onInputChange, onImgFileChange, onSu
         className="border-solid border-2  border-#ccc"
         type="date"
         name="participationDate"
-        value={formData.participationDate.toISOString().split('T')[0]}
+        value={formData.participationDate instanceof Date ? formData.participationDate.toISOString().split('T')[0] : ''}
         onChange={onInputChange}
       />
       <label>보상: </label>
