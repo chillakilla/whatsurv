@@ -1,9 +1,8 @@
 import {getPosts} from '@/app/api/firebaseApi';
-import {useQuery} from '@tanstack/react-query';
 import {Button} from '@nextui-org/react';
-import {FaRegHeart} from 'react-icons/fa';
-import React from 'react';
+import {useQuery} from '@tanstack/react-query';
 import Link from 'next/link';
+import {FaRegHeart} from 'react-icons/fa';
 
 export default function PostMedi() {
   const target = 'Medical';
