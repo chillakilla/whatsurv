@@ -32,7 +32,7 @@ export default function PostIt() {
     <div className="my-20">
       <div className="title-box flex justify-between items-center gap-12 mb-4">
         <h2 className="font-bold text-xl w-[80px] ">IT 전체</h2>
-        <Link href="/survey_it" className="font-bold text-lg text-[#0051FF]">
+        <Link href="/survey-it" className="font-bold text-lg text-[#0051FF]">
           더보기
         </Link>
       </div>
