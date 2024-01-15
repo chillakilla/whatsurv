@@ -2,7 +2,7 @@
 import {auth} from '@/firebase';
 import {Button, Input} from '@nextui-org/react';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
-import {User, signInWithEmailAndPassword, signOut} from 'firebase/auth';
+import {AuthError, User, signInWithEmailAndPassword, signOut} from 'firebase/auth';
 import Link from 'next/link';
 import React, {FormEvent, useEffect, useState} from 'react';
 //TODo 유효성 검사 하나도 안되어 있으니 해야함
@@ -36,9 +36,10 @@ const AuthPage: React.FC = () => {
   // 정규표현식 이메일과 비밀번호 유효성검사
   const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
   const passwordValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
-
+  // 로그인 에러 메시지 상태
+  const [loginError, setLoginError] = useState<string>('');
   useEffect(() => {
-    // 사용자의 인증 상태가 확인되면 로딩 상태를 종료합니다.
+    // 사용자의 인증 상태가 -확인되면 로딩 상태를 종료합니다.
     if (!isFetching) {
       setIsLoading(false);
     }
@@ -73,13 +74,28 @@ const AuthPage: React.FC = () => {
   // 로그인 버튼 클릭 시 실행되는 함수
   const clickLoginHandler = async (event: FormEvent) => {
     event.preventDefault();
+    // 로그인 에러 초기화
+    setLoginError('');
     if (!validateInput()) return;
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert('로그인 성공!');
     } catch (error) {
       console.error(error);
-      alert('로그인 실패');
+      // 로그인 실패 시 에러 처리
+      const authError = error as AuthError;
+      // 로그인 실패 시 에러 처리
+      switch (authError.code) {
+        case 'auth/invalid-credential':
+          setLoginError('이메일 혹은 비밀번호가 틀렸습니다.');
+          break;
+        case 'auth/too-many-requests':
+          setLoginError('비밀번호 실패가 너무 많아 계정이 잠겼습니다. 나중에 다시 시도해주세요.');
+          break;
+        default:
+          setLoginError('로그인 실패: ' + authError.message);
+          break;
+      }
     }
   };
 
@@ -119,6 +135,7 @@ const AuthPage: React.FC = () => {
         {emailCheck && <p className="text-red-500">{emailCheck}</p>}
         <Input type="password" label="비밀번호" value={password} onChange={e => setPassword(e.target.value)} />
         {passwordCheck && <p className="text-red-500">{passwordCheck}</p>}
+        {loginError && <p className="text-red-500">{loginError}</p>}
         <Button className="mr-[20px] mt-[20px]">비밀번호 재설정</Button>
         <Button>
           <Link href="/join">회원가입</Link>
