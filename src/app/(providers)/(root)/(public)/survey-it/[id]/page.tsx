@@ -1,6 +1,6 @@
 'use client';
 
-import {fetchPostById} from '@/app/api/firebaseApi';
+import {getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import {useParams} from 'next/navigation';
@@ -16,7 +16,7 @@ export default function SurveyItDetailPage() {
     refetch,
   } = useQuery<Post | null, Error>({
     queryKey: ['post', id],
-    queryFn: () => fetchPostById(id as string),
+    queryFn: () => getPostById(id as string),
   });
 
   if (isLoading) {
@@ -31,7 +31,7 @@ export default function SurveyItDetailPage() {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">IT Post Detail Page</h1>
       <p>{post?.title}</p>
-      <p>{post?.createdAt.toDate().toLocaleString()}</p>
+      <p>{post?.createdAt.toLocaleString()}</p>
       <img src={post?.imageUrl} alt="Post Image" />
       <p>{post?.content}</p>
       <p className="mt-2">{post?.likes}</p>

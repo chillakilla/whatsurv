@@ -1,5 +1,4 @@
 import {Post} from '@/app/api/typePost';
-import {Timestamp} from 'firebase/firestore';
 import React from 'react';
 
 interface PostFormProps {
