@@ -15,7 +15,7 @@ export default function Popular() {
   const swiperRef = useRef<SwiperCore>();
   return (
     <>
-      <h2 className="text-xl font-bold">🔥HOT 포스트🔥</h2>
+      <h2 className="text-xl font-bold">인기 서베이</h2>
       <Swiper
         onSwiper={swiper => {
           swiperRef.current = swiper;

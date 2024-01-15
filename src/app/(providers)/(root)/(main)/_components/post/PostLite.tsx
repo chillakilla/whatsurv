@@ -44,18 +44,18 @@ export default function PostLite() {
             .filter(post => post.category === target)
             .map(post => (
               <Link href="#" key={post.id}>
-                <div className="h-72 border-2 border-[#eee] rounded-xl p-2">
-                  <div className="bg-[#D6FF00] text-[#0051FF] w-16 p-1 text-center rounded-lg font-semibold text-sm mb-[10px]">
+                <div className="h-36 border-2 border-[#eee] rounded-xl p-2">
+                  <div className="bg-[#0051FF] text-[#D6FF00] w-12 p-1 text-center rounded-full font-semibold text-xs mb-[10px]">
                     {post.category}
                   </div>
-                  <h3 className="text-lg font-bold">{post.title}</h3>
-                  <p className="text-[#333] text-md">{post.content}</p>
                   <p className="text-xs text-[#666]">
                     작성일 |{' '}
                     {post.createdAt
                       .toDate()
                       .toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})}
                   </p>
+                  <h3 className="text-lg font-bold">{post.title}</h3>
+
                   <Button
                     isIconOnly
                     aria-label="Like"
