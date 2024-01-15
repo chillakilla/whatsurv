@@ -14,17 +14,37 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import {Post} from './typePost';
-import firebase from 'firebase/compat/app';
 import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
 
+// 3가지의 인풋 영역을 제외하기 위한 Post 의 얕은 복사본
+export type PostInput = Omit<Post, 'id' | 'updatedAt' | 'views'>;
+
 // 게시글 목록 불러오기 fetchPosts
-export const fetchPosts = async (): Promise<Post[]> => {
+export const getPosts = async (): Promise<Post[]> => {
   try {
     const postsQuery = query(collection(db, 'posts'));
     const snapshot: QuerySnapshot<DocumentData> = await getDocs(postsQuery);
-    const posts: Post[] = snapshot.docs.map(
-      (doc: DocumentSnapshot<DocumentData>) => ({id: doc.id, ...(doc.data() as any)} as Post),
-    );
+    const posts: Post[] = snapshot.docs.map((doc: DocumentSnapshot<DocumentData>) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        likes: data?.likes || 0,
+        views: data?.views || 0,
+        rewards: data?.rewards || 0,
+        title: data?.title || '',
+        content: data?.content || '',
+        imageUrl: data?.imageUrl || '',
+        category: data?.category || '',
+        userId: data?.userId || '',
+        userNickname: data?.userNickname || '',
+        requirements: data?.requirements || '',
+        createdAt: data?.createdAt?.toDate() || new Date(),
+        updatedAt: data?.updatedAt?.toDate() || new Date(),
+        deadlineDate: data?.deadlineDate?.toDate() || new Date(),
+        participationDate: data?.participationDate?.toDate() || new Date(),
+      };
+    });
+
     return posts;
   } catch (error) {
     console.error('에러', error);
@@ -33,7 +53,7 @@ export const fetchPosts = async (): Promise<Post[]> => {
 };
 
 // 단일 게시글 정보 불러오기 fetchPostById
-export const fetchPostById = async (postId: string): Promise<Post | null> => {
+export const getPostById = async (postId: string): Promise<Post | null> => {
   try {
     const postRef = doc(db, 'posts', postId);
     const postSnapshot: DocumentSnapshot = await getDoc(postRef);
@@ -51,10 +71,14 @@ export const fetchPostById = async (postId: string): Promise<Post | null> => {
 };
 
 // 게시글 추가하기 addPost
-export const addPost = async (newPost: Omit<Post, 'id' | 'createdAt'>): Promise<DocumentReference> => {
+export const addPost = async (newPost: PostInput & {views: number}): Promise<DocumentReference> => {
   try {
     const createdAt = new Date();
-    const docRef = await addDoc(collection(db, 'posts'), {...newPost, createdAt});
+    const docRef = await addDoc(collection(db, 'posts'), {
+      ...newPost,
+      createdAt,
+      views: 0,
+    });
 
     return docRef;
   } catch (error) {

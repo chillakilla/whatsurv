@@ -1,11 +1,14 @@
 'use client';
 
-import {addPost, fetchPosts, uploadImageToStorage} from '@/app/api/firebaseApi';
+import {addPost, getPosts, uploadImageToStorage} from '@/app/api/firebaseApi';
+import {addPostMutation} from '@/app/api/mutationApi';
 import {Post} from '@/app/api/typePost';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
+import {DocumentData, DocumentReference, Timestamp, doc} from 'firebase/firestore';
 import React, {useState} from 'react';
 
 export default function PostPage() {
+  const queryClient = useQueryClient();
   const {
     data: posts,
     isLoading,
@@ -13,7 +16,7 @@ export default function PostPage() {
     refetch,
   } = useQuery<Post[]>({
     queryKey: ['posts'],
-    queryFn: fetchPosts,
+    queryFn: getPosts,
   });
 
   const [formData, setFormData] = useState({
@@ -43,7 +46,7 @@ export default function PostPage() {
     return <div>불러올 수 있는 게시글이 없습니다.</div>;
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const InputChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const {name, value} = e.target;
     setFormData(prevData => ({
       ...prevData,
@@ -51,7 +54,7 @@ export default function PostPage() {
     }));
   };
 
-  const handleImgFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const ImgFileChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imgFile = e.target.files?.[0] || null;
     if (imgFile) {
       setSelectedFile(imgFile);
@@ -65,7 +68,13 @@ export default function PostPage() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const addPostMutation = useMutation(addPostMutation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['posts']);
+    },
+  });
+
+  const SubmitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       let imageUrl = formData.imageUrl;
@@ -74,10 +83,21 @@ export default function PostPage() {
         imageUrl = await uploadImageToStorage(selectedFile);
       }
 
-      const updatedFormData = {...formData, imageUrl};
+      const updatedFormData = {
+        title: formData.title,
+        content: formData.content,
+        imageUrl: imageUrl,
+        likes: formData.likes,
+        category: formData.category,
+        requirements: formData.requirements,
+        deadlineDate: new Date(formData.deadlineDate),
+        participationDate: new Date(formData.participationDate),
+        rewards: formData.rewards,
+        createdAt: Timestamp.now(),
+        views: 0,
+      };
 
       await addPost(updatedFormData);
-
       setFormData({
         title: '',
         content: '',
@@ -89,7 +109,6 @@ export default function PostPage() {
         participationDate: '',
         rewards: 0,
       });
-
       refetch();
     } catch (error) {
       console.error('에러', error);
@@ -102,14 +121,14 @@ export default function PostPage() {
         <button></button>
       </div>
       <div>
-        <form onSubmit={handleSubmit} className="flex flex-col items-center">
+        <form onSubmit={SubmitHandler} className="flex flex-col items-center">
           <label>제목: </label>
           <input
             className="border-solid border-2   border-#ccc"
             type="text"
             name="title"
             value={formData.title}
-            onChange={handleInputChange}
+            onChange={InputChangeHandler}
             required
             placeholder="제목 입력창"
           />
@@ -118,7 +137,7 @@ export default function PostPage() {
             className="border-solid border-2   border-#ccc"
             name="content"
             value={formData.content}
-            onChange={handleInputChange}
+            onChange={InputChangeHandler}
             required
           />
           <label>이미지 Url: </label>
@@ -127,13 +146,13 @@ export default function PostPage() {
             type="text"
             name="imageUrl"
             value={formData.imageUrl}
-            onChange={handleInputChange}
+            onChange={InputChangeHandler}
           />
           <input
             className="mt-[10px] border-solid border-2  border-#ccc"
             type="file"
             accept="image/*"
-            onChange={handleImgFileChange}
+            onChange={ImgFileChangeHandler}
           />
           {previewImage && (
             <div>
@@ -148,7 +167,7 @@ export default function PostPage() {
             name="category"
             value={formData.category}
             required
-            onChange={handleInputChange}
+            onChange={InputChangeHandler}
           />
           <label>자격요건: </label>
           <input
@@ -156,7 +175,7 @@ export default function PostPage() {
             type="text"
             name="requirements"
             value={formData.requirements}
-            onChange={handleInputChange}
+            onChange={InputChangeHandler}
           />
           <label>신청마감일: </label>
           <input
@@ -164,7 +183,7 @@ export default function PostPage() {
             type="date"
             name="deadlineDate"
             value={formData.deadlineDate}
-            onChange={handleInputChange}
+            onChange={InputChangeHandler}
           />
           <label>참여일: </label>
           <input
@@ -172,7 +191,7 @@ export default function PostPage() {
             type="date"
             name="participationDate"
             value={formData.participationDate}
-            onChange={handleInputChange}
+            onChange={InputChangeHandler}
           />
           <label>보상: </label>
           <input
@@ -180,7 +199,7 @@ export default function PostPage() {
             type="number"
             name="rewards"
             value={formData.rewards}
-            onChange={handleInputChange}
+            onChange={InputChangeHandler}
           />
           <button type="submit" className="w-[50px] h-[50px] mt-[10px] border-solid border-2  border-black">
             Add
