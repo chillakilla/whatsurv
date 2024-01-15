@@ -4,6 +4,7 @@ import {getPosts} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import {useRouter} from 'next/navigation';
+import SortingPost from '../../(main)/_components/post/SortingPost';
 
 export default function SurveyItPage() {
   const router = useRouter();
@@ -26,6 +27,7 @@ export default function SurveyItPage() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">IT 설문조사</h1>
+      <SortingPost />
       {isLoading && <div>Loading...</div>}
       {isError && <div>Error fetching survey data</div>}
       {filteredSurveyData.length > 0 ? (
