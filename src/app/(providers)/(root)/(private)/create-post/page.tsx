@@ -5,6 +5,7 @@ import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import {Timestamp} from 'firebase/firestore';
 import React, {useState} from 'react';
+import PostForm from './_components/PostForm';
 
 export default function PostPage() {
   const {
@@ -110,90 +111,19 @@ export default function PostPage() {
   return (
     <div>
       <div>
-        <form onSubmit={SubmitHandler} className="flex flex-col items-center">
-          <label>제목: </label>
-          <input
-            className="border-solid border-2   border-#ccc"
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={InputChangeHandler}
-            required
-            placeholder="제목 입력창"
-          />
-          <label>내용: </label>
-          <textarea
-            className="border-solid border-2   border-#ccc"
-            name="content"
-            value={formData.content}
-            onChange={InputChangeHandler}
-            required
-          />
-          <label>이미지 Url: </label>
-          <input
-            className="border-solid border-2   border-#ccc"
-            type="text"
-            name="imageUrl"
-            value={formData.imageUrl}
-            onChange={InputChangeHandler}
-          />
-          <input
-            className="mt-[10px] border-solid border-2  border-#ccc"
-            type="file"
-            accept="image/*"
-            onChange={ImgFileChangeHandler}
-          />
-          {previewImage && (
-            <div>
-              <h3>미리보기</h3>
-              <img src={previewImage} alt="Image Preview" />
-            </div>
-          )}
-          <label>카테고리: </label>
-          <input
-            className="border-solid border-2  border-#ccc"
-            type="text"
-            name="category"
-            value={formData.category}
-            required
-            onChange={InputChangeHandler}
-          />
-          <label>자격요건: </label>
-          <input
-            className="border-solid border-2  border-#ccc"
-            type="text"
-            name="requirements"
-            value={formData.requirements}
-            onChange={InputChangeHandler}
-          />
-          <label>신청마감일: </label>
-          <input
-            className="border-solid border-2  border-#ccc"
-            type="date"
-            name="deadlineDate"
-            value={formData.deadlineDate}
-            onChange={InputChangeHandler}
-          />
-          <label>참여일: </label>
-          <input
-            className="border-solid border-2  border-#ccc"
-            type="date"
-            name="participationDate"
-            value={formData.participationDate}
-            onChange={InputChangeHandler}
-          />
-          <label>보상: </label>
-          <input
-            className="border-solid border-2  border-#ccc"
-            type="number"
-            name="rewards"
-            value={formData.rewards}
-            onChange={InputChangeHandler}
-          />
-          <button type="submit" className="w-[50px] h-[50px] mt-[10px] border-solid border-2  border-black">
-            Add
-          </button>
-        </form>
+        <PostForm
+          formData={formData}
+          onInputChange={e => {
+            const {name, value} = e.target;
+            setFormData(prevData => ({
+              ...prevData,
+              [name]: value,
+            }));
+          }}
+          onImgFileChange={ImgFileChangeHandler}
+          onSubmit={SubmitHandler}
+          previewImage={previewImage}
+        />
       </div>
     </div>
   );
