@@ -14,15 +14,6 @@ interface PostFormProps {
 }
 
 export default function PostForm({formData, onInputChange, onImgFileChange, onSubmit, previewImage}: PostFormProps) {
-  const handleSubmit = (e: React.FormEvent) => {
-    const formDataWithDate: Post = {
-      ...formData,
-      deadlineDate: new Date(formData.deadlineDate),
-      participationDate: new Date(formData.participationDate),
-    };
-    onSubmit(e);
-  };
-
   return (
     <form onSubmit={onSubmit} className="flex flex-col items-center">
       <label>제목: </label>
