@@ -4,8 +4,8 @@ import React from 'react';
 
 interface PostFormProps {
   formData: Omit<Post, 'views' | 'id' | 'createdAt' | 'updatedAt'> & {
-    deadlineDate: string;
-    participationDate: string;
+    deadlineDate: Date;
+    participationDate: Date;
   };
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onImgFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
