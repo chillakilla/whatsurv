@@ -1,9 +1,9 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
-import {useRouter} from 'next/router';
+import {getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
-import {updatePost, deletePost, fetchPostById} from '@/app/api/firebaseApi';
+import {useRouter} from 'next/router';
+import {useEffect, useState} from 'react';
 
 export default function PostDetailPage() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function PostDetailPage() {
     const fetchSinglePost = async () => {
       try {
         if (postId && typeof postId === 'string') {
-          const postData = await fetchPostById(postId);
+          const postData = await getPostById(postId);
           setPost(postData);
         }
       } catch (error) {

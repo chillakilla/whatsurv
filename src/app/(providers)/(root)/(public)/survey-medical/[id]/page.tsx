@@ -1,6 +1,6 @@
 'use client';
 
-import {fetchPostById} from '@/app/api/firebaseApi';
+import {getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import {useParams} from 'next/navigation';
@@ -16,7 +16,7 @@ export default function SurveyMedicalDetailPage() {
     refetch,
   } = useQuery<Post | null, Error>({
     queryKey: ['post', id],
-    queryFn: () => fetchPostById(id as string),
+    queryFn: () => getPostById(id as string),
   });
 
   if (isLoading) {

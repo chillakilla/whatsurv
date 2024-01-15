@@ -1,6 +1,6 @@
 'use client';
 
-import {fetchPosts} from '@/app/api/firebaseApi';
+import {getPosts} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import {useRouter} from 'next/navigation';
@@ -15,7 +15,7 @@ export default function SurveyItPage() {
     refetch,
   } = useQuery<Post[]>({
     queryKey: ['surveyData'],
-    queryFn: fetchPosts,
+    queryFn: getPosts,
   });
 
   // Medical 카테고리만 필터링 하도록 설정
