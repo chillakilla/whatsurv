@@ -4,11 +4,11 @@ const Modal: React.FC<{isOpen: boolean; onClose: () => void}> = ({isOpen, onClos
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
   const options = ['김치찌개', '돼지국밥'];
 
-  const handleOptionChange = (index: number) => {
+  const onChangeOptionHandler = (index: number) => {
     setSelectedOptionIndex(index);
   };
 
-  const handleSubmit = () => {
+  const surveySubmitHandler = () => {
     if (selectedOptionIndex !== null) {
       console.log('선택된 옵션:', options[selectedOptionIndex]);
     }
@@ -35,14 +35,14 @@ const Modal: React.FC<{isOpen: boolean; onClose: () => void}> = ({isOpen, onClos
                       <input
                         type="radio"
                         checked={selectedOptionIndex === index}
-                        onChange={() => handleOptionChange(index)}
+                        onChange={() => onChangeOptionHandler(index)}
                       />
                       {option}
                     </label>
                   </li>
                 ))}
               </ul>
-              <button onClick={handleSubmit}>제출</button>
+              <button onClick={surveySubmitHandler}>제출</button>
             </div>
           </div>
         </div>
