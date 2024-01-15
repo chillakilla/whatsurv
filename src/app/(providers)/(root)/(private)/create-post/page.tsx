@@ -3,7 +3,6 @@
 import {PostInput, addPost, getPosts, uploadImageToStorage} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
-import {Timestamp} from 'firebase/firestore';
 import React, {useState} from 'react';
 import PostForm from './_components/PostForm';
 
@@ -25,8 +24,8 @@ export default function PostPage() {
     likes: 0,
     category: '',
     requirements: '',
-    deadlineDate: '',
-    participationDate: '',
+    deadlineDate: new Date(),
+    participationDate: new Date(),
     rewards: 0,
   });
 
@@ -83,10 +82,10 @@ export default function PostPage() {
         likes: formData.likes,
         category: formData.category,
         requirements: formData.requirements,
-        deadlineDate: new Date(formData.deadlineDate),
-        participationDate: new Date(formData.participationDate),
+        deadlineDate: formData.deadlineDate,
+        participationDate: formData.participationDate,
         rewards: formData.rewards,
-        createdAt: Timestamp.now(),
+        createdAt: new Date(),
         views: 0,
       };
 
@@ -98,8 +97,8 @@ export default function PostPage() {
         likes: 0,
         category: '',
         requirements: '',
-        deadlineDate: '',
-        participationDate: '',
+        deadlineDate: new Date(),
+        participationDate: new Date(),
         rewards: 0,
       });
       refetch();
