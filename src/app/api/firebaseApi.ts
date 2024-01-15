@@ -56,18 +56,17 @@ export const getPosts = async (): Promise<Post[]> => {
 export const getPostById = async (postId: string): Promise<Post | null> => {
   try {
     const postRef = doc(db, 'posts', postId);
-    const postDoc: DocumentSnapshot<DocumentData> = await getDoc(postRef);
+    const postSnapshot: DocumentSnapshot = await getDoc(postRef);
 
-    if (postDoc.exists()) {
-      const postData: Post = {id: postDoc.id, ...(postDoc.data() as any)} as Post;
-      return postData;
+    if (postSnapshot.exists()) {
+      return postSnapshot.data() as Post;
     } else {
-      console.error('게시글을 찾을 수 없습니다.');
+      console.error(`Post with ID ${postId} does not exist.`);
       return null;
     }
   } catch (error) {
-    console.error('에러', error);
-    throw new Error('게시글을 불러오는 것에 실패했습니다.');
+    console.error('Error fetching post by ID:', error);
+    throw new Error('Failed to fetch post data.');
   }
 };
 
