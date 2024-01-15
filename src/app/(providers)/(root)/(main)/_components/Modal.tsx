@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 
 const Modal: React.FC<{isOpen: boolean; onClose: () => void}> = ({isOpen, onClose}) => {
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
+  const [optionCounts, setOptionCounts] = useState<number[]>(Array.from({length: 2}, () => 0)); // 초기 카운트 0으로 설정
   const options = ['김치찌개', '돼지국밥'];
 
   const onChangeOptionHandler = (index: number) => {
@@ -10,6 +11,10 @@ const Modal: React.FC<{isOpen: boolean; onClose: () => void}> = ({isOpen, onClos
 
   const surveySubmitHandler = () => {
     if (selectedOptionIndex !== null) {
+      const updatedCounts = [...optionCounts];
+      updatedCounts[selectedOptionIndex] += 1;
+      setOptionCounts(updatedCounts);
+
       console.log('선택된 옵션:', options[selectedOptionIndex]);
     }
 
@@ -37,7 +42,7 @@ const Modal: React.FC<{isOpen: boolean; onClose: () => void}> = ({isOpen, onClos
                         checked={selectedOptionIndex === index}
                         onChange={() => onChangeOptionHandler(index)}
                       />
-                      {option}
+                      {option} - {optionCounts[index]} 회
                     </label>
                   </li>
                 ))}
