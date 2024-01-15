@@ -30,6 +30,12 @@ const AuthPage: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
   const {data: user, isFetching} = useAuthStatus();
+  //로그인 관련 유효성 검사할때 필요한 상태
+  const [emailCheck, setEmailCheck] = useState<string>('');
+  const [passwordCheck, setPasswordCheck] = useState<string>('');
+  // 정규표현식 이메일과 비밀번호 유효성검사
+  const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+  const passwordValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
 
   useEffect(() => {
     // 사용자의 인증 상태가 확인되면 로딩 상태를 종료합니다.
@@ -38,9 +44,36 @@ const AuthPage: React.FC = () => {
     }
   }, [isFetching]);
 
+  const validateInput = () => {
+    let isValid = true;
+    setEmailCheck('');
+    setPasswordCheck('');
+
+    // 이메일 유효성 검사
+    if (!email) {
+      setEmailCheck('이메일을 입력해주세요.');
+      isValid = false;
+    } else if (!emailValidation.test(email)) {
+      setEmailCheck('유효한 이메일 형식이 아닙니다');
+      isValid = false;
+    }
+
+    // 비밀번호 유효성 검사
+    if (!password) {
+      setPasswordCheck('비밀번호를 입력해주세요.');
+      isValid = false;
+    } else if (!passwordValidation.test(password)) {
+      setPasswordCheck('비밀번호는 8자 이상, 숫자 및 특수문자를 포함해야 합니다.');
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
   // 로그인 버튼 클릭 시 실행되는 함수
   const clickLoginHandler = async (event: FormEvent) => {
     event.preventDefault();
+    if (!validateInput()) return;
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert('로그인 성공!');
@@ -59,9 +92,9 @@ const AuthPage: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    return <div>로딩 중...</div>; // 로딩 인디케이터 표시
-  }
+  // if (isLoading) {
+  //   return <div>로딩 중...</div>; // 로딩 인디케이터 표시
+  // }
 
   if (user) {
     return (
@@ -83,7 +116,9 @@ const AuthPage: React.FC = () => {
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
+        {emailCheck && <p className="text-red-500">{emailCheck}</p>}
         <Input type="password" label="비밀번호" value={password} onChange={e => setPassword(e.target.value)} />
+        {passwordCheck && <p className="text-red-500">{passwordCheck}</p>}
         <Button className="mr-[20px] mt-[20px]">비밀번호 재설정</Button>
         <Button>
           <Link href="/join">회원가입</Link>
