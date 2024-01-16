@@ -4,6 +4,7 @@ import {Button, Input} from '@nextui-org/react';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {
   AuthError,
+  GithubAuthProvider,
   GoogleAuthProvider,
   User,
   browserSessionPersistence,
@@ -79,6 +80,34 @@ const AuthPage: React.FC = () => {
       alert('Google 로그인 성공!');
     } catch (error) {
       console.error('Google 로그인 실패:', error);
+    }
+  };
+
+  // GitHub 로그인 함수
+  const githubLogin = async () => {
+    try {
+      await setPersistence(auth, browserSessionPersistence); // 세션 지속성 설정
+      const provider = new GithubAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // 이메일이 없는 경우, 대체할 값을 사용
+      const replaceEmail = user.email || `${user.uid}@no-email.com`;
+
+      // Firestore에 저장할 사용자 정보
+      const userData = {
+        nickname: user.displayName || email.split('@')[0], // GitHub username 또는 이메일을 사용
+        email: replaceEmail,
+        //생년월일은 초기에 빈 값으로 설정
+        birthdate: '',
+      };
+
+      // 사용자 정보 저장
+      await setDoc(doc(db, 'users', user.uid), userData);
+
+      alert('GitHub 로그인 성공!');
+    } catch (error) {
+      console.error('GitHub 로그인 실패:', error);
     }
   };
 
@@ -177,6 +206,9 @@ const AuthPage: React.FC = () => {
         {loginError && <p className="text-red-500">{loginError}</p>}
         <Button onClick={googleLogin} className="mt-[20px] w-full">
           구글로 로그인하기
+        </Button>
+        <Button onClick={githubLogin} className="mt-[20px] w-full">
+          Github로 로그인하기
         </Button>
         <Button className="mr-[20px] mt-[20px]">비밀번호 재설정</Button>
         <Button>
