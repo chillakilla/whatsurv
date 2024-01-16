@@ -24,8 +24,8 @@ import {
   signOut,
 } from 'firebase/auth';
 import {doc, setDoc} from 'firebase/firestore';
-import Link from 'next/link';
 import React, {FormEvent, useEffect, useState} from 'react';
+
 // 사용자 인증 상태 관리 Hook
 
 const useAuthStatus = () => {
@@ -63,6 +63,7 @@ const AuthPage: React.FC = () => {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
   useEffect(() => {
     // 사용자의 인증 상태가 -확인되면 로딩 상태를 종료합니다.
     if (!isFetching) {
@@ -221,35 +222,52 @@ const AuthPage: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-wrap justify-center">
+    <div style={{backgroundColor: '#F2F3F7'}} className="flex flex-wrap justify-center">
       <h3 className="text-center w-full text-2xl mt-[20px] mb-[20px] font-bold">로그인</h3>
-      <form onSubmit={clickLoginHandler}>
+      <form onSubmit={clickLoginHandler} className="relative">
         <Input
           type="email"
-          className="mb-[20px]"
-          label="이메일"
+          label="이메일을 입력해주세요."
           value={email}
+          placeholder="abcde@gmail.com"
+          variant="bordered"
+          labelPlacement="outside"
+          className="mb-[20px] bg-[#fff] rounded-xl"
           onChange={e => setEmail(e.target.value)}
         />
-        {emailCheck && <p className="text-red-500">{emailCheck}</p>}
-        <Input type="password" label="비밀번호" value={password} onChange={e => setPassword(e.target.value)} />
+        {emailCheck && <p className="text-red-500">{emailCheck}</p>}{' '}
+        <Button
+          onPress={onOpen}
+          className=" Class
+Properties
+translate-x-[13px] float-right bg-transparent text-xs text-[#0051FF]"
+        >
+          비밀번호를 잊으셨나요?
+        </Button>
+        <Input
+          type="password"
+          label="비밀번호를 입력해주세요."
+          variant="bordered"
+          labelPlacement="outside"
+          placeholder="숫자 및 특수문자 포함 8자"
+          value={password}
+          className="bg-[#fff] rounded-xl"
+          onChange={e => setPassword(e.target.value)}
+        />
         {passwordCheck && <p className="text-red-500">{passwordCheck}</p>}
         {loginError && <p className="text-red-500">{loginError}</p>}
-        <Button onClick={googleLogin} className="mt-[20px] w-full">
-          구글로 로그인하기
-        </Button>
-        <Button onClick={githubLogin} className="mt-[20px] w-full">
-          Github로 로그인하기
-        </Button>
-        <Button onPress={onOpen} className="mr-[20px] mt-[20px]">
-          비밀번호 재설정
-        </Button>
-        <Button>
-          <Link href="/join">회원가입</Link>
-        </Button>
-        <Button type="submit" className="mt-[20px] w-full">
+        <Button type="submit" className="mt-[20px] w-full bg-[#0051FF] font-bold text-white">
           로그인
         </Button>
+        <div className="text-center font-bold mt-[30px]">
+          <p>간편 로그인</p>
+          <Button onClick={googleLogin} className="h-[50px] mt-[20px] bg-transparent	">
+            <img src="/google_icon.svg" />
+          </Button>
+          <Button onClick={githubLogin} className="h-[50px] mt-[20px] bg-transparent	">
+            <img src="/github_icon.svg" />
+          </Button>
+        </div>
       </form>
 
       {/* 비밀번호 재설정 모달 */}
