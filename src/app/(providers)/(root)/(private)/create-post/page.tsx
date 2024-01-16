@@ -23,6 +23,7 @@ export default function PostPage() {
     imageUrl: '',
     likes: 0,
     category: '',
+    minorCategory: '',
     requirements: '',
     deadlineDate: new Date(),
     participationDate: new Date(),
@@ -92,6 +93,7 @@ export default function PostPage() {
         imageUrl: '',
         likes: 0,
         category: '',
+        minorCategory: '',
         requirements: '',
         deadlineDate: new Date(),
         participationDate: new Date(),
@@ -132,6 +134,7 @@ export default function PostPage() {
             setFormData(prevData => ({
               ...prevData,
               category: value,
+              minorCategory: value,
             }));
           }}
         />
