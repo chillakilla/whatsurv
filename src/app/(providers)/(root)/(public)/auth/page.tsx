@@ -1,6 +1,15 @@
 'use client';
 import {auth, db} from '@/firebase';
-import {Button, Input} from '@nextui-org/react';
+import {
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from '@nextui-org/react';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {
   AuthError,
@@ -8,6 +17,7 @@ import {
   GoogleAuthProvider,
   User,
   browserSessionPersistence,
+  sendPasswordResetEmail,
   setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -16,7 +26,6 @@ import {
 import {doc, setDoc} from 'firebase/firestore';
 import Link from 'next/link';
 import React, {FormEvent, useEffect, useState} from 'react';
-
 // 사용자 인증 상태 관리 Hook
 
 const useAuthStatus = () => {
@@ -50,12 +59,34 @@ const AuthPage: React.FC = () => {
   const passwordValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
   // 로그인 에러 메시지 상태
   const [loginError, setLoginError] = useState<string>('');
+  // 비밀번호 모달 상태
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
   useEffect(() => {
     // 사용자의 인증 상태가 -확인되면 로딩 상태를 종료합니다.
     if (!isFetching) {
       setIsLoading(false);
     }
   }, [isFetching]);
+
+  // 비밀번호 재설정 모달 열기
+  const openResetModal = () => setIsResetModalOpen(true);
+
+  // 비밀번호 재설정 모달 닫기
+  const closeResetModal = () => setIsResetModalOpen(false);
+
+  // 비밀번호 재설정 로직
+  const handlePasswordReset = async () => {
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
+      alert('비밀번호 재설정 이메일이 발송되었습니다. 이메일을 확인해 주세요.');
+      closeResetModal();
+    } catch (error) {
+      console.error('비밀번호 재설정 에러:', error);
+      alert('비밀번호 재설정에 실패했습니다. 다시 시도해 주세요.');
+    }
+  };
 
   // Google 로그인 함수
 
@@ -210,7 +241,9 @@ const AuthPage: React.FC = () => {
         <Button onClick={githubLogin} className="mt-[20px] w-full">
           Github로 로그인하기
         </Button>
-        <Button className="mr-[20px] mt-[20px]">비밀번호 재설정</Button>
+        <Button onPress={onOpen} className="mr-[20px] mt-[20px]">
+          비밀번호 재설정
+        </Button>
         <Button>
           <Link href="/join">회원가입</Link>
         </Button>
@@ -218,6 +251,37 @@ const AuthPage: React.FC = () => {
           로그인
         </Button>
       </form>
+
+      {/* 비밀번호 재설정 모달 */}
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        classNames={{base: 'border-[#6697FF] bg-[#E5EEFF]'}}
+        size="md"
+        backdrop="opaque"
+      >
+        <ModalContent>
+          {onClose => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">비밀번호 찾기</ModalHeader>
+              <ModalBody>
+                <label htmlFor="resetEmail">가입 시 등록한 이메일을 입력해주세요.</label>
+                <Input
+                  size="lg"
+                  placeholder="abcde@gmail.com"
+                  value={resetEmail}
+                  onChange={e => setResetEmail(e.target.value)}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" className="w-full" onPress={handlePasswordReset}>
+                  비밀번호 찾기
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
