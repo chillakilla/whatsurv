@@ -10,15 +10,15 @@ interface LiteSurveyCreateModalProps {
 
 const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseModal}) => {
   const [title, setTitle] = useState('');
-  const [contents, setContents] = useState<string[]>([]); // Changed to an array
+  const [content, setContent] = useState<string[]>([]); // Changed to an array
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const onSubmitHandler = () => {
-    saveDataToFirebase(title, contents);
+    saveDataToFirebase(title, content);
     onCloseModal();
   };
 
-  const saveDataToFirebase = async (title: string, contents: string[]) => {
+  const saveDataToFirebase = async (title: string, content: string[]) => {
     try {
       const liteSurveyPostsCollection = collection(db, 'litesurveyposts');
 
@@ -26,7 +26,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseMod
 
       const docRef = await addDoc(liteSurveyPostsCollection, {
         title,
-        contents,
+        content,
         timestamp,
       });
 
@@ -45,11 +45,11 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseMod
   };
 
   const addContent = () => {
-    setContents(prevContents => [...prevContents, '']);
+    setContent(prevContents => [...prevContents, '']);
   };
 
   const updateContent = (index: number, value: string) => {
-    setContents(prevContents => {
+    setContent(prevContents => {
       const updatedContents = [...prevContents];
       updatedContents[index] = value;
       return updatedContents;
@@ -57,7 +57,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseMod
   };
 
   const removeContent = (index: number) => {
-    setContents(prevContents => prevContents.filter((_, i) => i !== index));
+    setContent(prevContents => prevContents.filter((_, i) => i !== index));
   };
 
   return (
@@ -72,10 +72,10 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseMod
             <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="border p-2" />
           </label>
 
-          {contents.map((contentEntry, index) => (
+          {content.map((contentsEntry, index) => (
             <div key={index} className="mb-4 flex">
               <input
-                value={contentEntry}
+                value={contentsEntry}
                 onChange={e => updateContent(index, e.target.value)}
                 className="border p-2 flex-grow"
               />

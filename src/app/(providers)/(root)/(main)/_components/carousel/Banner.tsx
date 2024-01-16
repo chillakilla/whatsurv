@@ -1,13 +1,15 @@
-import {Swiper, SwiperSlide} from 'swiper/react';
-import SwiperCore from 'swiper';
+'use client';
+
 import {useRef} from 'react';
+import SwiperCore from 'swiper';
+import {Swiper, SwiperSlide} from 'swiper/react';
 
 // Swiper styles
 import 'swiper/css';
-import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
-import {Pagination, Navigation} from 'swiper/modules';
+import {Navigation, Pagination} from 'swiper/modules';
 
 export default function Banner() {
   SwiperCore.use([Navigation, Pagination]);

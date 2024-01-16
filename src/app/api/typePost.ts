@@ -1,5 +1,3 @@
-import {Timestamp} from 'firebase/firestore';
-
 export type Post = {
   likes: number;
   views: number;
@@ -8,6 +6,7 @@ export type Post = {
   id: string;
   title: string;
   content: string;
+  contents: string[];
   imageUrl: string;
   category: string;
   requirements: string;
