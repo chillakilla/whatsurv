@@ -64,6 +64,14 @@ const AuthPage: React.FC = () => {
   const [resetEmail, setResetEmail] = useState('');
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
+  // 비밀번호 눈 모양 표시 상태
+  const [showPassword, setShowPassword] = useState(false);
+
+  // 비밀번호 표시 토글 함수
+  const clickTogglePasswordhandler = () => {
+    setShowPassword(!showPassword);
+  };
+
   useEffect(() => {
     // 사용자의 인증 상태가 -확인되면 로딩 상태를 종료합니다.
     if (!isFetching) {
@@ -245,7 +253,7 @@ translate-x-[13px] float-right bg-transparent text-xs text-[#0051FF]"
           비밀번호를 잊으셨나요?
         </Button>
         <Input
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           label="비밀번호를 입력해주세요."
           variant="bordered"
           labelPlacement="outside"
@@ -254,6 +262,12 @@ translate-x-[13px] float-right bg-transparent text-xs text-[#0051FF]"
           className="bg-[#fff] rounded-xl"
           onChange={e => setPassword(e.target.value)}
         />
+        <span
+          onClick={clickTogglePasswordhandler}
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 cursor-pointer"
+        >
+          {showPassword ? <img src="/eye_off.svg" /> : <img src="/eye_on.svg" />}
+        </span>
         {passwordCheck && <p className="text-red-500">{passwordCheck}</p>}
         {loginError && <p className="text-red-500">{loginError}</p>}
         <Button type="submit" className="mt-[20px] w-full bg-[#0051FF] font-bold text-white">
