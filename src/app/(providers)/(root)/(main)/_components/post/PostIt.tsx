@@ -5,6 +5,7 @@ import {IoEyeOutline} from 'react-icons/io5';
 import {FaRegHeart} from 'react-icons/fa';
 import React from 'react';
 import Link from 'next/link';
+import SortingPost from './SortingPost';
 
 export default function PostIt() {
   const target = 'IT';
@@ -31,11 +32,9 @@ export default function PostIt() {
   const hasPosts = posts.some(post => post.category === target);
   return (
     <div className="my-20">
-      <div className="title-box flex justify-between items-center gap-12 mb-4">
+      <div className="title-box flex-col items-center mb-4">
         <h2 className="font-bold text-xl w-[80px] ">IT 전체</h2>
-        <Link href="/survey-it" className="font-bold text-lg text-[#0051FF]">
-          더보기
-        </Link>
+        <SortingPost />
       </div>
       <div className="post-container grid grid-cols-4 gap-4">
         {hasPosts ? (

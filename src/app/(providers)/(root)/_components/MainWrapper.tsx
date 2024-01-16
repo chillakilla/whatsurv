@@ -1,9 +1,10 @@
 import React from 'react';
+import FloatingBtn from '../(main)/_components/FloatingBtn';
 
 type Props = {
   children: React.ReactNode;
 };
 
 export default function MainWrapper({children}: Props) {
-  return <div className="w-[88.5rem] m-auto mb-20">{children}</div>;
+  return <div>{children}</div>;
 }

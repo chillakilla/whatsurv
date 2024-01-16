@@ -1,10 +1,13 @@
 'use client';
-
 import {getPosts} from '@/app/api/firebaseApi';
+import {useState} from 'react';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import {useRouter} from 'next/navigation';
 import SortingPost from '../../(main)/_components/post/SortingPost';
+import Banner from '../../(main)/_components/carousel/Banner';
+import Paging from '../../(main)/_components/paging/Paging';
+import filterData from '../../(main)/_components/post/filterData';
 
 export default function SurveyItPage() {
   const router = useRouter();
@@ -21,12 +24,23 @@ export default function SurveyItPage() {
 
   // It 카테고리만 필터링 하도록 설정
   const selectedCategory = 'IT';
-
   const filteredSurveyData = surveyData?.filter(post => post.category === selectedCategory) || [];
 
+  // 페이지네이션
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const contentPerPage = 8;
+
+  const indexOfLastContent = currentPage * contentPerPage;
+  const indexOfFirstContent = indexOfLastContent - contentPerPage;
+  const currentContents = filteredSurveyData.slice(0).reverse().slice(indexOfFirstContent, indexOfLastContent);
+
+  console.log('currentContents: ', currentContents);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">IT 설문조사</h1>
+    <div className="container p-4 mt-[50px]">
+      <Banner />
+      <h1 className="text-lg font-bold mb-2">인기 서베이</h1>
       <SortingPost />
       {isLoading && <div>Loading...</div>}
       {isError && <div>Error fetching survey data</div>}
@@ -48,6 +62,14 @@ export default function SurveyItPage() {
       ) : (
         <div>설문조사 목록이 없습니다.</div>
       )}
+      <div className="pagination-container flex justify-center mt-6">
+        <Paging
+          currentPage={currentPage}
+          totalContents={filteredSurveyData.length}
+          paginate={paginate}
+          contentsPerPage={contentPerPage}
+        />
+      </div>
     </div>
   );
 }

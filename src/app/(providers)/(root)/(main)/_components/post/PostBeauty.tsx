@@ -34,8 +34,8 @@ export default function PostBeauty() {
   return (
     <div className="my-20">
       <div className="title-box flex justify-between items-center gap-12 mb-4">
-        <h2 className="font-bold text-xl w-[150px] ">Beauty 전체</h2>
-        <Link href="/survey-beauty" className="font-bold text-lg text-[#0051FF]">
+        <h2 className="font-bold text-xl w-[150px] ">뷰티</h2>
+        <Link href="/survey-beauty" className="font-bold text-lg text-black">
           더보기
         </Link>
       </div>

@@ -32,13 +32,10 @@ body > div {
   height: 100vh;
 }
 
-.hide-nav {
-  transform: translateY(100%);
-}
-
 .swiper-wrapper {
   width: 100%;
   display: -webkit-inline-box;
+  position: relative;
 }
 
 .banner-swiper {
@@ -46,11 +43,11 @@ body > div {
   height: 200px;
   margin: 100px 0;
   background-color: #eee;
+  z-index: -1;
 }
 .popular-swiper {
   width: 100%;
   margin: 10px 0 100px 0;
-  position: relative;
 }
 
 .swiper-slide {
@@ -67,13 +64,24 @@ body > div {
 }
 
 .swiper-button-prev::after {
+  display: none;
+}
+.swiper-button-next::after {
+  display: none;
+}
+.swiper-button-prev {
+  background: url(/img/arrow-left-s-line.png) no-repeat;
+  background-size: 50% auto;
+  background-position: center;
+  left: -100px;
+  top: 0;
   position: absolute;
-  color: #ddd;
 }
 
 .swiper-button-next {
-  right: 10px;
-  top: 10px;
+  background: url(/img/arrow-right-s-line.png) no-repeat;
+  background-size: 50% auto;
+  background-position: center;
 }
 
 .like-button > svg {
@@ -95,4 +103,11 @@ body > div {
   width: 22px;
   height: 22px;
   color: #818490;
+}
+
+.currnet-page {
+  background-color: #0051ff;
+  width: 24px;
+  height: 24px;
+  color: white;
 }

@@ -1,10 +1,9 @@
 import Link from 'next/link';
-import Tab from './Tab';
 
 export default function Header() {
   return (
-    <div>
-      <header className="fixed top-0 w-full z-index-2">
+    <>
+      <header>
         <section className="flex justify-between items-center border-b-1 bg-white ">
           <div className="flex items-center justify-center w-80">
             <Link href="/">
@@ -21,7 +20,6 @@ export default function Header() {
           </div>
         </section>
       </header>
-      <Tab />
-    </div>
+    </>
   );
 }
