@@ -6,10 +6,10 @@ interface ResultModalProps {
   litepost: litePost;
   contents: string[];
   counts: number[];
-  onClose: () => void;
+  onClickResultModalCloseHandler: () => void;
 }
 
-const ResultModal: React.FC<ResultModalProps> = ({litepost, contents, counts, onClose}) => {
+const ResultModal: React.FC<ResultModalProps> = ({litepost, contents, counts, onClickResultModalCloseHandler}) => {
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-0 flex items-center justify-center">
       <div className="bg-white w-1/2 p-8 rounded-lg">
@@ -36,7 +36,7 @@ const ResultModal: React.FC<ResultModalProps> = ({litepost, contents, counts, on
         <div className="flex justify-end mt-4">
           <button
             className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring focus:border-red-300"
-            onClick={onClose}
+            onClick={onClickResultModalCloseHandler}
           >
             닫기
           </button>

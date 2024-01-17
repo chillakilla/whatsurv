@@ -6,17 +6,17 @@ import {addDoc, collection, serverTimestamp} from 'firebase/firestore';
 import React, {useState} from 'react';
 
 interface LiteSurveyCreateModalProps {
-  onCloseModal: () => void;
+  onCloseCreateModal: () => void;
 }
 
-const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseModal}) => {
+const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCreateModal}) => {
   const [title, setTitle] = useState('');
   const [contents, setContents] = useState<string[]>([]); // Changed to an array
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
   const onSubmitHandler = () => {
     saveDataToFirebase(title, contents, selectedImages);
-    onCloseModal();
+    onCloseCreateModal();
   };
 
   const saveDataToFirebase = async (title: string, contents: string[], images: File[]) => {
@@ -120,7 +120,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseMod
             </button>
             <span
               className="close self-end bg-red-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-              onClick={onCloseModal}
+              onClick={onCloseCreateModal}
             >
               닫기
             </span>

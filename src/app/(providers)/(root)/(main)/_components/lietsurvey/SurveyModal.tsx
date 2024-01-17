@@ -18,14 +18,14 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
   const [contentsCounts, setContentsCounts] = useState<number[]>(new Array(contents.length).fill(0));
   const [showResultModal, setShowResultModal] = useState(false);
 
-  const handleContentClick = (index: number) => {
+  const onClickContentsHandler = (index: number) => {
     const newCounts = [...contentsCounts];
     newCounts[index] += 1;
     setSelectedContentIndex(index);
     setContentsCounts(newCounts);
   };
 
-  const handleJoinButtonClick = async () => {
+  const onClickSurveySubmitHandler = async () => {
     try {
       if (selectedContentIndex !== null) {
         const contentId = litepost.id; // 게시물 ID 또는 다른 고유 식별자
@@ -64,7 +64,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
     }
   };
 
-  const handleResultModalClose = () => {
+  const resultModalClosehandler = () => {
     setShowResultModal(false);
     onClose();
   };
@@ -90,7 +90,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
               className={`flex items-center mb-2 cursor-pointer ${
                 selectedContentIndex === index ? 'text-blue-500 underline' : 'text-gray-700'
               }`}
-              onClick={() => handleContentClick(index)}
+              onClick={() => onClickContentsHandler(index)}
             >
               <div
                 className={`w-4 h-4 rounded-full border border-blue-500 mr-2 ${
@@ -104,7 +104,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
         <div className="flex justify-end mt-4">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2 hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
-            onClick={handleJoinButtonClick}
+            onClick={onClickSurveySubmitHandler}
           >
             참여하기
           </button>
@@ -128,7 +128,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
               litepost={litepost}
               contents={contents}
               counts={contentsCounts}
-              onClose={handleResultModalClose}
+              onClickResultModalCloseHandler={resultModalClosehandler}
             />
           )}
         </div>

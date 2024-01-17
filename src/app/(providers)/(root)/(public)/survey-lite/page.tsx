@@ -9,7 +9,7 @@ import {useState} from 'react';
 import {FaRegHeart} from 'react-icons/fa';
 import Banner from '../../(main)/_components/carousel/Banner';
 import LiteSurveyCreateModal from '../../(main)/_components/lietsurvey/CreatModal';
-import LiteSurveyModal from '../../(main)/_components/lietsurvey/Modal';
+import LiteSurveyModal from '../../(main)/_components/lietsurvey/SurveyModal';
 
 export default function page() {
   const router = useRouter();
@@ -17,11 +17,11 @@ export default function page() {
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const handlePostClick = (litepost: litePost) => {
+  const onClickPosthandler = (litepost: litePost) => {
     setSelectedPost(litepost);
   };
 
-  const handleCloseModal = () => {
+  const onCloseModalHandler = () => {
     setSelectedPost(null);
   };
 
@@ -51,7 +51,7 @@ export default function page() {
             <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {liteSurveyData?.map(litepost => (
                 <li key={litepost.id} className="h-36 border-2 border-[#eee] rounded-xl p-2">
-                  <a onClick={() => handlePostClick(litepost)} className="cursor-pointer">
+                  <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
                     <div className="category-box flex justify-between items-center">
                       <p className="bg-[#0051FF] text-[#D6FF00] w-12 p-1 text-center rounded-full font-semibold text-xs">
                         Lite
@@ -82,12 +82,12 @@ export default function page() {
               litepost={selectedPost}
               contents={selectedPost.contents}
               images={selectedPost.images}
-              onClose={handleCloseModal}
+              onClose={onCloseModalHandler}
             />
           )}
         </div>
         <Button onClick={onClickCreateModalOpen}>{'작성하기'}</Button>
-        {isCreateModalOpen && <LiteSurveyCreateModal onCloseModal={() => setIsCreateModalOpen(false)} />}
+        {isCreateModalOpen && <LiteSurveyCreateModal onCloseCreateModal={() => setIsCreateModalOpen(false)} />}
       </div>
     </>
   );
