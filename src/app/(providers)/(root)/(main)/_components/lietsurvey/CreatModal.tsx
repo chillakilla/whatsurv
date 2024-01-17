@@ -11,7 +11,7 @@ interface LiteSurveyCreateModalProps {
 const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseModal}) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState<string[]>([]); // Changed to an array
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
   const onSubmitHandler = () => {
     saveDataToFirebase(title, content);
@@ -27,6 +27,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseMod
       const docRef = await addDoc(liteSurveyPostsCollection, {
         title,
         content,
+        images: selectedImages,
         timestamp,
       });
 
@@ -40,7 +41,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseMod
   const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      setSelectedImage(files[0]);
+      setSelectedImages([...selectedImages, ...Array.from(files)]);
     }
   };
 
@@ -60,18 +61,32 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseMod
     setContent(prevContents => prevContents.filter((_, i) => i !== index));
   };
 
+  const removeImage = (index: number) => {
+    setSelectedImages(prevImages => prevImages.filter((_, i) => i !== index));
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
       <div className="relative bg-white rounded-lg w-1/2 p-8 flex flex-col">
-        <span className="close self-end" onClick={onCloseModal}>
-          &times;
-        </span>
         <div className="modal-content flex flex-col">
+          <div className="mb-4 flex items-center">
+            {selectedImages.map((image, index) => (
+              <div key={index}>
+                <img src={URL.createObjectURL(image)} alt={`Image${index}`} className="w-16 h-16 object-cover mr-2" />
+                <button onClick={() => removeImage(index)} className="bg-red-500 text-white px-2 rounded">
+                  삭제
+                </button>
+              </div>
+            ))}
+          </div>
+          <label className="mb-4 flex items-center">
+            Image:
+            <input type="file" accept="image/*" onChange={onImageChange} className="border p-2 ml-2" />
+          </label>
           <label className="mb-4">
             Title:
             <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="border p-2" />
           </label>
-
           {content.map((contentsEntry, index) => (
             <div key={index} className="mb-4 flex">
               <input
@@ -84,20 +99,21 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseMod
               </button>
             </div>
           ))}
-
-          <button onClick={addContent} className="mb-4 bg-green-500 text-white px-2 rounded">
+          <button onClick={addContent} className="mb-4 bg-blue-500 text-white px-2 rounded w-[250px]">
             내용추가
           </button>
-
-          <label className="mb-4">
-            Image:
-            <input type="file" accept="image/*" onChange={onImageChange} className="border p-2" />
-          </label>
-
           {/* Submit Button */}
-          <button onClick={onSubmitHandler} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
-            Submit
-          </button>
+          <div className="flex items-center justify-center gap-3">
+            <button onClick={onSubmitHandler} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+              Submit
+            </button>
+            <span
+              className="close self-end bg-red-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+              onClick={onCloseModal}
+            >
+              닫기
+            </span>
+          </div>
         </div>
       </div>
     </div>

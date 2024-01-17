@@ -53,7 +53,9 @@ export default function page() {
                 <li key={post.id} className="h-36 border-2 border-[#eee] rounded-xl p-2">
                   <a onClick={() => handlePostClick(post)} className="cursor-pointer">
                     <div className="category-box flex justify-between items-center">
-                      <p className="bg-[#0051FF] text-[#D6FF00] w-12 p-1 text-center rounded-full font-semibold text-xs"></p>
+                      <p className="bg-[#0051FF] text-[#D6FF00] w-12 p-1 text-center rounded-full font-semibold text-xs">
+                        Lite
+                      </p>
                       <Button
                         isIconOnly
                         aria-label="Like"
