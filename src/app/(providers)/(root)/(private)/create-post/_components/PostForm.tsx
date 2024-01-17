@@ -195,12 +195,34 @@ export default function PostForm({
             />
           </div>
           <div className="flex justify-end items-start self-stretch gap-6">
-            <button className="w-[15.625rem] h-[3rem] mt-[10px] border-[1.4px] bg-white border-sky-500 rounded-[25rem]">
+            <button
+              className="
+            w-[15.625rem] 
+            h-[3rem] 
+            mt-[10px] 
+            border-[1.4px] 
+            bg-white 
+            border-sky-500 
+            rounded-[25rem] 
+            hover:bg-[#0051FF]
+            hover:text-white
+            "
+            >
               취소
             </button>
             <button
               type="submit"
-              className="w-[15.625rem] h-[3rem] mt-[10px] border-[1.4px] bg-[#0051FF] rounded-[25rem] text-white"
+              className="
+              w-[15.625rem] 
+              h-[3rem] 
+              mt-[10px] 
+              border-[1.4px] 
+              bg-[#0051FF] 
+              rounded-[25rem] 
+              text-white
+              hover:bg-white
+              hover:text-[#0051FF]
+              hover:border-none"
             >
               등록
             </button>
