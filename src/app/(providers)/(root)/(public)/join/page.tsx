@@ -335,8 +335,8 @@ const JoinPage = () => {
     <div>
       {/* 프로그래스 바 */}
       <div className="progress-bar">
-        <div className="bg-gray-200 w-full h-4">
-          <div className="bg-blue-500 h-4" style={progressBarStyle}></div>
+        <div className="bg-gray-200 w-full h-4 rounded-lg">
+          <div className="bg-blue-500 h-4 rounded-lg" style={progressBarStyle}></div>
         </div>
       </div>
       <form onSubmit={clickJoinHandler} className="w-2/3 flex flex-wrap justify-center m-auto">
