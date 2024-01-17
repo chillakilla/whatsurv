@@ -9,10 +9,14 @@ export type Post = {
   contents: string[];
   imageUrl: string;
   category: string;
-  requirements: string;
+
+  sexType: string;
+  ageGroup: string;
+  researchType: string;
+  researchLocation: string;
+  researchTime: string;
 
   createdAt: Date;
   updatedAt: Date;
   deadlineDate: Date;
-  participationDate: Date;
 };

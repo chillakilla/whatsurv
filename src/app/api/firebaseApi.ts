@@ -38,11 +38,14 @@ export const getPosts = async (): Promise<Post[]> => {
         category: data?.category || '',
         userId: data?.userId || '',
         userNickname: data?.userNickname || '',
-        requirements: data?.requirements || '',
+        ageGroup: data?.ageGroup || '',
+        sexType: data?.sexType || '',
+        researchLocation: data?.researchLocation || '',
+        researchType: data?.researchType || '',
+        researchTime: data?.researchTime || '',
         createdAt: data?.createdAt?.toDate() || new Date(),
         updatedAt: data?.updatedAt?.toDate() || new Date(),
         deadlineDate: data?.deadlineDate || null,
-        participationDate: data?.participationDate || null,
       };
     });
 
