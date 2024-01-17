@@ -1,7 +1,7 @@
 'use client';
 
 import {getLiteSurveyPosts} from '@/app/api/firebaseApi';
-import {Post} from '@/app/api/typePost';
+import {litePost} from '@/app/api/typePost';
 import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {useRouter} from 'next/navigation';
@@ -14,11 +14,11 @@ import LiteSurveyModal from '../../(main)/_components/lietsurvey/Modal';
 export default function page() {
   const router = useRouter();
 
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const handlePostClick = (post: Post) => {
-    setSelectedPost(post);
+  const handlePostClick = (litepost: litePost) => {
+    setSelectedPost(litepost);
   };
 
   const handleCloseModal = () => {
@@ -34,7 +34,7 @@ export default function page() {
     isLoading,
     isError,
     refetch,
-  } = useQuery<Post[]>({
+  } = useQuery<litePost[]>({
     queryKey: ['surveyData'],
     queryFn: getLiteSurveyPosts,
   });
@@ -49,9 +49,9 @@ export default function page() {
           {isError && <div>Error fetching survey data</div>}
           {liteSurveyData && liteSurveyData.length > 0 ? (
             <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {liteSurveyData?.map(post => (
-                <li key={post.id} className="h-36 border-2 border-[#eee] rounded-xl p-2">
-                  <a onClick={() => handlePostClick(post)} className="cursor-pointer">
+              {liteSurveyData?.map(litepost => (
+                <li key={litepost.id} className="h-36 border-2 border-[#eee] rounded-xl p-2">
+                  <a onClick={() => handlePostClick(litepost)} className="cursor-pointer">
                     <div className="category-box flex justify-between items-center">
                       <p className="bg-[#0051FF] text-[#D6FF00] w-12 p-1 text-center rounded-full font-semibold text-xs">
                         Lite
@@ -67,9 +67,9 @@ export default function page() {
                     <p className="text-xs text-[#666] my-">
                       {' '}
                       작성일 |{' '}
-                      {post.createdAt.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})}
+                      {litepost.createdAt.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})}
                     </p>
-                    <p className="text-sm font-bold">{post.title}</p>
+                    <p className="text-sm font-bold">{litepost.title}</p>
                   </a>
                 </li>
               ))}
@@ -79,7 +79,7 @@ export default function page() {
           )}
           {selectedPost && (
             <LiteSurveyModal
-              post={selectedPost}
+              litepost={selectedPost}
               contents={selectedPost.contents}
               images={selectedPost.images}
               onClose={handleCloseModal}
