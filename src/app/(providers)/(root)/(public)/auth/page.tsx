@@ -25,6 +25,7 @@ import {
 } from 'firebase/auth';
 import {doc, setDoc} from 'firebase/firestore';
 import React, {FormEvent, useEffect, useState} from 'react';
+import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai';
 
 // 사용자 인증 상태 관리 Hook
 
@@ -231,8 +232,8 @@ const AuthPage: React.FC = () => {
 
   return (
     <div style={{backgroundColor: '#F2F3F7'}} className="flex flex-wrap justify-center">
-      <h3 className="text-center w-full text-2xl mt-[20px] mb-[20px] font-bold">로그인</h3>
-      <form onSubmit={clickLoginHandler} className="relative">
+      <form onSubmit={clickLoginHandler} className="relative ">
+        <h3 className="w-full mx-auto text-2xl mt-[20px] mb-[40px]  font-bold">로그인</h3>
         <Input
           type="email"
           label="이메일을 입력해주세요."
@@ -264,9 +265,9 @@ translate-x-[13px] float-right bg-transparent text-xs text-[#0051FF]"
         />
         <span
           onClick={clickTogglePasswordhandler}
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 cursor-pointer"
+          className="absolute inset-y-0 right-0 pr-3 flex  items-center  leading-5 cursor-pointer"
         >
-          {showPassword ? <img src="/eye_off.svg" /> : <img src="/eye_on.svg" />}
+          {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
         </span>
         {passwordCheck && <p className="text-red-500">{passwordCheck}</p>}
         {loginError && <p className="text-red-500">{loginError}</p>}
