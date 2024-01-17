@@ -14,7 +14,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
-import {Post} from './typePost';
+import {Post, litePost} from './typePost';
 
 // 3가지의 인풋 영역을 제외하기 위한 Post 의 얕은 복사본
 export type PostInput = Omit<Post, 'id' | 'updatedAt' | 'views'>;
@@ -126,38 +126,23 @@ export const uploadImageToStorage = async (file: File): Promise<string> => {
   return downloadUrl;
 };
 
-export const getLiteSurveyPosts = async (): Promise<Post[]> => {
+export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
   try {
     const postsQuery = query(collection(db, 'litesurveyposts'));
     const snapshot: QuerySnapshot<DocumentData> = await getDocs(postsQuery);
-    const posts: Post[] = snapshot.docs.map((doc: DocumentSnapshot<DocumentData>) => {
+    const liteposts: litePost[] = snapshot.docs.map((doc: DocumentSnapshot<DocumentData>) => {
       const data = doc.data();
       return {
         id: doc.id,
-        likes: data?.likes || 0,
         counts: data?.counts || 0,
-        views: data?.views || 0,
-        rewards: data?.rewards || 0,
         title: data?.title || '',
-        content: data?.content || '',
         contents: data?.contents || '',
-        imageUrl: data?.imageUrl || '',
         images: data?.images || '',
-        category: data?.category || '',
-        userId: data?.userId || '',
-        userNickname: data?.userNickname || '',
-        ageGroup: data?.ageGroup || '',
-        sexType: data?.sexType || '',
-        researchLocation: data?.researchLocation || '',
-        researchType: data?.researchType || '',
-        researchTime: data?.researchTime || '',
         createdAt: data?.createdAt?.toDate() || new Date(),
-        updatedAt: data?.updatedAt?.toDate() || new Date(),
-        deadlineDate: data?.deadlineDate || null,
       };
     });
 
-    return posts;
+    return liteposts;
   } catch (error) {
     console.error('에러', error);
     throw new Error('게시글을 불러오는 것에 실패했습니다.');
