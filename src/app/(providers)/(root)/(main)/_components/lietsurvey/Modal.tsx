@@ -66,6 +66,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
 
   const handleResultModalClose = () => {
     setShowResultModal(false);
+    onClose();
   };
 
   return (

@@ -11,7 +11,7 @@ interface ResultModalProps {
 
 const ResultModal: React.FC<ResultModalProps> = ({litepost, contents, counts, onClose}) => {
   return (
-    <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-0 flex items-center justify-center">
       <div className="bg-white w-1/2 p-8 rounded-lg">
         <h2 className="text-2xl font-bold mb-4">{litepost.title}</h2>
         <div className="mb-4 flex justify-center gap-4">
@@ -25,11 +25,11 @@ const ResultModal: React.FC<ResultModalProps> = ({litepost, contents, counts, on
           ))}
         </div>
         <div className="mb-4">
-          <div className="font-bold mb-2">Contents and Counts:</div>
+          <div className="font-bold mb-2"></div>
           {litepost.contents.map((item, index) => (
             <div key={index} className="flex items-center mb-2">
               <span className="text-gray-700 mr-2">{item}:</span>
-              <span className="text-blue-500 font-bold">{counts[index]}</span>
+              <span className="text-blue-500 font-bold">{litepost.counts[index]}</span>
             </div>
           ))}
         </div>
