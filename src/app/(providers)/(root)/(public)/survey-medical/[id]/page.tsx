@@ -6,7 +6,6 @@ import {useQuery} from '@tanstack/react-query';
 import {useParams} from 'next/navigation';
 
 export default function SurveyMedicalDetailPage() {
-  // URL에서 'id' 매개변수를 가져옵니다.
   const {id} = useParams();
 
   const {
