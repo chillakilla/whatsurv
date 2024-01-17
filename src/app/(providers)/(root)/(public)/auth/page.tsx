@@ -27,6 +27,7 @@ import {doc, setDoc} from 'firebase/firestore';
 import React, {FormEvent, useEffect, useState} from 'react';
 import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai';
 
+import {MoonLoader} from 'react-spinners';
 // 사용자 인증 상태 관리 Hook
 
 const useAuthStatus = () => {
@@ -217,9 +218,17 @@ const AuthPage: React.FC = () => {
     }
   };
 
-  // if (isLoading) {
-  //   return <div>로딩 중...</div>; // 로딩 인디케이터 표시
-  // }
+  if (isLoading) {
+    return (
+      <div className="flex justify-center flex-wrap items-center overflow-y-hidden mt-[300px]">
+        <p>
+          <MoonLoader color="#0051FF" size={100} />
+        </p>
+
+        <p className="text-[#0051FF] w-full text-center mt-[30px]">잠시만 기다려 주세요..</p>
+      </div>
+    ); // 로딩 인디케이터 표시
+  }
 
   if (user) {
     return (
