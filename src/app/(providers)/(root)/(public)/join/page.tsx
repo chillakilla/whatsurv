@@ -252,7 +252,11 @@ const JoinPage = () => {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
               />
-              <Button onClick={checkEmailAvailability} className="bg-[#0051FF] ml-[5px] text-white translate-y-[11px]">
+              <Button
+                onClick={checkEmailAvailability}
+                size="lg"
+                className="bg-[#0051FF] ml-[5px] text-white translate-y-[11px]"
+              >
                 중복 확인
               </Button>
             </div>
@@ -260,6 +264,7 @@ const JoinPage = () => {
 
             <Button
               className="mt-[20px] w-full bg-[#0051FF] text-white"
+              size="lg"
               onClick={() => {
                 if (validateInput()) moveToNextStep();
               }}
@@ -292,6 +297,7 @@ const JoinPage = () => {
             {confirmPasswordCheck && <p className="text-red-500 text-center mt-2">{confirmPasswordCheck}</p>}
             <Button
               className="mt-[20px]  w-full bg-[#0051FF] text-white"
+              size="lg"
               onClick={() => {
                 if (validateInput()) moveToNextStep();
               }}
@@ -316,6 +322,7 @@ const JoinPage = () => {
             />
             {birthDateCheck && <p className="text-red-500 text-center mt-2">{birthDateCheck}</p>}
             <Button
+              size="lg"
               onClick={() => {
                 if (validateInput()) moveToNextStep();
               }}
@@ -342,6 +349,7 @@ const JoinPage = () => {
                     maxLength={10}
                   />
                   <Button
+                    size="lg"
                     onClick={checkNicknameAvailability}
                     className="bg-[#0051FF] ml-[5px] text-white translate-y-[11px]"
                   >
@@ -349,7 +357,12 @@ const JoinPage = () => {
                   </Button>
                 </div>
                 {nicknameCheck && <p className={`${nicknameValidationClass} text-center mt-2`}>{nicknameCheck}</p>}
-                <Button onClick={clickJoinHandler} className="mt-[20px]  w-full bg-[#0051FF] text-white" type="button">
+                <Button
+                  size="lg"
+                  onClick={clickJoinHandler}
+                  className="mt-[20px]  w-full bg-[#0051FF] text-white"
+                  type="button"
+                >
                   회원가입
                 </Button>
               </>
@@ -359,7 +372,7 @@ const JoinPage = () => {
         );
       case 5:
         return (
-          <div className="mt-[40px] w-[400px]">
+          <div className="mt-[40px] w-[400px] ">
             <div className="flex  flex-wrap justify-center">
               <p className=" w-full text-center">WhatSurv?에 오신 것을 환영합니다!</p>
 
@@ -369,6 +382,7 @@ const JoinPage = () => {
             <Button
               className="mt-[20px]  w-full bg-[#0051FF] text-white"
               type="button"
+              size="lg"
               onClick={() => router.replace('auth')}
             >
               로그인하러가기
