@@ -4,7 +4,7 @@ export default function Header() {
   return (
     <>
       <header>
-        <section className="flex justify-between items-center border-b-1 bg-white ">
+        <section className="flex justify-between items-center border-b-1 bg-white p-2">
           <div className="flex items-center justify-center w-80">
             <Link href="/">
               <h1 className="font-bold text-xl">What Surv?</h1>

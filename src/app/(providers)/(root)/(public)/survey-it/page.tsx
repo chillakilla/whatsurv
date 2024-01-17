@@ -43,7 +43,6 @@ export default function PostIt() {
         {hasPosts ? (
           posts
             .filter(post => post.category === target)
-            .slice(0, 4)
             .map(post => (
               <Link href={`/survey-it/${post.id}`} key={post.id}>
                 <div className="h-[215px] bg-white border-1 border-[#C1C5CC] flex-col justify-between rounded-md p-4">

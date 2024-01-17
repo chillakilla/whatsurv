@@ -112,7 +112,14 @@ body > div {
   color: white;
 }
 
-.refresh-button > svg {
+.profile > svg {
   width: 20px;
   height: 20px;
+  color: #0051ff;
+}
+
+.alternative-img {
+  width: 380px;
+  height: 320px;
+  border: 1px solid #eee;
 }
