@@ -67,11 +67,13 @@ const AuthPage: React.FC = () => {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
   // 비밀번호 눈 모양 표시 상태
-  const [showPassword, setShowPassword] = useState(false);
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  //비밀번호 찾기 완료 후에 메세지 렌더링 관련 상태
+  const [isEmailSent, setIsEmailSent] = useState(false);
 
   // 비밀번호 표시 토글 함수
   const clickTogglePasswordhandler = () => {
-    setShowPassword(!showPassword);
+    setIsShowPassword(!isShowPassword);
   };
 
   useEffect(() => {
@@ -91,7 +93,8 @@ const AuthPage: React.FC = () => {
   const clickPasswordResetHandler = async () => {
     try {
       await sendPasswordResetEmail(auth, resetEmail);
-      alert('비밀번호 재설정 이메일이 발송되었습니다. 이메일을 확인해 주세요.');
+      setIsEmailSent(true);
+      //alert('비밀번호 재설정 이메일이 발송되었습니다. 이메일을 확인해 주세요.');
       closeResetModal();
     } catch (error) {
       console.error('비밀번호 재설정 에러:', error);
@@ -256,13 +259,13 @@ const AuthPage: React.FC = () => {
           onPress={onOpen}
           className=" Class
 Properties
-translate-x-[13px] float-right bg-transparent text-xs text-[#0051FF]"
+translate-x-[13px] float-right bg-transparent text-xs  z-40 text-[#0051FF]"
         >
           비밀번호를 잊으셨나요?
         </Button>
         <div className="relative">
           <Input
-            type={showPassword ? 'text' : 'password'}
+            type={isShowPassword ? 'text' : 'password'}
             label="비밀번호를 입력해주세요."
             variant="bordered"
             value={password}
@@ -273,7 +276,7 @@ translate-x-[13px] float-right bg-transparent text-xs text-[#0051FF]"
             onClick={clickTogglePasswordhandler}
             className="absolute inset-y-0 right-0  top-[40px] pr-3 flex  items-center  leading-5 cursor-pointer"
           >
-            {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+            {isShowPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
           </span>
         </div>
         {passwordCheck && <p className="text-red-500">{passwordCheck}</p>}
@@ -305,18 +308,31 @@ translate-x-[13px] float-right bg-transparent text-xs text-[#0051FF]"
             <>
               <ModalHeader className="flex flex-col gap-1 bg-[#E5EEFF]">비밀번호 찾기</ModalHeader>
               <ModalBody>
-                <label htmlFor="resetEmail">가입 시 등록한 이메일을 입력해주세요.</label>
-                <Input
-                  size="lg"
-                  placeholder="abcde@gmail.com"
-                  value={resetEmail}
-                  onChange={e => setResetEmail(e.target.value)}
-                />
+                {isEmailSent ? (
+                  // 비밀번호 재설정 이메일을 보낸 후에 표시할 내용
+                  <>
+                    <p className="text-center">비밀번호 재설정 이메일이 발송되었습니다.</p>
+                    <p className="text-center">이메일을 확인해 주세요.</p>
+                  </>
+                ) : (
+                  // 기존 이메일 입력 폼
+                  <>
+                    <label htmlFor="resetEmail">가입 시 등록한 이메일을 입력해주세요.</label>
+                    <Input
+                      size="lg"
+                      placeholder="abcde@gmail.com"
+                      value={resetEmail}
+                      onChange={e => setResetEmail(e.target.value)}
+                    />
+                  </>
+                )}
               </ModalBody>
               <ModalFooter>
-                <Button color="primary" className="w-full" onPress={clickPasswordResetHandler}>
-                  비밀번호 찾기
-                </Button>
+                {!isEmailSent && (
+                  <Button color="primary" className="w-full" onPress={clickPasswordResetHandler}>
+                    비밀번호 찾기
+                  </Button>
+                )}
               </ModalFooter>
             </>
           )}
