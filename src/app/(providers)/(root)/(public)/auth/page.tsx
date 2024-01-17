@@ -87,7 +87,7 @@ const AuthPage: React.FC = () => {
   const closeResetModal = () => setIsResetModalOpen(false);
 
   // 비밀번호 재설정 로직
-  const handlePasswordReset = async () => {
+  const clickPasswordResetHandler = async () => {
     try {
       await sendPasswordResetEmail(auth, resetEmail);
       alert('비밀번호 재설정 이메일이 발송되었습니다. 이메일을 확인해 주세요.');
@@ -233,15 +233,13 @@ const AuthPage: React.FC = () => {
   return (
     <div style={{backgroundColor: '#F2F3F7'}} className="place-items-center grid">
       <form onSubmit={clickLoginHandler} className="relative ">
-        <h3 className="w-full mx-auto text-2xl mt-[20px] mb-[40px]  font-bold">로그인</h3>
+        <h3 className="w-full mx-auto text-2xl mt-[20px] mb-[20px]  font-bold">로그인</h3>
         <Input
           type="email"
           label="이메일을 입력해주세요."
           value={email}
-          placeholder="abcde@gmail.com"
           variant="bordered"
-          labelPlacement="outside"
-          className="mb-[20px] bg-[#fff] rounded-xl"
+          className=" bg-[#fff] rounded-xl"
           onChange={e => setEmail(e.target.value)}
         />
         {emailCheck && <p className="text-red-500">{emailCheck}</p>}{' '}
@@ -257,10 +255,8 @@ translate-x-[13px] float-right bg-transparent text-xs text-[#0051FF]"
           type={showPassword ? 'text' : 'password'}
           label="비밀번호를 입력해주세요."
           variant="bordered"
-          labelPlacement="outside"
-          placeholder="숫자 및 특수문자 포함 8자"
           value={password}
-          className="bg-[#fff] rounded-xl"
+          className="bg-[#fff] rounded-xl mt-[20px]"
           onChange={e => setPassword(e.target.value)}
         />
         <span
@@ -271,11 +267,11 @@ translate-x-[13px] float-right bg-transparent text-xs text-[#0051FF]"
         </span>
         {passwordCheck && <p className="text-red-500">{passwordCheck}</p>}
         {loginError && <p className="text-red-500">{loginError}</p>}
-        <Button type="submit" className="mt-[20px] w-full bg-[#0051FF] font-bold text-white">
+        <Button size="lg" type="submit" className="mt-[40px] w-full bg-[#0051FF] font-bold text-white">
           로그인
         </Button>
         <div className="text-center font-bold mt-[30px]">
-          <p>간편 로그인</p>
+          <p className="text-xl">간편 로그인</p>
           <Button onClick={googleLogin} className="h-[50px] mt-[20px] bg-transparent	">
             <img src="/google_icon.svg" />
           </Button>
@@ -307,7 +303,7 @@ translate-x-[13px] float-right bg-transparent text-xs text-[#0051FF]"
                 />
               </ModalBody>
               <ModalFooter>
-                <Button color="primary" className="w-full" onPress={handlePasswordReset}>
+                <Button color="primary" className="w-full" onPress={clickPasswordResetHandler}>
                   비밀번호 찾기
                 </Button>
               </ModalFooter>
