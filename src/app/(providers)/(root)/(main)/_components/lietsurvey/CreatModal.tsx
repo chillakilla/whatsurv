@@ -1,5 +1,6 @@
 'use client';
 
+import {uploadImageToStorage} from '@/app/api/firebaseApi';
 import {db} from '@/firebase';
 import {addDoc, collection, serverTimestamp} from 'firebase/firestore';
 import React, {useState} from 'react';
@@ -10,30 +11,40 @@ interface LiteSurveyCreateModalProps {
 
 const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseModal}) => {
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState<string[]>([]); // Changed to an array
+  const [contents, setContents] = useState<string[]>([]); // Changed to an array
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
   const onSubmitHandler = () => {
-    saveDataToFirebase(title, content);
+    saveDataToFirebase(title, contents, selectedImages);
     onCloseModal();
   };
 
-  const saveDataToFirebase = async (title: string, content: string[]) => {
+  const saveDataToFirebase = async (title: string, contents: string[], images: File[]) => {
     try {
       const liteSurveyPostsCollection = collection(db, 'litesurveyposts');
-
       const timestamp = serverTimestamp();
 
+      // 이미지 업로드하고 다운로드 URL 얻기
+      const imageUrls = await Promise.all(
+        images.map(async image => {
+          return await uploadImageToStorage(image);
+        }),
+      );
+
+      const counts = contents.map(() => 0);
+
+      // Firestore에 데이터 저장
       const docRef = await addDoc(liteSurveyPostsCollection, {
         title,
-        content,
-        images: selectedImages,
+        contents,
+        images: imageUrls,
         timestamp,
+        counts,
       });
 
-      console.log('Document written with ID: ', docRef.id);
+      console.log('ID가 포함된 문서 작성 성공: ', docRef.id);
     } catch (error) {
-      console.error('Error adding document: ', error);
+      console.error('문서 추가 중 오류 발생: ', error);
       throw new Error('게시글을 추가하는 것에 실패했습니다.');
     }
   };
@@ -41,16 +52,16 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseMod
   const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      setSelectedImages([...selectedImages, ...Array.from(files)]);
+      setSelectedImages(prevImages => [...prevImages, ...Array.from(files)]);
     }
   };
 
   const addContent = () => {
-    setContent(prevContents => [...prevContents, '']);
+    setContents(prevContents => [...prevContents, '']);
   };
 
   const updateContent = (index: number, value: string) => {
-    setContent(prevContents => {
+    setContents(prevContents => {
       const updatedContents = [...prevContents];
       updatedContents[index] = value;
       return updatedContents;
@@ -58,7 +69,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseMod
   };
 
   const removeContent = (index: number) => {
-    setContent(prevContents => prevContents.filter((_, i) => i !== index));
+    setContents(prevContents => prevContents.filter((_, i) => i !== index));
   };
 
   const removeImage = (index: number) => {
@@ -87,7 +98,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseMod
             Title:
             <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="border p-2" />
           </label>
-          {content.map((contentsEntry, index) => (
+          {contents.map((contentsEntry, index) => (
             <div key={index} className="mb-4 flex">
               <input
                 value={contentsEntry}

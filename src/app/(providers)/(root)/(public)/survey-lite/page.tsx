@@ -69,7 +69,6 @@ export default function page() {
                       작성일 |{' '}
                       {post.createdAt.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})}
                     </p>
-                    <img src={post.imageUrl} alt="Post Image" />
                     <p className="text-sm font-bold">{post.title}</p>
                   </a>
                 </li>
@@ -79,7 +78,12 @@ export default function page() {
             <div>설문조사 목록이 없습니다.</div>
           )}
           {selectedPost && (
-            <LiteSurveyModal post={selectedPost} contents={selectedPost.contents} onClose={handleCloseModal} />
+            <LiteSurveyModal
+              post={selectedPost}
+              contents={selectedPost.contents}
+              images={selectedPost.images}
+              onClose={handleCloseModal}
+            />
           )}
         </div>
         <Button onClick={onClickCreateModalOpen}>{'작성하기'}</Button>
