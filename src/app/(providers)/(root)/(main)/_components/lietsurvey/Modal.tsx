@@ -4,6 +4,7 @@ import {litePost} from '@/app/api/typePost';
 import {db} from '@/firebase';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import React, {useState} from 'react';
+import ResultModal from './ResultModal';
 
 interface LiteSurveyModalProps {
   litepost: litePost;
@@ -15,6 +16,7 @@ interface LiteSurveyModalProps {
 const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, onClose}) => {
   const [selectedContentIndex, setSelectedContentIndex] = useState<number | null>(null);
   const [contentsCounts, setContentsCounts] = useState<number[]>(new Array(contents.length).fill(0));
+  const [showResultModal, setShowResultModal] = useState(false);
 
   const handleContentClick = (index: number) => {
     const newCounts = [...contentsCounts];
@@ -62,6 +64,10 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
     }
   };
 
+  const handleResultModalClose = () => {
+    setShowResultModal(false);
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white w-1/2 p-8 rounded-lg">
@@ -104,7 +110,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
           <button
             className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2 hover:bg-gray-400 focus:outline-none focus:ring focus:border-gray-500"
             onClick={() => {
-              /* 결과보기 버튼 클릭 시의 동작 추가 */
+              setShowResultModal(true);
             }}
           >
             결과보기
@@ -115,6 +121,15 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
           >
             닫기
           </button>
+          {/* 결과보기 모달 표시 */}
+          {showResultModal && (
+            <ResultModal
+              litepost={litepost}
+              contents={contents}
+              counts={contentsCounts}
+              onClose={handleResultModalClose}
+            />
+          )}
         </div>
       </div>
     </div>
