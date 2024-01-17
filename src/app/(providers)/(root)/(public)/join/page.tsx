@@ -1,13 +1,13 @@
 'use client';
 import {auth, db} from '@/firebase';
 import {Button, Input} from '@nextui-org/react';
+import confetti from 'canvas-confetti';
 import {signOut} from 'firebase/auth';
 import {createUserWithEmailAndPassword} from 'firebase/auth/cordova';
 import {collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import {IoIosCheckmarkCircle} from 'react-icons/io';
-
 const JoinPage = () => {
   const [step, setStep] = useState<number>(1); // 회원가입 진행 단계
   //가입시 필요한 상태
@@ -39,6 +39,16 @@ const JoinPage = () => {
 
   //회원가입 진행중 상태
   const [isJoining, setIsJoining] = useState<boolean>(false);
+
+  //가입축하 폭죽
+  const triggerConfetti = () => {
+    confetti({
+      angle: 90,
+      spread: 180,
+      particleCount: 100,
+      origin: {y: 0.6},
+    });
+  };
 
   // 정규표현식 이메일과 비밀번호 유효성검사
   const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -371,6 +381,7 @@ const JoinPage = () => {
           </div>
         );
       case 5:
+        triggerConfetti();
         return (
           <div className="mt-[40px] w-[400px] ">
             <div className="flex  flex-wrap justify-center">
