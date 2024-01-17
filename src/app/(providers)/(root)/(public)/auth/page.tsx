@@ -231,8 +231,8 @@ const AuthPage: React.FC = () => {
   }
 
   return (
-    <div style={{backgroundColor: '#F2F3F7'}} className="place-items-center grid">
-      <form onSubmit={clickLoginHandler} className="relative ">
+    <div className="place-items-center grid ">
+      <form onSubmit={clickLoginHandler} className=" w-[400px]">
         <h3 className="w-full mx-auto text-2xl mt-[20px] mb-[20px]  font-bold">로그인</h3>
         <Input
           type="email"
@@ -251,20 +251,22 @@ translate-x-[13px] float-right bg-transparent text-xs text-[#0051FF]"
         >
           비밀번호를 잊으셨나요?
         </Button>
-        <Input
-          type={showPassword ? 'text' : 'password'}
-          label="비밀번호를 입력해주세요."
-          variant="bordered"
-          value={password}
-          className="bg-[#fff] rounded-xl mt-[20px]"
-          onChange={e => setPassword(e.target.value)}
-        />
-        <span
-          onClick={clickTogglePasswordhandler}
-          className="absolute inset-y-0 right-0 pr-3 flex  items-center  leading-5 cursor-pointer"
-        >
-          {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-        </span>
+        <div className="relative">
+          <Input
+            type={showPassword ? 'text' : 'password'}
+            label="비밀번호를 입력해주세요."
+            variant="bordered"
+            value={password}
+            className="bg-[#fff] rounded-xl mt-[20px]"
+            onChange={e => setPassword(e.target.value)}
+          />
+          <span
+            onClick={clickTogglePasswordhandler}
+            className="absolute inset-y-0 right-0  top-[40px] pr-3 flex  items-center  leading-5 cursor-pointer"
+          >
+            {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+          </span>
+        </div>
         {passwordCheck && <p className="text-red-500">{passwordCheck}</p>}
         {loginError && <p className="text-red-500">{loginError}</p>}
         <Button size="lg" type="submit" className="mt-[40px] w-full bg-[#0051FF] font-bold text-white">
