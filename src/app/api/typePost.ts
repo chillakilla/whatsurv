@@ -2,14 +2,11 @@ export type Post = {
   likes: number;
   views: number;
   rewards: number;
-  counts: number[];
 
   id: string;
   title: string;
   content: string;
-  contents: string[];
   imageUrl: string;
-  images: string[];
   category: string;
 
   sexType: string;
@@ -21,4 +18,14 @@ export type Post = {
   createdAt: Date;
   updatedAt: Date;
   deadlineDate: Date;
+};
+
+export type litePost = {
+  counts: number[];
+
+  id: string;
+  title: string;
+  contents: string[];
+  images: string[];
+  createdAt: Date;
 };
