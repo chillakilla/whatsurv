@@ -296,7 +296,7 @@ translate-x-[13px] float-right bg-transparent text-xs text-[#0051FF]"
         <ModalContent>
           {onClose => (
             <>
-              <ModalHeader className="flex flex-col gap-1">비밀번호 찾기</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1 bg-[#E5EEFF]">비밀번호 찾기</ModalHeader>
               <ModalBody>
                 <label htmlFor="resetEmail">가입 시 등록한 이메일을 입력해주세요.</label>
                 <Input
