@@ -1,18 +1,18 @@
 'use client';
 
-import {Post} from '@/app/api/typePost';
+import {litePost} from '@/app/api/typePost';
 import {db} from '@/firebase';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import React, {useState} from 'react';
 
 interface LiteSurveyModalProps {
-  post: Post;
+  litepost: litePost;
   contents: string[];
   images: string[];
   onClose: () => void;
 }
 
-const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({post, contents, onClose}) => {
+const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, onClose}) => {
   const [selectedContentIndex, setSelectedContentIndex] = useState<number | null>(null);
   const [contentsCounts, setContentsCounts] = useState<number[]>(new Array(contents.length).fill(0));
 
@@ -23,24 +23,10 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({post, contents, onClos
     setContentsCounts(newCounts);
   };
 
-  // const handleJoinButtonClick = () => {
-  //   if (selectedContentIndex !== null) {
-  //     // 선택된 content에 대한 동작 추가
-  //     console.log(
-  //       `참여하기 버튼 클릭 - 선택된 content: ${contents[selectedContentIndex]}, 카운트: ${contentsCounts[selectedContentIndex]}`,
-  //     );
-  //     // 참여하기 버튼 클릭시 모달 닫기
-  //     onClose();
-  //   } else {
-  //     // 선택된 content가 없을 때 알람 표시
-  //     window.alert('답변을 선택해주세요.');
-  //   }
-  // };
-
   const handleJoinButtonClick = async () => {
     try {
       if (selectedContentIndex !== null) {
-        const contentId = post.id; // 게시물 ID 또는 다른 고유 식별자
+        const contentId = litepost.id; // 게시물 ID 또는 다른 고유 식별자
         console.log('contentId', contentId);
         const postRef = doc(db, 'litesurveyposts', contentId);
 
@@ -79,9 +65,9 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({post, contents, onClos
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white w-1/2 p-8 rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">{post.title}</h2>
+        <h2 className="text-2xl font-bold mb-4">{litepost.title}</h2>
         <div className="mb-4 flex justify-center gap-4">
-          {post.images.map((image, index) => (
+          {litepost.images.map((image, index) => (
             <img
               key={index}
               src={image}
