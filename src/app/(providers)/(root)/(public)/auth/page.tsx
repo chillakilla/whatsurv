@@ -24,6 +24,7 @@ import {
   signOut,
 } from 'firebase/auth';
 import {Firestore, collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore';
+import {useRouter} from 'next/navigation';
 import React, {FormEvent, useEffect, useState} from 'react';
 import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai';
 import {MoonLoader} from 'react-spinners';
@@ -71,7 +72,7 @@ const AuthPage: React.FC = () => {
   const [isEmailSent, setIsEmailSent] = useState(false);
   //비밀번호 찾기 할때 가입한 이메일이 아닌 경우 렌더링 관련 상태
   const [emailCheckMessage, setEmailCheckMessage] = useState<string>('');
-
+  const router = useRouter();
   // 비밀번호 표시 토글 함수
   const clickTogglePasswordhandler = () => {
     setIsShowPassword(!isShowPassword);
@@ -171,6 +172,7 @@ const AuthPage: React.FC = () => {
     }
   };
 
+  //빈칸 관련 유효성 검사
   const validateInput = () => {
     let isValid = true;
     setEmailCheck('');
@@ -231,6 +233,7 @@ const AuthPage: React.FC = () => {
   const clickLogoutHandler = async () => {
     try {
       await signOut(auth); // Firebase에서 로그아웃 요청
+      router.replace('/'); // 메인페이지 이동
     } catch (error) {
       console.error(error);
     }
@@ -324,13 +327,11 @@ translate-x-[13px] float-right bg-transparent text-xs  z-40 text-[#0051FF]"
               <ModalHeader className="flex flex-col gap-1 bg-[#E5EEFF]">비밀번호 찾기</ModalHeader>
               <ModalBody>
                 {isEmailSent ? (
-                  // 비밀번호 재설정 이메일을 보낸 후에 표시할 내용
                   <>
                     <p className="text-center">비밀번호 재설정 이메일이 발송되었습니다.</p>
                     <p className="text-center">이메일을 확인해 주세요.</p>
                   </>
                 ) : (
-                  // 기존 이메일 입력 폼
                   <>
                     <label htmlFor="resetEmail">가입 시 등록한 이메일을 입력해주세요.</label>
                     <Input
