@@ -1,9 +1,8 @@
 import {getPosts} from '@/app/api/firebaseApi';
-import {useQuery} from '@tanstack/react-query';
 import {Button} from '@nextui-org/react';
-import {FaRegHeart} from 'react-icons/fa';
-import React from 'react';
+import {useQuery} from '@tanstack/react-query';
 import Link from 'next/link';
+import {FaRegHeart} from 'react-icons/fa';
 
 export default function PostLite() {
   const target = 'Lite';
@@ -33,7 +32,7 @@ export default function PostLite() {
     <div className="my-20">
       <div className="title-box flex justify-between items-center gap-12 mb-4">
         <h2 className="font-bold text-xl w-[100px] ">Lite 전체</h2>
-        <Link href="/survey_it" className="font-bold text-lg text-[#0051FF]">
+        <Link href="/survey-it" className="font-bold text-lg text-[#0051FF]">
           더보기
         </Link>
       </div>

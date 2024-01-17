@@ -2,8 +2,10 @@
 
 import {getPosts} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
+import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {useRouter} from 'next/navigation';
+import {FaRegHeart} from 'react-icons/fa';
 
 export default function SurveyItPage() {
   const router = useRouter();
@@ -18,7 +20,6 @@ export default function SurveyItPage() {
     queryFn: getPosts,
   });
 
-  // Medical 카테고리만 필터링 하도록 설정
   const selectedCategory = 'Medical';
 
   const filteredSurveyData = surveyData?.filter(post => post.category === selectedCategory) || [];
@@ -29,16 +30,32 @@ export default function SurveyItPage() {
       {isLoading && <div>Loading...</div>}
       {isError && <div>Error fetching survey data</div>}
       {filteredSurveyData.length > 0 ? (
-        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {filteredSurveyData.map(post => (
-            <li key={post.id} className="p-4 bg-gray-100 rounded shadow">
+            <li key={post.id} className="h-36 border-2 border-[#eee] rounded-xl p-2">
               <a onClick={() => router.push(`/survey-medical/${post.id}`)} className="cursor-pointer">
-                <p className="text-lg font-bold mb-2">{post.category}</p>
-                <p>{post.createdAt.toLocaleString()}</p>
-                <p>{post.imageUrl}</p>
-                <p className="text-lg font-semibold">{post.title}</p>
-                <p>{post.content}</p>
+                <div className="category-box flex justify-between items-center">
+                  <p className="bg-[#0051FF] text-[#D6FF00] w-12 p-1 text-center rounded-full font-semibold text-xs">
+                    {post.category}
+                  </p>
+                  <Button
+                    isIconOnly
+                    aria-label="Like"
+                    className="w-12 h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent"
+                  >
+                    <FaRegHeart />
+                  </Button>
+                </div>
+                <p className="text-xs text-[#666] my-">
+                  {' '}
+                  작성일 | {post.createdAt.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})}
+                </p>
+                {/* <img src={post.imageUrl} alt="Post Image" /> */}
+                <p className="text-[15px] font-bold">
+                  {post.title.length > 47 ? `${post.title.substring(0, 47)}...` : post.title}
+                </p>
                 <p className="mt-2">{post.likes}</p>
+                <p>작성자</p>
               </a>
             </li>
           ))}
