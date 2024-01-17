@@ -65,76 +65,87 @@ export default function PostForm({
             </div>
           </div>
           <Spacer y={8} />
-          <label>업종 : </label>
-          <select
-            className="border-solid border-2  border-#ccc"
-            name="category"
-            value={formData.category}
-            onChange={onCategoryChange}
-            required
-          >
-            {majorCategories.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <label>성별 : </label>
-          <select
-            className="border-solid border-2  border-#ccc"
-            name="sexType"
-            value={formData.sexType}
-            onChange={onCategoryChange}
-            required
-          >
-            {sexType.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <label>연령대 : </label>
-          <select
-            className="border-solid border-2  border-#ccc"
-            name="ageGroup"
-            value={formData.ageGroup}
-            onChange={onCategoryChange}
-            required
-          >
-            {ageGroup.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <label>설문종류 : </label>
-          <select
-            className="border-solid border-2  border-#ccc"
-            name="researchType"
-            value={formData.researchType}
-            onChange={onCategoryChange}
-            required
-          >
-            {researchType.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <label>조사장소 : </label>
-          <select
-            className="border-solid border-2  border-#ccc"
-            name="researchLocation"
-            value={formData.researchLocation}
-            onChange={onCategoryChange}
-            required
-          >
-            {researchLocation.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          <div className="flex items-center gap-[0.5rem]">
+            <label>업종 : </label>
+            <select
+              className="border border-sky-500 rounded-lg"
+              name="category"
+              value={formData.category}
+              onChange={onCategoryChange}
+              required
+            >
+              {majorCategories.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <label>성별 : </label>
+            <select
+              className="border border-sky-500 rounded-lg"
+              name="sexType"
+              value={formData.sexType}
+              onChange={onCategoryChange}
+              required
+            >
+              {sexType.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <label>연령대 : </label>
+            <select
+              className="border border-sky-500 rounded-lg"
+              name="ageGroup"
+              value={formData.ageGroup}
+              onChange={onCategoryChange}
+              required
+            >
+              {ageGroup.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <label>설문종류 : </label>
+            <select
+              className="border border-sky-500 rounded-lg"
+              name="researchType"
+              value={formData.researchType}
+              onChange={onCategoryChange}
+              required
+            >
+              {researchType.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <label>조사장소 : </label>
+            <select
+              className="border border-sky-500 rounded-lg"
+              name="researchLocation"
+              value={formData.researchLocation}
+              onChange={onCategoryChange}
+              required
+            >
+              {researchLocation.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <label htmlFor="deadlineDate">마감일: </label>
+            <input
+              className="border border-sky-500 rounded-lg"
+              type="date"
+              name="deadlineDate"
+              value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
+            />
+          </div>
+          <Spacer y={6} />
           <label>소요시간 : </label>
           <input
             className="border-solid border-2  border-#ccc"
@@ -144,14 +155,6 @@ export default function PostForm({
             onChange={onInputChange}
             required
             placeholder="설문에 소요되는 시간을 작성해주세요."
-          />
-          <label htmlFor="deadlineDate">마감일: </label>
-          <input
-            className="border-solid border-2  border-#ccc"
-            type="date"
-            name="deadlineDate"
-            value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
           />
           <label>보상: </label>
           <input
@@ -181,14 +184,16 @@ export default function PostForm({
               <img src={previewImage} alt="Image Preview" />
             </div>
           )}
-          <label>내용: </label>
-          <textarea
-            className="border-solid border-2 border-#ccc resize-none"
-            name="content"
-            value={formData.content}
-            onChange={onInputChange}
-            required
-          />
+          <div className="flex flex-col w-[64.625rem] ">
+            <label>내용: </label>
+            <textarea
+              className="border border-sky-500 rounded-lg resize-none"
+              name="content"
+              value={formData.content}
+              onChange={onInputChange}
+              required
+            />
+          </div>
           <div className="flex justify-end items-start self-stretch gap-6">
             <button className="w-[15.625rem] h-[3rem] mt-[10px] border-[1.4px] bg-white border-sky-500 rounded-[25rem]">
               취소
