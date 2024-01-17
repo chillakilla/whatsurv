@@ -19,3 +19,13 @@ export type Post = {
   updatedAt: Date;
   deadlineDate: Date;
 };
+
+export type litePost = {
+  counts: number[];
+
+  id: string;
+  title: string;
+  contents: string[];
+  images: string[];
+  createdAt: Date;
+};

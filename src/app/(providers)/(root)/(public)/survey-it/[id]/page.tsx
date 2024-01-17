@@ -8,7 +8,6 @@ import {FaRegCircleUser} from 'react-icons/fa6';
 import Image from 'next/image';
 
 export default function SurveyItDetailPage() {
-  // URL에서 'id' 매개변수를 가져옵니다.
   const {id} = useParams();
 
   const {

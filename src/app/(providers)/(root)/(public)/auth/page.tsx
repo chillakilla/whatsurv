@@ -1,21 +1,32 @@
 'use client';
 import {auth, db} from '@/firebase';
-import {Button, Input} from '@nextui-org/react';
+import {
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from '@nextui-org/react';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {
   AuthError,
+  GithubAuthProvider,
   GoogleAuthProvider,
   User,
   browserSessionPersistence,
+  sendPasswordResetEmail,
   setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
 } from 'firebase/auth';
-import {doc, setDoc} from 'firebase/firestore';
-import Link from 'next/link';
+import {Firestore, collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore';
 import React, {FormEvent, useEffect, useState} from 'react';
-
+import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai';
+import {MoonLoader} from 'react-spinners';
 // 사용자 인증 상태 관리 Hook
 
 const useAuthStatus = () => {
@@ -49,12 +60,62 @@ const AuthPage: React.FC = () => {
   const passwordValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
   // 로그인 에러 메시지 상태
   const [loginError, setLoginError] = useState<string>('');
+  // 비밀번호 모달 상태
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
+  // 비밀번호 눈 모양 표시 상태
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  //비밀번호 찾기 완료 후에 메세지 렌더링 관련 상태
+  const [isEmailSent, setIsEmailSent] = useState(false);
+  //비밀번호 찾기 할때 가입한 이메일이 아닌 경우 렌더링 관련 상태
+  const [emailCheckMessage, setEmailCheckMessage] = useState<string>('');
+
+  // 비밀번호 표시 토글 함수
+  const clickTogglePasswordhandler = () => {
+    setIsShowPassword(!isShowPassword);
+  };
+
   useEffect(() => {
     // 사용자의 인증 상태가 -확인되면 로딩 상태를 종료합니다.
     if (!isFetching) {
       setIsLoading(false);
     }
   }, [isFetching]);
+
+  // 비밀번호 재설정 모달 열기
+  const openResetModal = () => setIsResetModalOpen(true);
+
+  // 비밀번호 재설정 모달 닫기
+  const closeResetModal = () => setIsResetModalOpen(false);
+
+  // 비밀번호 재설정 로직
+  const clickPasswordResetHandler = async () => {
+    const emailExists = await checkEmailExists(db, resetEmail);
+    if (!emailExists) {
+      setEmailCheckMessage('가입되지 않은 이메일입니다.');
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
+      setIsEmailSent(true);
+      setEmailCheckMessage('');
+      //alert('비밀번호 재설정 이메일이 발송되었습니다. 이메일을 확인해 주세요.');
+      closeResetModal();
+    } catch (error) {
+      console.error('비밀번호 재설정 에러:', error);
+      setEmailCheckMessage('비밀번호 재설정에 실패했습니다. 다시 시도해 주세요.');
+    }
+  };
+
+  //비밀번호 재설정에 필요한 이메일 체크
+  const checkEmailExists = async (db: Firestore, emailToCheck: string): Promise<boolean> => {
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, where('email', '==', emailToCheck));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  };
 
   // Google 로그인 함수
 
@@ -79,6 +140,34 @@ const AuthPage: React.FC = () => {
       alert('Google 로그인 성공!');
     } catch (error) {
       console.error('Google 로그인 실패:', error);
+    }
+  };
+
+  // GitHub 로그인 함수
+  const githubLogin = async () => {
+    try {
+      await setPersistence(auth, browserSessionPersistence); // 세션 지속성 설정
+      const provider = new GithubAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // 이메일이 없는 경우, 대체할 값을 사용
+      const replaceEmail = user.email || `${user.uid}@no-email.com`;
+
+      // Firestore에 저장할 사용자 정보
+      const userData = {
+        nickname: user.displayName || email.split('@')[0], // GitHub username 또는 이메일을 사용
+        email: replaceEmail,
+        //생년월일은 초기에 빈 값으로 설정
+        birthdate: '',
+      };
+
+      // 사용자 정보 저장
+      await setDoc(doc(db, 'users', user.uid), userData);
+
+      alert('GitHub 로그인 성공!');
+    } catch (error) {
+      console.error('GitHub 로그인 실패:', error);
     }
   };
 
@@ -147,9 +236,17 @@ const AuthPage: React.FC = () => {
     }
   };
 
-  // if (isLoading) {
-  //   return <div>로딩 중...</div>; // 로딩 인디케이터 표시
-  // }
+  if (isLoading) {
+    return (
+      <div className="flex justify-center flex-wrap items-center overflow-y-hidden mt-[300px]">
+        <p>
+          <MoonLoader color="#0051FF" size={100} />
+        </p>
+
+        <p className="text-[#0051FF] w-full text-center mt-[30px]">잠시만 기다려 주세요..</p>
+      </div>
+    ); // 로딩 인디케이터 표시
+  }
 
   if (user) {
     return (
@@ -161,31 +258,102 @@ const AuthPage: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-wrap justify-center">
-      <h3 className="text-center w-full text-2xl mt-[20px] mb-[20px] font-bold">로그인</h3>
-      <form onSubmit={clickLoginHandler}>
+    <div className="place-items-center grid ">
+      <form onSubmit={clickLoginHandler} className=" w-[400px]">
+        <h3 className="w-full mx-auto text-2xl mt-[20px] mb-[20px]  font-bold">로그인</h3>
         <Input
           type="email"
-          className="mb-[20px]"
-          label="이메일"
+          label="이메일을 입력해주세요."
           value={email}
+          variant="bordered"
+          className=" bg-[#fff] rounded-xl"
           onChange={e => setEmail(e.target.value)}
         />
-        {emailCheck && <p className="text-red-500">{emailCheck}</p>}
-        <Input type="password" label="비밀번호" value={password} onChange={e => setPassword(e.target.value)} />
+        {emailCheck && <p className="text-red-500">{emailCheck}</p>}{' '}
+        <Button
+          onPress={onOpen}
+          className=" Class
+Properties
+translate-x-[13px] float-right bg-transparent text-xs  z-40 text-[#0051FF]"
+        >
+          비밀번호를 잊으셨나요?
+        </Button>
+        <div className="relative">
+          <Input
+            type={isShowPassword ? 'text' : 'password'}
+            label="비밀번호를 입력해주세요."
+            variant="bordered"
+            value={password}
+            className="bg-[#fff] rounded-xl mt-[20px]"
+            onChange={e => setPassword(e.target.value)}
+          />
+          <span
+            onClick={clickTogglePasswordhandler}
+            className="absolute inset-y-0 right-0  top-[40px] pr-3 flex  items-center  leading-5 cursor-pointer"
+          >
+            {isShowPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+          </span>
+        </div>
         {passwordCheck && <p className="text-red-500">{passwordCheck}</p>}
         {loginError && <p className="text-red-500">{loginError}</p>}
-        <Button onClick={googleLogin} className="mt-[20px] w-full">
-          구글로 로그인하기
-        </Button>
-        <Button className="mr-[20px] mt-[20px]">비밀번호 재설정</Button>
-        <Button>
-          <Link href="/join">회원가입</Link>
-        </Button>
-        <Button type="submit" className="mt-[20px] w-full">
+        <Button size="lg" type="submit" className="mt-[40px] w-full bg-[#0051FF] font-bold text-white">
           로그인
         </Button>
+        <div className="text-center font-bold mt-[30px]">
+          <p className="text-xl">간편 로그인</p>
+          <Button onClick={googleLogin} className="h-[50px] mt-[20px] bg-transparent	">
+            <img src="/google_icon.svg" />
+          </Button>
+          <Button onClick={githubLogin} className="h-[50px] mt-[20px] bg-transparent	">
+            <img src="/github_icon.svg" />
+          </Button>
+        </div>
       </form>
+
+      {/* 비밀번호 재설정 모달 */}
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        classNames={{base: 'border-[#6697FF] bg-[#E5EEFF]'}}
+        size="md"
+        backdrop="opaque"
+      >
+        <ModalContent>
+          {onClose => (
+            <>
+              <ModalHeader className="flex flex-col gap-1 bg-[#E5EEFF]">비밀번호 찾기</ModalHeader>
+              <ModalBody>
+                {isEmailSent ? (
+                  // 비밀번호 재설정 이메일을 보낸 후에 표시할 내용
+                  <>
+                    <p className="text-center">비밀번호 재설정 이메일이 발송되었습니다.</p>
+                    <p className="text-center">이메일을 확인해 주세요.</p>
+                  </>
+                ) : (
+                  // 기존 이메일 입력 폼
+                  <>
+                    <label htmlFor="resetEmail">가입 시 등록한 이메일을 입력해주세요.</label>
+                    <Input
+                      size="lg"
+                      placeholder="abcde@gmail.com"
+                      value={resetEmail}
+                      onChange={e => setResetEmail(e.target.value)}
+                    />
+                    {emailCheckMessage && <p className="text-red-500 text-center">{emailCheckMessage}</p>}
+                  </>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                {!isEmailSent && (
+                  <Button color="primary" className="w-full" onPress={clickPasswordResetHandler}>
+                    비밀번호 찾기
+                  </Button>
+                )}
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

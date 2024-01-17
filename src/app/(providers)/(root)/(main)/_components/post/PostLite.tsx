@@ -1,10 +1,10 @@
 import {getPosts} from '@/app/api/firebaseApi';
+import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {FaRegCircleUser} from 'react-icons/fa6';
 import {IoEyeOutline} from 'react-icons/io5';
-import {FaRegHeart} from 'react-icons/fa';
-import React from 'react';
 import Link from 'next/link';
+import {FaRegHeart} from 'react-icons/fa';
 
 export default function PostLite() {
   const target = 'Lite';

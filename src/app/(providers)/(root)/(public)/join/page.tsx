@@ -1,12 +1,14 @@
 'use client';
 import {auth, db} from '@/firebase';
 import {Button, Input} from '@nextui-org/react';
+import confetti from 'canvas-confetti';
 import {signOut} from 'firebase/auth';
 import {createUserWithEmailAndPassword} from 'firebase/auth/cordova';
 import {collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
-
+import {IoIosCheckmarkCircle} from 'react-icons/io';
+import {SyncLoader} from 'react-spinners';
 const JoinPage = () => {
   const [step, setStep] = useState<number>(1); // 회원가입 진행 단계
   //가입시 필요한 상태
@@ -39,6 +41,16 @@ const JoinPage = () => {
   //회원가입 진행중 상태
   const [isJoining, setIsJoining] = useState<boolean>(false);
 
+  //가입축하 폭죽
+  const triggerConfetti = () => {
+    confetti({
+      angle: 90,
+      spread: 180,
+      particleCount: 100,
+      origin: {y: 0.6},
+    });
+  };
+
   // 정규표현식 이메일과 비밀번호 유효성검사
   const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
   const passwordValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
@@ -53,15 +65,19 @@ const JoinPage = () => {
     if (step === 1) {
       if (!email) {
         setEmailCheck('이메일을 입력해주세요');
+        setEmailValidationClass('text-red-500');
         isValid = false;
       } else if (!emailValidation.test(email)) {
         setEmailCheck('유효한 이메일 형식이 아닙니다');
+        setEmailValidationClass('text-red-500');
         isValid = false;
       } else if (!isEmailAvailable) {
         setEmailCheck('이메일 중복 확인이 필요합니다');
+        setEmailValidationClass('text-red-500');
         isValid = false;
       } else {
         setEmailCheck('');
+        setEmailValidationClass('');
       }
     }
 
@@ -70,7 +86,7 @@ const JoinPage = () => {
         setPasswordCheck('비밀번호를 입력해주세요');
         isValid = false;
       } else if (!passwordValidation.test(password)) {
-        setPasswordCheck('비밀번호는 8자 이상, 숫자 및 특수문자를 포함해야 합니다');
+        setPasswordCheck('비밀번호는 숫자, 특수문자 포함 8자 이상이어야 합니다.');
         isValid = false;
       } else {
         setPasswordCheck('');
@@ -102,12 +118,15 @@ const JoinPage = () => {
     if (step === 4) {
       if (!nickname) {
         setNicknameCheck('닉네임을 입력해주세요');
+        setNicknameValidationClass('text-red-500');
         isValid = false;
       } else if (!isNicknameAvailable) {
         setNicknameCheck('닉네임 중복 확인이 필요합니다');
+        setNicknameValidationClass('text-red-500');
         isValid = false;
       } else {
         setNicknameCheck('');
+        setEmailValidationClass('');
       }
     }
     return isValid;
@@ -115,6 +134,19 @@ const JoinPage = () => {
 
   //이메일 중복확인 함수
   const checkEmailAvailability = async () => {
+    // 이메일이 비어 있는 경우 확인
+    if (!email) {
+      setEmailCheck('이메일을 입력해주세요');
+      setEmailValidationClass('text-red-500'); // 에러 색상 설정
+      return; // 함수 종료
+    }
+
+    // 이메일 형식이 유효하지 않은 경우 확인
+    if (!emailValidation.test(email)) {
+      setEmailCheck('유효한 이메일 형식이 아닙니다');
+      setEmailValidationClass('text-red-500'); // 에러 색상 설정
+      return; // 함수 종료
+    }
     try {
       const usersRef = collection(db, 'users');
       const q = query(usersRef, where('email', '==', email));
@@ -122,12 +154,14 @@ const JoinPage = () => {
 
       if (querySnapshot.empty) {
         setIsEmailAvailable(true);
+        setEmailValidationClass('text-green-500');
         setEmailCheck('사용 가능한 이메일입니다');
-        setEmailValidationClass('text-green-500'); // 초록색 텍스트
+        // 초록색 텍스트
       } else {
         setIsEmailAvailable(false);
+        setEmailValidationClass('text-red-500');
         setEmailCheck('이미 사용 중인 이메일입니다');
-        setEmailValidationClass('text-red-500'); // 빨간색 텍스트
+        // 빨간색 텍스트
       }
     } catch (error) {
       console.error('이메일 중복확인 중 오류: ', error);
@@ -136,12 +170,17 @@ const JoinPage = () => {
 
   // 닉네임 중복확인 함수
   const checkNicknameAvailability = async (): Promise<void> => {
+    if (!nickname) {
+      setNicknameCheck('닉네임을 입력해주세요');
+      setNicknameValidationClass('text-red-500'); // 에러 색상 설정
+      return; // 함수 종료
+    }
     try {
       const querySnapshot = await getDocs(query(collection(db, 'users'), where('nickname', '==', nickname)));
       if (querySnapshot.empty) {
         setIsNicknameAvailable(true);
-        setNicknameCheck('사용 가능한 닉네임입니다');
         setNicknameValidationClass('text-green-500');
+        setNicknameCheck('사용 가능한 닉네임입니다');
       } else {
         setIsNicknameAvailable(false);
         setNicknameCheck('이미 사용 중인 닉네임입니다');
@@ -214,20 +253,29 @@ const JoinPage = () => {
     switch (step) {
       case 1:
         return (
-          <div>
-            <Input
-              type="email"
-              className="mt-[20px]"
-              label="이메일"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="이메일을 입력해주세요."
-            />
-            <Button onClick={checkEmailAvailability}>이메일 중복 확인</Button>
-            {emailCheck && <p className={`${emailValidationClass} text-red-500 text-center mt-2`}>{emailCheck}</p>}
+          <div className="mt-[40px] w-[400px]">
+            <div className="flex items-center ">
+              <Input
+                type="email"
+                className="mt-[20px]   bg-[#fff] rounded-xl"
+                label="이메일을 입력해주세요"
+                variant="bordered"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
+              <Button
+                onClick={checkEmailAvailability}
+                size="lg"
+                className="bg-[#0051FF] ml-[5px] text-white translate-y-[11px]"
+              >
+                중복 확인
+              </Button>
+            </div>
+            {emailCheck && <p className={`${emailValidationClass}  mt-[15px] text-center mt-2`}>{emailCheck}</p>}
 
             <Button
-              className="mt-[20px]"
+              className="mt-[20px] w-full bg-[#0051FF] text-white"
+              size="lg"
               onClick={() => {
                 if (validateInput()) moveToNextStep();
               }}
@@ -239,27 +287,28 @@ const JoinPage = () => {
         );
       case 2:
         return (
-          <div>
+          <div className="mt-[40px] w-[400px]">
             <Input
               type="password"
-              className="mt-[20px]"
-              label="비밀번호"
+              className="mt-[20px] mb-[20px] bg-[#fff] rounded-xl"
+              label="비밀번호를 입력해주세요"
               value={password}
+              variant="bordered"
               onChange={e => setPassword(e.target.value)}
-              placeholder="비밀번호를 입력해주세요."
             />
-            {passwordCheck && <p className="text-red-500 text-center mt-2">{passwordCheck}</p>}
+            {passwordCheck && <p className="text-red-500 mb-[20px] text-center mt-2">{passwordCheck}</p>}
             <Input
               type="password"
               value={confirmPassword}
-              className="mt-[20px]"
+              variant="bordered"
+              className="bg-[#fff] mb-[20px] rounded-xl"
               onChange={e => setConfirmPassword(e.target.value)}
-              placeholder="다시 한번 비밀번호를 입력해주세요."
-              label="비밀번호 확인"
+              label="다시 한번 비밀번호를 입력해주세요"
             />
             {confirmPasswordCheck && <p className="text-red-500 text-center mt-2">{confirmPasswordCheck}</p>}
             <Button
-              className="mt-[20px]"
+              className="mt-[20px]  w-full bg-[#0051FF] text-white"
+              size="lg"
               onClick={() => {
                 if (validateInput()) moveToNextStep();
               }}
@@ -271,22 +320,25 @@ const JoinPage = () => {
         );
       case 3:
         return (
-          <div>
+          <div className="mt-[40px] w-[400px]">
             <Input
               type="date"
-              className="mt-[20px]"
-              label="생년월일"
+              className="mt-[20px]  bg-[#fff] rounded-xl"
+              label="생년월일을 입력해주세요."
+              placeholder="생년월일을 입력해주세요."
               value={birthDate}
+              variant="bordered"
+              maxLength={6}
               onChange={e => setBirthDate(e.target.value)}
-              placeholder="생년월일"
             />
             {birthDateCheck && <p className="text-red-500 text-center mt-2">{birthDateCheck}</p>}
             <Button
+              size="lg"
               onClick={() => {
                 if (validateInput()) moveToNextStep();
               }}
               type="button"
-              className="mt-[20px]"
+              className="mt-[20px]  w-full bg-[#0051FF] text-white"
             >
               다음
             </Button>
@@ -294,33 +346,62 @@ const JoinPage = () => {
         );
       case 4:
         return (
-          <div>
+          <div className="mt-[40px] w-[400px]">
             {!isJoining && (
               <>
-                <Input
-                  type="text"
-                  label="닉네임"
-                  className="mt-[20px]"
-                  value={nickname}
-                  onChange={e => setNickname(e.target.value)}
-                  placeholder="닉네임을 입력해주세요."
-                  maxLength={10}
-                />
-                <Button onClick={checkNicknameAvailability}>닉네임 중복 확인</Button>
+                <div className="flex items-center">
+                  <Input
+                    type="text"
+                    className="mt-[20px]  bg-[#fff] rounded-xl"
+                    variant="bordered"
+                    value={nickname}
+                    onChange={e => setNickname(e.target.value)}
+                    label="닉네임을 입력해주세요."
+                    maxLength={10}
+                  />
+                  <Button
+                    size="lg"
+                    onClick={checkNicknameAvailability}
+                    className="bg-[#0051FF] ml-[5px] text-white translate-y-[11px]"
+                  >
+                    중복 확인
+                  </Button>
+                </div>
                 {nicknameCheck && <p className={`${nicknameValidationClass} text-center mt-2`}>{nicknameCheck}</p>}
-                <Button onClick={clickJoinHandler} className="mt-[20px]" type="button">
+                <Button
+                  size="lg"
+                  onClick={clickJoinHandler}
+                  className="mt-[20px]  w-full bg-[#0051FF] text-white"
+                  type="button"
+                >
                   회원가입
                 </Button>
               </>
             )}
-            {isJoining && <p className="text-center mt-2">회원가입이 진행중입니다. 잠시만 기다려주세요...</p>}
+            {isJoining && (
+              <div>
+                <SyncLoader color="#0051FF" loading={isJoining} size={15} className="text-center" />
+                <p className="text-center mt-[30px] text-[#0051FF]">회원가입이 진행중입니다. 잠시만 기다려주세요...</p>
+              </div>
+            )}
           </div>
         );
       case 5:
+        triggerConfetti();
         return (
-          <div>
-            <p>회원가입 완료</p>
-            <Button color="primary" type="button" onClick={() => router.replace('auth')}>
+          <div className="mt-[40px] w-[400px] ">
+            <div className="flex  flex-wrap justify-center">
+              <p className=" w-full text-center">WhatSurv?에 오신 것을 환영합니다!</p>
+
+              <IoIosCheckmarkCircle className="text-8xl my-[40px] mx-auto text-[#0051FF]" />
+              <p className="w-full text-center">회원가입이 완료되었습니다.</p>
+            </div>
+            <Button
+              className="mt-[20px]  w-full bg-[#0051FF] text-white"
+              type="button"
+              size="lg"
+              onClick={() => router.replace('auth')}
+            >
               로그인하러가기
             </Button>
           </div>
@@ -334,9 +415,9 @@ const JoinPage = () => {
   return (
     <div>
       {/* 프로그래스 바 */}
-      <div className="progress-bar">
-        <div className="bg-gray-200 w-full h-4">
-          <div className="bg-blue-500 h-4" style={progressBarStyle}></div>
+      <div className="progress-bar mt-[50px] w-[400px] mx-auto">
+        <div className="bg-gray-200 w-full h-4 rounded-lg">
+          <div className="bg-blue-500 h-4 rounded-lg" style={progressBarStyle}></div>
         </div>
       </div>
       <form onSubmit={clickJoinHandler} className="w-2/3 flex flex-wrap justify-center m-auto">
