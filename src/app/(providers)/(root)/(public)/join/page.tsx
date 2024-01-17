@@ -8,6 +8,7 @@ import {collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import {IoIosCheckmarkCircle} from 'react-icons/io';
+import {SyncLoader} from 'react-spinners';
 const JoinPage = () => {
   const [step, setStep] = useState<number>(1); // 회원가입 진행 단계
   //가입시 필요한 상태
@@ -377,7 +378,12 @@ const JoinPage = () => {
                 </Button>
               </>
             )}
-            {isJoining && <p className="text-center mt-2">회원가입이 진행중입니다. 잠시만 기다려주세요...</p>}
+            {isJoining && (
+              <div>
+                <SyncLoader color="#0051FF" loading={isJoining} size={15} className="text-center" />
+                <p className="text-center mt-[30px] text-[#0051FF]">회원가입이 진행중입니다. 잠시만 기다려주세요...</p>
+              </div>
+            )}
           </div>
         );
       case 5:
