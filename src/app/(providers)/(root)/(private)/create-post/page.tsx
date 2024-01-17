@@ -23,10 +23,12 @@ export default function PostPage() {
     imageUrl: '',
     likes: 0,
     category: '',
-    minorCategory: '',
-    requirements: '',
+    ageGroup: '',
+    sexType: '',
+    researchType: '',
+    researchTime: '',
+    researchLocation: '',
     deadlineDate: new Date(),
-    participationDate: new Date(),
     rewards: 0,
   });
 
@@ -74,9 +76,12 @@ export default function PostPage() {
         imageUrl: imageUrl,
         likes: formData.likes,
         category: formData.category,
-        requirements: formData.requirements,
+        sexType: formData.sexType,
+        ageGroup: formData.ageGroup,
+        researchType: formData.researchType,
+        researchTime: formData.researchTime,
+        researchLocation: formData.researchLocation,
         deadlineDate: formData.deadlineDate,
-        participationDate: formData.participationDate,
         rewards: formData.rewards,
         createdAt: new Date(),
         views: 0,
@@ -93,10 +98,12 @@ export default function PostPage() {
         imageUrl: '',
         likes: 0,
         category: '',
-        minorCategory: '',
-        requirements: '',
+        ageGroup: '',
+        sexType: '',
+        researchType: '',
+        researchTime: '',
+        researchLocation: '',
         deadlineDate: new Date(),
-        participationDate: new Date(),
         rewards: 0,
       });
       refetch();
@@ -134,7 +141,10 @@ export default function PostPage() {
             setFormData(prevData => ({
               ...prevData,
               category: value,
-              minorCategory: value,
+              sexType: value,
+              ageGroup: value,
+              researchType: value,
+              researchLocation: value,
             }));
           }}
         />
