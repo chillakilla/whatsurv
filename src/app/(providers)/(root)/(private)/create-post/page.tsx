@@ -23,9 +23,12 @@ export default function PostPage() {
     imageUrl: '',
     likes: 0,
     category: '',
-    requirements: '',
+    ageGroup: '',
+    sexType: '',
+    researchType: '',
+    researchTime: '',
+    researchLocation: '',
     deadlineDate: new Date(),
-    participationDate: new Date(),
     rewards: 0,
   });
 
@@ -43,14 +46,6 @@ export default function PostPage() {
   if (!posts) {
     return <div>불러올 수 있는 게시글이 없습니다.</div>;
   }
-
-  const InputChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const {name, value} = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
 
   const ImgFileChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imgFile = e.target.files?.[0] || null;
@@ -81,30 +76,48 @@ export default function PostPage() {
         imageUrl: imageUrl,
         likes: formData.likes,
         category: formData.category,
-        requirements: formData.requirements,
+        sexType: formData.sexType,
+        ageGroup: formData.ageGroup,
+        researchType: formData.researchType,
+        researchTime: formData.researchTime,
+        researchLocation: formData.researchLocation,
         deadlineDate: formData.deadlineDate,
-        participationDate: formData.participationDate,
         rewards: formData.rewards,
         createdAt: new Date(),
         views: 0,
       };
 
       await addPost(updatedFormData);
+
+      setSelectedFile(null);
+      setPreviewImage(null);
+
       setFormData({
         title: '',
         content: '',
         imageUrl: '',
         likes: 0,
         category: '',
-        requirements: '',
+        ageGroup: '',
+        sexType: '',
+        researchType: '',
+        researchTime: '',
+        researchLocation: '',
         deadlineDate: new Date(),
-        participationDate: new Date(),
         rewards: 0,
       });
       refetch();
     } catch (error) {
       console.error('에러', error);
     }
+  };
+
+  const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, value} = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: new Date(value),
+    }));
   };
 
   return (
@@ -119,9 +132,21 @@ export default function PostPage() {
               [name]: value,
             }));
           }}
+          onDateChange={onDateChange}
           onImgFileChange={ImgFileChangeHandler}
           onSubmit={SubmitHandler}
           previewImage={previewImage}
+          onCategoryChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+            const {value} = e.target;
+            setFormData(prevData => ({
+              ...prevData,
+              category: value,
+              sexType: value,
+              ageGroup: value,
+              researchType: value,
+              researchLocation: value,
+            }));
+          }}
         />
       </div>
     </div>
