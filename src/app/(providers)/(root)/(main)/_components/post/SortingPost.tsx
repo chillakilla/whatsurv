@@ -25,7 +25,7 @@ export default function SortingPost() {
   }
 
   return (
-    <div className="flex gap-4 my-4">
+    <div className="flex gap-4 my-2">
       <select className="border-1 border-[#818490] w-[100px] h-8 text-sm text-[##545760] gap-2  font-semibold px-2 rounded-full">
         <option>정렬</option>
         <option>인기순</option>
@@ -36,6 +36,7 @@ export default function SortingPost() {
         <option>성별</option>
         <option>여성</option>
         <option>남성</option>
+        <option>무관</option>
       </select>
       <select className="border-1 border-[#818490] w-[100px] h-8 text-sm text-[##545760] font-semibold px-2 rounded-full">
         <option>연령</option>
@@ -47,16 +48,6 @@ export default function SortingPost() {
         <option>60대</option>
         <option>70대</option>
         <option>80대 이상</option>
-      </select>
-      <select className="border-1 border-[#818490] w-[100px] h-8 text-sm text-[##545760] font-semibold px-2 rounded-full">
-        <option>관심사</option>
-        <option>전체</option>
-        <option>헬스케어</option>
-        <option>커뮤니티</option>
-        <option>취미</option>
-        <option>커머스</option>
-        <option>OTT</option>
-        <option>모빌리티</option>
       </select>
       <select className="border-1 border-[#818490] w-[100px] h-8 text-sm text-[##545760] font-semibold px-2 rounded-full">
         <option>종류</option>

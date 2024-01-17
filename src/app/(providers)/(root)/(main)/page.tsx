@@ -2,10 +2,10 @@
 import Tab from '../_components/Tab';
 import Banner from './_components/carousel/Banner';
 import Popular from './_components/carousel/Popular';
-import PostIt from './_components/post/PostIt';
+import PostIt from '../(public)/survey-it/page';
 import FloatingBtn from './_components/FloatingBtn';
-import PostBeauty from './_components/post/PostBeauty';
-import PostMedi from './_components/post/PostMedi';
+import PostBeauty from '../(public)/survey-beauty/page';
+import PostMedi from '../(public)/survey-medical/page';
 import {useState} from 'react';
 
 export default function MainPage() {
