@@ -194,7 +194,6 @@ export default function PostForm({
               취소
             </button>
             <button
-              onClick={buttonHandler}
               type="submit"
               className="w-[15.625rem] h-[3rem] mt-[10px] border-[1.4px] bg-[#0051FF] rounded-[25rem] text-white"
             >
