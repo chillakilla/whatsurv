@@ -3,7 +3,7 @@
 import {PostInput, addPost, getPosts, uploadImageToStorage} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PostForm from './_components/PostForm';
 
 export default function PostPage() {
@@ -88,7 +88,6 @@ export default function PostPage() {
         createdAt: new Date(),
         views: 0,
       };
-      console.log('Form submitted successfully');
       await addPost(updatedFormData);
 
       setSelectedFile(null);
@@ -108,7 +107,7 @@ export default function PostPage() {
         deadlineDate: new Date(),
         rewards: 0,
       });
-      console.log(SubmitHandler);
+      alert('등록되었습니다.');
       refetch();
     } catch (error) {
       console.error('에러', error);

@@ -4,6 +4,7 @@ import {majorCategories, sexType, ageGroup, researchLocation, researchType} from
 import {Spacer} from '@nextui-org/react';
 import {MdArrowBackIos} from 'react-icons/md';
 import {BsPersonCircle} from 'react-icons/bs';
+import {Input} from '@nextui-org/react';
 
 interface PostFormProps {
   formData: Omit<Post, 'views' | 'id' | 'createdAt' | 'updatedAt'> & {
@@ -26,6 +27,17 @@ export default function PostForm({
   onSubmit,
   previewImage,
 }: PostFormProps) {
+  const isFormValid =
+    formData.title.trim() !== '' &&
+    formData.category !== '' &&
+    formData.sexType !== '' &&
+    formData.ageGroup !== '' &&
+    formData.researchType !== '' &&
+    formData.researchLocation !== '' &&
+    formData.researchTime !== '' &&
+    formData.deadlineDate !== null &&
+    formData.content.trim() !== '';
+
   const buttonHandler = () => {
     console.log('clicked!');
   };
@@ -68,7 +80,7 @@ export default function PostForm({
           <div className="flex items-center gap-[0.5rem]">
             <label>업종 : </label>
             <select
-              className="border border-sky-500 rounded-lg"
+              className="p-[2px] border border-sky-500 rounded-lg"
               name="category"
               value={formData.category}
               onChange={onCategoryChange}
@@ -82,7 +94,7 @@ export default function PostForm({
             </select>
             <label>성별 : </label>
             <select
-              className="border border-sky-500 rounded-lg"
+              className="p-[2px] border border-sky-500 rounded-lg"
               name="sexType"
               value={formData.sexType}
               onChange={onCategoryChange}
@@ -96,7 +108,7 @@ export default function PostForm({
             </select>
             <label>연령대 : </label>
             <select
-              className="border border-sky-500 rounded-lg"
+              className="p-[2px] border border-sky-500 rounded-lg"
               name="ageGroup"
               value={formData.ageGroup}
               onChange={onCategoryChange}
@@ -110,7 +122,7 @@ export default function PostForm({
             </select>
             <label>설문종류 : </label>
             <select
-              className="border border-sky-500 rounded-lg"
+              className="p-[2px] border border-sky-500 rounded-lg"
               name="researchType"
               value={formData.researchType}
               onChange={onCategoryChange}
@@ -124,7 +136,7 @@ export default function PostForm({
             </select>
             <label>조사장소 : </label>
             <select
-              className="border border-sky-500 rounded-lg"
+              className="p-[2px] border border-sky-500 rounded-lg"
               name="researchLocation"
               value={formData.researchLocation}
               onChange={onCategoryChange}
@@ -138,7 +150,7 @@ export default function PostForm({
             </select>
             <label htmlFor="deadlineDate">마감일: </label>
             <input
-              className="border border-sky-500 rounded-lg"
+              className="p-[2px] border border-sky-500 rounded-lg"
               type="date"
               name="deadlineDate"
               value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
@@ -146,41 +158,52 @@ export default function PostForm({
             />
           </div>
           <Spacer y={6} />
-          <label>소요시간 : </label>
-          <input
-            className="border-solid border-2  border-#ccc"
-            type="text"
-            name="researchTime"
-            value={formData.researchTime}
-            onChange={onInputChange}
-            required
-            placeholder="설문에 소요되는 시간을 작성해주세요."
-          />
-          <label>보상: </label>
-          <input
-            className="border-solid border-2  border-#ccc"
-            type="number"
-            name="rewards"
-            value={formData.rewards}
-            onChange={onInputChange}
-          />
-          <label>이미지 Url: </label>
-          <input
-            className="border-solid border-2 border-#ccc"
-            type="text"
-            name="imageUrl"
-            value={formData.imageUrl}
-            onChange={onInputChange}
-          />
-          <input
-            className="mt-[10px] border-solid border-2 border-#ccc"
-            type="file"
-            accept="image/*"
-            onChange={onImgFileChange}
-          />
+          <div className="w-[64.625rem] flex flex-col">
+            <Input
+              className="p-[3px] border border-sky-500 rounded-lg"
+              type="text"
+              label="소요시간"
+              name="researchTime"
+              value={formData.researchTime}
+              onChange={onInputChange}
+              required
+              placeholder="설문에 소요되는 시간을 작성해주세요."
+            />
+            {/* <input
+              className="p-[3px] border border-sky-500 rounded-lg"
+              type="text"
+              name="researchTime"
+              value={formData.researchTime}
+              onChange={onInputChange}
+              required
+              placeholder="설문에 소요되는 시간을 작성해주세요."
+            /> */}
+            <label>보상: </label>
+            <input
+              className="border-solid border-2  border-#ccc"
+              type="number"
+              name="rewards"
+              value={formData.rewards}
+              onChange={onInputChange}
+            />
+            <label>이미지 Url: </label>
+            <input
+              className="border-solid border-2 border-#ccc"
+              type="text"
+              name="imageUrl"
+              value={formData.imageUrl}
+              onChange={onInputChange}
+            />
+            <input
+              className="mt-[10px] border-solid border-2 border-#ccc"
+              type="file"
+              accept="image/*"
+              onChange={onImgFileChange}
+            />
+          </div>
+          <h3>이미지 미리보기</h3>
           {previewImage && (
             <div>
-              <h3>미리보기</h3>
               <img src={previewImage} alt="Image Preview" />
             </div>
           )}
@@ -212,7 +235,7 @@ export default function PostForm({
             </button>
             <button
               type="submit"
-              className="
+              className={`
               w-[15.625rem] 
               h-[3rem] 
               mt-[10px] 
@@ -220,9 +243,9 @@ export default function PostForm({
               bg-[#0051FF] 
               rounded-[25rem] 
               text-white
-              hover:bg-white
-              hover:text-[#0051FF]
-              hover:border-none"
+              ${!isFormValid ? 'cursor-not-allowed' : 'hover:bg-white hover:text-[#0051FF] hover:border-none'}
+              }`}
+              disabled={!isFormValid}
             >
               등록
             </button>
