@@ -63,6 +63,8 @@ export default function PostPage() {
 
   const SubmitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('SubmitHandler called');
+
     try {
       let imageUrl = formData.imageUrl;
 
@@ -86,7 +88,7 @@ export default function PostPage() {
         createdAt: new Date(),
         views: 0,
       };
-
+      console.log('Form submitted successfully');
       await addPost(updatedFormData);
 
       setSelectedFile(null);
@@ -106,6 +108,7 @@ export default function PostPage() {
         deadlineDate: new Date(),
         rewards: 0,
       });
+      console.log(SubmitHandler);
       refetch();
     } catch (error) {
       console.error('에러', error);
@@ -132,19 +135,15 @@ export default function PostPage() {
               [name]: value,
             }));
           }}
+          onSubmit={SubmitHandler}
           onDateChange={onDateChange}
           onImgFileChange={ImgFileChangeHandler}
-          onSubmit={SubmitHandler}
           previewImage={previewImage}
           onCategoryChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-            const {value} = e.target;
+            const {name, value} = e.target;
             setFormData(prevData => ({
               ...prevData,
-              category: value,
-              sexType: value,
-              ageGroup: value,
-              researchType: value,
-              researchLocation: value,
+              [name]: value,
             }));
           }}
         />

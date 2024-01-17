@@ -26,10 +26,13 @@ export default function PostForm({
   onSubmit,
   previewImage,
 }: PostFormProps) {
+  const buttonHandler = () => {
+    console.log('clicked!');
+  };
   return (
     <div>
       <div className="w-6 h-6 flex flex-col justify-center items-center ">
-        <button>
+        <button onClick={buttonHandler}>
           <MdArrowBackIos />
         </button>
       </div>
@@ -186,18 +189,19 @@ export default function PostForm({
             onChange={onInputChange}
             required
           />
+          <div className="flex justify-end items-start self-stretch gap-6">
+            <button className="w-[15.625rem] h-[3rem] mt-[10px] border-[1.4px] bg-white border-sky-500 rounded-[25rem]">
+              취소
+            </button>
+            <button
+              onClick={buttonHandler}
+              type="submit"
+              className="w-[15.625rem] h-[3rem] mt-[10px] border-[1.4px] bg-[#0051FF] rounded-[25rem] text-white"
+            >
+              등록
+            </button>
+          </div>
         </form>
-        <div className="flex justify-end items-start self-stretch gap-6">
-          <button className="w-[15.625rem] h-[3rem] mt-[10px] border-[1.4px] bg-white border-sky-500 rounded-[25rem]">
-            취소
-          </button>
-          <button
-            type="submit"
-            className="w-[15.625rem] h-[3rem] mt-[10px] border-[1.4px] bg-[#0051FF] rounded-[25rem] text-white"
-          >
-            등록
-          </button>
-        </div>
       </div>
     </div>
   );
