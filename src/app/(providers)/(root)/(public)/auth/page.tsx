@@ -231,7 +231,7 @@ const AuthPage: React.FC = () => {
   }
 
   return (
-    <div style={{backgroundColor: '#F2F3F7'}} className="flex flex-wrap justify-center">
+    <div style={{backgroundColor: '#F2F3F7'}} className="place-items-center grid">
       <form onSubmit={clickLoginHandler} className="relative ">
         <h3 className="w-full mx-auto text-2xl mt-[20px] mb-[40px]  font-bold">로그인</h3>
         <Input

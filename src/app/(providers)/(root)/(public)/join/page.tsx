@@ -115,6 +115,19 @@ const JoinPage = () => {
 
   //이메일 중복확인 함수
   const checkEmailAvailability = async () => {
+    // 이메일이 비어 있는 경우 확인
+    if (!email) {
+      setEmailCheck('이메일을 입력해주세요');
+      setEmailValidationClass('text-red-500'); // 에러 색상 설정
+      return; // 함수 종료
+    }
+
+    // 이메일 형식이 유효하지 않은 경우 확인
+    if (!emailValidation.test(email)) {
+      setEmailCheck('유효한 이메일 형식이 아닙니다');
+      setEmailValidationClass('text-red-500'); // 에러 색상 설정
+      return; // 함수 종료
+    }
     try {
       const usersRef = collection(db, 'users');
       const q = query(usersRef, where('email', '==', email));
@@ -140,8 +153,8 @@ const JoinPage = () => {
       const querySnapshot = await getDocs(query(collection(db, 'users'), where('nickname', '==', nickname)));
       if (querySnapshot.empty) {
         setIsNicknameAvailable(true);
-        setNicknameCheck('사용 가능한 닉네임입니다');
         setNicknameValidationClass('text-green-500');
+        setNicknameCheck('사용 가능한 닉네임입니다');
       } else {
         setIsNicknameAvailable(false);
         setNicknameCheck('이미 사용 중인 닉네임입니다');
@@ -214,20 +227,26 @@ const JoinPage = () => {
     switch (step) {
       case 1:
         return (
-          <div>
-            <Input
-              type="email"
-              className="mt-[20px]"
-              label="이메일"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="이메일을 입력해주세요."
-            />
-            <Button onClick={checkEmailAvailability}>이메일 중복 확인</Button>
+          <div className="mt-[40px]">
+            <div className="flex items-center ">
+              <Input
+                type="email"
+                className="mt-[20px]   bg-[#fff] rounded-xl"
+                label="이메일을 입력해주세요."
+                variant="bordered"
+                labelPlacement="outside"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="abcde@gmail.com"
+              />
+              <Button onClick={checkEmailAvailability} className="bg-[#0051FF] ml-[5px] text-white translate-y-[11px]">
+                중복 확인
+              </Button>
+            </div>
             {emailCheck && <p className={`${emailValidationClass} text-red-500 text-center mt-2`}>{emailCheck}</p>}
 
             <Button
-              className="mt-[20px]"
+              className="mt-[20px] w-full bg-[#0051FF] text-white"
               onClick={() => {
                 if (validateInput()) moveToNextStep();
               }}
@@ -334,7 +353,7 @@ const JoinPage = () => {
   return (
     <div>
       {/* 프로그래스 바 */}
-      <div className="progress-bar">
+      <div className="progress-bar mt-[20px]">
         <div className="bg-gray-200 w-full h-4 rounded-lg">
           <div className="bg-blue-500 h-4 rounded-lg" style={progressBarStyle}></div>
         </div>
