@@ -7,11 +7,29 @@ import {useQuery} from '@tanstack/react-query';
 import {useRouter} from 'next/navigation';
 import {useState} from 'react';
 import {FaRegHeart} from 'react-icons/fa';
+import {FaRegCircleUser} from 'react-icons/fa6';
+import {IoEyeOutline} from 'react-icons/io5';
 import Banner from '../../(main)/_components/carousel/Banner';
 import LiteSurveyCreateModal from '../../(main)/_components/lietsurvey/CreatModal';
 import LiteSurveyModal from '../../(main)/_components/lietsurvey/SurveyModal';
-
+import PostBeauty from '../../(main)/_components/post/PostBeauty';
+import Tab from '../../_components/Tab';
+import PostIt from '../survey-it/page';
+import PostMedi from '../survey-medical/page';
 export default function page() {
+  const [selectedTab, setSelectedTab] = useState<string>('IT');
+  const renderContent = () => {
+    switch (selectedTab) {
+      case 'IT':
+        return <PostIt />;
+      case 'BEAUTY':
+        return <PostBeauty />;
+      case 'MEDICAL':
+        return <PostMedi />;
+      default:
+        return <PostIt />;
+    }
+  };
   const router = useRouter();
 
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
@@ -41,53 +59,77 @@ export default function page() {
 
   return (
     <>
-      <div className="flex-col items-center justify-center">
+      <Tab selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+      <div className="flex-col items-center justify-center w-[88.5rem] m-auto mb-20">
         <Banner />
-        <div className="container mx-auto p-4">
-          <h1 className="text-2xl font-bold mb-4">Lite한 설문조사</h1>
-          {isLoading && <div>Loading...</div>}
-          {isError && <div>Error fetching survey data</div>}
-          {liteSurveyData && liteSurveyData.length > 0 ? (
-            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {liteSurveyData?.map(litepost => (
-                <li key={litepost.id} className="h-36 border-2 border-[#eee] rounded-xl p-2">
-                  <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
-                    <div className="category-box flex justify-between items-center">
-                      <p className="bg-[#0051FF] text-[#D6FF00] w-12 p-1 text-center rounded-full font-semibold text-xs">
-                        Lite
-                      </p>
-                      <Button
-                        isIconOnly
-                        aria-label="Like"
-                        className="w-12 h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent"
-                      >
-                        <FaRegHeart />
-                      </Button>
+        <div className="my-20">
+          <div>
+            <h1 className="text-2xl font-bold mb-4">Lite한 설문조사</h1>
+            {isLoading && <div>Loading...</div>}
+            {isError && <div>Error fetching survey data</div>}
+          </div>
+          <div>
+            <div>
+              {liteSurveyData && liteSurveyData.length > 0 ? (
+                <div className="post-container grid grid-cols-4 gap-4">
+                  {liteSurveyData?.map(litepost => (
+                    <div key={litepost.id}>
+                      <div className="h-[215px] bg-white border-1 border-[#C1C5CC] flex-col justify-between rounded-md p-4">
+                        <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
+                          <div className="top-content h-[90px]">
+                            <div className="category-box flex justify-between items-center mb-4">
+                              <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
+                                Lite
+                              </div>
+                              <button className="like-button w-12 h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent">
+                                <FaRegHeart />
+                              </button>
+                            </div>
+                            <p className="text-xs text-[#666] mb-4">
+                              마감일 |{' '}
+                              {litepost.deadlineDate
+                                ? litepost.deadlineDate.toLocaleString('ko-KR', {
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit',
+                                  })
+                                : '2099.12.31'}
+                            </p>
+                            <h3 className="text-lg font-bold">{litepost.title}</h3>
+                          </div>
+                          <div className="bottom-content flex items-end">
+                            <div className="flex justify-between items-center mt-[50px] w-full border-t-1 ">
+                              <div className="user flex mt-4 gap-2">
+                                <FaRegCircleUser />
+                                <p className="font-semibold">작성자 닉네임</p>
+                              </div>
+                              <div className="viewer flex mt-4 gap-2 text-[#818490]">
+                                <IoEyeOutline />
+                                {litepost.views}
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
                     </div>
-                    <p className="text-xs text-[#666] my-">
-                      {' '}
-                      작성일 |{' '}
-                      {litepost.createdAt.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})}
-                    </p>
-                    <p className="text-sm font-bold">{litepost.title}</p>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div>설문조사 목록이 없습니다.</div>
-          )}
-          {selectedPost && (
-            <LiteSurveyModal
-              litepost={selectedPost}
-              contents={selectedPost.contents}
-              images={selectedPost.images}
-              onClose={onCloseModalHandler}
-            />
-          )}
+                  ))}
+                </div>
+              ) : (
+                <div>설문조사 목록이 없습니다.</div>
+              )}
+            </div>
+            {selectedPost && (
+              <LiteSurveyModal
+                litepost={selectedPost}
+                contents={selectedPost.contents}
+                images={selectedPost.images}
+                onClose={onCloseModalHandler}
+              />
+            )}
+            <Button onClick={onClickCreateModalOpen}>{'작성하기'}</Button>
+            {isCreateModalOpen && <LiteSurveyCreateModal onCloseCreateModal={() => setIsCreateModalOpen(false)} />}
+          </div>
         </div>
-        <Button onClick={onClickCreateModalOpen}>{'작성하기'}</Button>
-        {isCreateModalOpen && <LiteSurveyCreateModal onCloseCreateModal={() => setIsCreateModalOpen(false)} />}
       </div>
     </>
   );
