@@ -1,17 +1,9 @@
 import {db} from '@/firebase';
 import {collection, getDocs, query, where} from 'firebase/firestore';
 import {emailValidation} from './validationUtils';
-interface EmailAvailableNickNameAvailableProps {
-  email: string;
-  setEmailCheck: (message: string) => void;
-  setEmailValidationClass: (className: string) => void;
-  setIsEmailAvailable: (isAvailable: boolean) => void;
 
-  nickname: string;
-  setNicknameCheck: (message: string) => void;
-  setNicknameValidationClass: (className: string) => void;
-  setIsNicknameAvailable: (isAvailable: boolean) => void;
-}
+import type {EmailAvailableNickNameAvailableProps} from '../_types/joinType';
+
 export default function EmailAvailableNickNameAvailable({
   email,
   setEmailCheck,

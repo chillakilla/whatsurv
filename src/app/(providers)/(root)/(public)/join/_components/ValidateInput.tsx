@@ -1,23 +1,7 @@
 import {emailValidation, passwordValidation} from './validationUtils';
 
-interface ValidateInputProps {
-  email: string;
-  setEmailCheck: (value: string) => void;
-  password: string;
-  setPasswordCheck: (value: string) => void;
-  confirmPassword: string;
-  setConfirmPasswordCheck: (value: string) => void;
-  birthDate: string;
-  setBirthDateCheck: (value: string) => void;
-  nickname: string;
-  setNicknameCheck: (value: string) => void;
-  isEmailAvailable: boolean;
-  isNicknameAvailable: boolean;
-  setIsPasswordMatch: (value: boolean) => void;
-  step: number;
-  setEmailValidationClass: (value: string) => void;
-  setNicknameValidationClass: (value: string) => void;
-}
+import type {ValidateInputProps} from '../_types/joinType';
+
 export default function ValidateInput({
   email,
   setEmailCheck,

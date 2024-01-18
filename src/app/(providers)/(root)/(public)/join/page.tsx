@@ -4,7 +4,7 @@ import JoinUseStateCollection from './_components/JoinUseStateCollection';
 import ProgressBar from './_components/ProgressBar';
 import RenderStepJoin from './_components/RenderStepJoin';
 import ValidateInput from './_components/ValidateInput';
-const JoinPage = () => {
+export default function JoinPage() {
   const {
     email,
     setEmail,
@@ -114,6 +114,4 @@ const JoinPage = () => {
       </form>
     </div>
   );
-};
-
-export default JoinPage;
+}

@@ -1,13 +1,8 @@
-import React from 'react';
+import type {ProgressBarProps} from '../_types/joinType';
 
-interface ProgressBarProps {
-  progress: number;
-}
-
-const ProgressBar: React.FC<ProgressBarProps> = ({progress}) => {
+export default function ProgressBar({progress}: ProgressBarProps) {
   const progressBarStyle = {
     width: `${progress}%`,
-    // 진행률이 변경될 때 부드럽게 애니메이션 적용
     transition: 'width 0.3s ease-in-out',
   };
   return (
@@ -17,6 +12,4 @@ const ProgressBar: React.FC<ProgressBarProps> = ({progress}) => {
       </div>
     </div>
   );
-};
-
-export default ProgressBar;
+}

@@ -8,35 +8,7 @@ import React from 'react';
 import {IoIosCheckmarkCircle} from 'react-icons/io';
 import {SyncLoader} from 'react-spinners';
 
-interface RenderStepJoinProps {
-  email: string;
-  setEmail: (value: string) => void;
-  password: string;
-  setPassword: (value: string) => void;
-  confirmPassword: string;
-  setConfirmPassword: (value: string) => void;
-  birthDate: string;
-  setBirthDate: (value: string) => void;
-  nickname: string;
-  setNickname: (value: string) => void;
-  step: number;
-  setStep: (value: number) => void;
-  progress: number;
-  setProgress: (value: number) => void;
-  isJoining: boolean;
-  setIsJoining: (value: boolean) => void;
-  validate: () => boolean;
-
-  clickEmailCheckHandler: () => void;
-  clickNicknameCheckHandler: () => void;
-  emailCheck: string;
-  emailValidationClass: string;
-  passwordCheck: string;
-  confirmPasswordCheck: string;
-  birthDateCheck: string;
-  nicknameCheck: string;
-  nicknameValidationClass: string;
-}
+import type {RenderStepJoinProps} from '../_types/joinType';
 
 export default function RenderStepJoin({
   email,
