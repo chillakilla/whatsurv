@@ -84,7 +84,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="relative bg-white rounded-lg w-[600px] p-8 flex flex-col">
+      <div className="relative bg-white rounded-lg w-[39rem] p-8 flex flex-col">
         <div className="modal-content flex flex-col">
           <div className="mb-4 flex items-center">
             {selectedImages.map((image, index) => (
@@ -92,11 +92,11 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
                 <img
                   src={URL.createObjectURL(image)}
                   alt={`Image${index}`}
-                  className="w-[150px] h-[150px] object-cover mr-2"
+                  className="w-[9.375rem] h-[9.375rem] object-cover mr-2"
                 />
                 <button
                   onClick={() => removeImage(index)}
-                  className="ml-2 border-sky-500 bg-white px-[50px] rounded-xl
+                  className="ml-2 border-sky-500 bg-white px-[3.125rem] rounded-xl
                 hover:bg-[#0051FF]
                 hover:text-white"
                 >
@@ -106,54 +106,51 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
             ))}
           </div>
           <label className="mb-4 flex items-center">
-            이미지 :
-            <input
-              type="file"
-              accept="image/*"
-              onChange={onImageChange}
-              className="border border-sky-500 rounded-xl p-2 ml-2 w-[385px]"
-            />
+            <input type="file" accept="image/*" onChange={onImageChange} className="p-2 ml-2 w-[24.0625rem]" />
           </label>
-          <label className="mb-4">
+          <label className="mb-4 pb-1 text-2xl border-b border-black">
             제 목 :&nbsp;
             <input
               type="text"
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className="border border-sky-500 rounded-xl p-2 w-[400px]"
+              className="text-2xl p-2 w-[25rem] h-[2rem]"
             />
           </label>
           {contents.map((contentsEntry, index) => (
-            <div key={index} className="mb-4">
+            <div key={index} className="mb-4 pb-1 text-l border-b border-blue-300">
               내 용 :&nbsp;
               <input
                 value={contentsEntry}
                 onChange={e => updateContent(index, e.target.value)}
-                className="border border-sky-500 rounded-xl p-2 flex-grow w-[400px]"
+                className="text-xl p-2 w-[29.6rem] h-[1.4rem]"
               />
               <button
                 onClick={() => removeContent(index)}
-                className="ml-2 border-sky-500 bg-white px-2 rounded-xl
-                hover:bg-[#0051FF]
+                className="bg-white px-2 rounded-xl
+                hover:bg-black
                 hover:text-white"
               >
-                삭제
+                X
               </button>
             </div>
           ))}
           <button
             onClick={addContent}
-            className="mb-7 mx-10 bg-blue-400 text-white rounded-lg w-[200px] hover:bg-blue-700"
+            className="bg-[#4D85FF] justify-end text-white rounded-md w-[8rem] hover:bg-blue-700 ml-auto"
           >
-            내용을 추가해 주세요.
+            내용 추가
           </button>
           {/* 게시물 등록 하기*/}
-          <div className="flex items-center justify-center gap-3">
-            <button onClick={onSubmitHandler} className="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-700">
+          <div className="flex justify-end mt-4">
+            <button
+              onClick={onSubmitHandler}
+              className="bg-[#4D85FF] text-white px-4 py-2 rounded-md mr-2 hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
+            >
               등록
             </button>
             <span
-              className="close self-end bg-white text-black px-4 py-2 rounded hover:bg-blue-700 hover:text-white"
+              className="close self-end bg-[#ef5c55] text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring focus:border-[#EB271C]"
               onClick={onCloseCreateModal}
             >
               닫기

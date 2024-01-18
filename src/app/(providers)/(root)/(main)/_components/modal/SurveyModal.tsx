@@ -95,7 +95,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
           {contents.map((item, index) => (
             <div
               key={index}
-              className="flex items-center mb-2 cursor-pointer border-b border-blue-100 pb-4 mb-4"
+              className="flex items-center mb-2 cursor-pointer border-b border-blue-300 pb-4 mb-4"
               onClick={() => onClickContentsHandler(index)}
             >
               <input
@@ -111,7 +111,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
         </div>
         <div className="flex justify-end mt-4">
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2 hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
+            className="bg-[#4D85FF] text-white px-4 py-2 rounded-md mr-2 hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
             onClick={onClickSurveySubmitHandler}
           >
             참여하기
@@ -125,7 +125,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
             결과보기
           </button>
           <button
-            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring focus:border-red-300"
+            className="bg-[#EB271C] text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring focus:border-red-300"
             onClick={onClose}
           >
             닫기

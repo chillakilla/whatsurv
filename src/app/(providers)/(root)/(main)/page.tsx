@@ -53,7 +53,7 @@ function Post({target}: {target: string}) {
             .filter(post => post.category === target)
             .slice(0, 4)
             .map(post => (
-              <Link href={`/survey-beauty/${post.id}`} key={post.id}>
+              <Link href={`/${post.id}`} key={post.id}>
                 <div className="h-[215px] bg-white border-1 border-[#C1C5CC] flex-col justify-between rounded-md p-4">
                   <div className="top-content h-[90px]">
                     <div className="category-box flex justify-between items-center mb-4">

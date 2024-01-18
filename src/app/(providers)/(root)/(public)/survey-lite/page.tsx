@@ -4,7 +4,7 @@ import {getLiteSurveyPosts} from '@/app/api/firebaseApi';
 import {litePost} from '@/app/api/typePost';
 import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
-import {useRouter, useSearchParams} from 'next/navigation';
+import {useSearchParams} from 'next/navigation';
 import {useState} from 'react';
 import {FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
@@ -21,7 +21,6 @@ export default function page() {
     name: searchParams.get('tab') || 'IT',
     to: '/',
   });
-  const router = useRouter();
 
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -69,14 +68,14 @@ export default function page() {
                 <div className="post-container grid grid-cols-4 gap-4">
                   {liteSurveyData?.map(litepost => (
                     <div key={litepost.id}>
-                      <div className="h-[215px] bg-white border-1 border-[#C1C5CC] flex-col justify-between rounded-md p-4">
+                      <div className="h-[13.4375rem] bg-white border-1 border-[#C1C5CC] flex-col justify-between rounded-md p-4">
                         <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
-                          <div className="top-content h-[90px]">
+                          <div className="top-content h-[5.625rem]">
                             <div className="flex justify-between items-center mb-4">
                               <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
                                 Lite
                               </div>
-                              <button className="like-button w-12 h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent">
+                              <button className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF] bg-transparent">
                                 <FaRegHeart />
                               </button>
                             </div>
@@ -93,7 +92,7 @@ export default function page() {
                             <h3 className="text-lg font-bold">{litepost.title}</h3>
                           </div>
                           <div className="bottom-content flex items-end">
-                            <div className="flex justify-between items-center mt-[50px] w-full border-t-1 ">
+                            <div className="flex justify-between items-center mt-[3.125rem] w-full border-t-1 ">
                               <div className="user flex mt-4 gap-2">
                                 <FaRegCircleUser />
                                 <p className="font-semibold">작성자 닉네임</p>
@@ -126,7 +125,7 @@ export default function page() {
                 onClick={onClickCreateModalOpen}
                 isIconOnly
                 aria-label="write-post"
-                className="w-[50px] h-[50px] rounded-full bg-gray-200"
+                className="w-[3.125rem] h-[3.125rem] rounded-full bg-gray-200"
               >
                 <LuPencilLine />
               </Button>
