@@ -1,68 +1,88 @@
-'use client';
-
 import {getPosts} from '@/app/api/firebaseApi';
-import {Post} from '@/app/api/typePost';
-import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
-import {useRouter} from 'next/navigation';
 import {FaRegHeart} from 'react-icons/fa';
+import {FaRegCircleUser} from 'react-icons/fa6';
+import {GrView} from 'react-icons/gr';
+import React from 'react';
+import Link from 'next/link';
+import SortingPost from '../../(main)/_components/post/SortingPost';
 
-export default function SurveyItPage() {
-  const router = useRouter();
-
+export default function PostMedi() {
+  const target = 'Medical';
   const {
-    data: surveyData,
+    data: posts,
     isLoading,
     isError,
-    refetch,
-  } = useQuery<Post[]>({
-    queryKey: ['surveyData'],
+  } = useQuery({
+    queryKey: ['posts'],
     queryFn: getPosts,
   });
 
-  const selectedCategory = 'Medical';
+  if (isLoading) {
+    return <div>로딩 중...</div>;
+  }
 
-  const filteredSurveyData = surveyData?.filter(post => post.category === selectedCategory) || [];
+  if (isError) {
+    return <div>로딩 중에 오류가 발생했습니다.</div>;
+  }
+
+  if (!posts) {
+    return <div>불러올 수 있는 게시글이 없습니다.</div>;
+  }
+  const hasPosts = posts.some(post => post.category === target);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Medical 설문조사</h1>
-      {isLoading && <div>Loading...</div>}
-      {isError && <div>Error fetching survey data</div>}
-      {filteredSurveyData.length > 0 ? (
-        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {filteredSurveyData.map(post => (
-            <li key={post.id} className="h-36 border-2 border-[#eee] rounded-xl p-2">
-              <a onClick={() => router.push(`/survey-medical/${post.id}`)} className="cursor-pointer">
-                <div className="category-box flex justify-between items-center">
-                  <p className="bg-[#0051FF] text-[#D6FF00] w-12 p-1 text-center rounded-full font-semibold text-xs">
-                    {post.category}
-                  </p>
-                  <Button
-                    isIconOnly
-                    aria-label="Like"
-                    className="w-12 h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent"
-                  >
-                    <FaRegHeart />
-                  </Button>
+    <div className="my-20">
+      <div className="title-box flex-col items-center  mb-4">
+        <div className="flex">
+          <h2 className="font-bold text-xl w-[120px] ">메디컬 전체</h2>
+        </div>
+        <SortingPost />
+      </div>
+      <div className="post-container grid grid-cols-4 gap-4">
+        {hasPosts ? (
+          posts
+            .filter(post => post.category === target)
+            .slice(0, 4)
+            .map(post => (
+              <Link href={`/survey-medical/${post.id}`} key={post.id}>
+                <div className="h-[215px] bg-white border-1 border-[#C1C5CC] flex-col justify-between rounded-md p-4">
+                  <div className="top-content h-[90px]">
+                    <div className="category-box flex justify-between items-center mb-4">
+                      <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
+                        {post.category}
+                      </div>
+                      <button className="like-button w-12 h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent">
+                        <FaRegHeart />
+                      </button>
+                    </div>
+                    <p className="text-xs text-[#666] mb-4">
+                      마감일 |{' '}
+                      {post.deadlineDate
+                        ? post.deadlineDate.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})
+                        : '2099.12.31'}
+                    </p>
+                    <h3 className="text-base font-bold">{post.title}</h3>
+                  </div>
+                  <div className="bottom-content flex items-end  ">
+                    <div className="flex justify-between items-center mt-[50px] w-full border-t-1 ">
+                      <div className="user flex mt-4 gap-2">
+                        <FaRegCircleUser />
+                        <p className="font-semibold">작성자 닉네임</p>
+                      </div>
+                      <div className="viewer flex mt-4 gap-2 text-[#818490]">
+                        <GrView />
+                        {post.views}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-xs text-[#666] my-">
-                  {' '}
-                  작성일 | {post.createdAt.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})}
-                </p>
-                {/* <img src={post.imageUrl} alt="Post Image" /> */}
-                <p className="text-[15px] font-bold">
-                  {post.title.length > 47 ? `${post.title.substring(0, 47)}...` : post.title}
-                </p>
-                <p className="mt-2">{post.likes}</p>
-                <p>작성자</p>
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div> 설문조사 목록이 없습니다. </div>
-      )}
+              </Link>
+            ))
+        ) : (
+          <div>등록된 게시글이 없습니다.</div>
+        )}
+      </div>
     </div>
   );
 }
