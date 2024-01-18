@@ -6,40 +6,52 @@ import {signOut} from 'firebase/auth';
 import {createUserWithEmailAndPassword} from 'firebase/auth/cordova';
 import {collection, doc, getDocs, query, setDoc, where} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
-import React, {useState} from 'react';
+import React from 'react';
 import {IoIosCheckmarkCircle} from 'react-icons/io';
 import {SyncLoader} from 'react-spinners';
+
+import JoinUseStateCollection from './_components/JoinUseStateCollection';
 const JoinPage = () => {
-  const [step, setStep] = useState<number>(1); // 회원가입 진행 단계
-  //가입시 필요한 상태
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
-  const [birthDate, setBirthDate] = useState<string>('');
-  const [nickname, setNickname] = useState<string>('');
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    birthDate,
+    setBirthDate,
+    nickname,
+    setNickname,
+    isEmailAvailable,
+    setIsEmailAvailable,
+    isNicknameAvailable,
+    setIsNicknameAvailable,
+    step,
+    setStep,
+    progress,
+    setProgress,
+    isPasswordMatch,
+    setIsPasswordMatch,
+    isJoining,
+    setIsJoining,
+    emailCheck,
+    setEmailCheck,
+    passwordCheck,
+    setPasswordCheck,
+    confirmPasswordCheck,
+    setConfirmPasswordCheck,
+    birthDateCheck,
+    setBirthDateCheck,
+    nicknameCheck,
+    setNicknameCheck,
+    emailValidationClass,
+    setEmailValidationClass,
+    nicknameValidationClass,
+    setNicknameValidationClass,
+  } = JoinUseStateCollection();
 
-  //정규표현식 유효성상태
-  const [isEmailAvailable, setIsEmailAvailable] = useState<boolean>(false);
-  const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(15);
-
-  // 비밀번호 일치 여부 상태
-  const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(true);
-
-  //빈칸에 대한 유효성검사 관련 상태
-  const [emailCheck, setEmailCheck] = useState<string>('');
-  const [passwordCheck, setPasswordCheck] = useState<string>('');
-  const [confirmPasswordCheck, setConfirmPasswordCheck] = useState<string>('');
-  const [birthDateCheck, setBirthDateCheck] = useState<string>('');
-  const [nicknameCheck, setNicknameCheck] = useState<string>('');
   const router = useRouter();
-
-  //이메일과 닉네임 중복확인 할 경우에 컬러 관련 필요한 상태
-  const [emailValidationClass, setEmailValidationClass] = useState<string>('');
-  const [nicknameValidationClass, setNicknameValidationClass] = useState<string>('');
-
-  //회원가입 진행중 상태
-  const [isJoining, setIsJoining] = useState<boolean>(false);
 
   //가입축하 폭죽
   const triggerConfetti = () => {
@@ -133,7 +145,7 @@ const JoinPage = () => {
   };
 
   //이메일 중복확인 함수
-  const checkEmailAvailability = async () => {
+  const clickEmailCheckHandler = async () => {
     // 이메일이 비어 있는 경우 확인
     if (!email) {
       setEmailCheck('이메일을 입력해주세요');
@@ -169,7 +181,7 @@ const JoinPage = () => {
   };
 
   // 닉네임 중복확인 함수
-  const checkNicknameAvailability = async (): Promise<void> => {
+  const clickNicknameCheckHandler = async (): Promise<void> => {
     if (!nickname) {
       setNicknameCheck('닉네임을 입력해주세요');
       setNicknameValidationClass('text-red-500'); // 에러 색상 설정
@@ -253,7 +265,7 @@ const JoinPage = () => {
     switch (step) {
       case 1:
         return (
-          <div className="mt-[40px] w-[400px]">
+          <div className="mt-[20px] w-[400px]">
             <div className="flex items-center ">
               <Input
                 type="email"
@@ -264,7 +276,7 @@ const JoinPage = () => {
                 onChange={e => setEmail(e.target.value)}
               />
               <Button
-                onClick={checkEmailAvailability}
+                onClick={clickEmailCheckHandler}
                 size="lg"
                 className="bg-[#0051FF] ml-[5px] text-white translate-y-[11px]"
               >
@@ -287,7 +299,7 @@ const JoinPage = () => {
         );
       case 2:
         return (
-          <div className="mt-[40px] w-[400px]">
+          <div className="mt-[20px] w-[400px]">
             <Input
               type="password"
               className="mt-[20px] mb-[20px] bg-[#fff] rounded-xl"
@@ -320,7 +332,7 @@ const JoinPage = () => {
         );
       case 3:
         return (
-          <div className="mt-[40px] w-[400px]">
+          <div className="mt-[20px] w-[400px]">
             <Input
               type="date"
               className="mt-[20px]  bg-[#fff] rounded-xl"
@@ -346,7 +358,7 @@ const JoinPage = () => {
         );
       case 4:
         return (
-          <div className="mt-[40px] w-[400px]">
+          <div className="mt-[20px] w-[400px]">
             {!isJoining && (
               <>
                 <div className="flex items-center">
@@ -361,7 +373,7 @@ const JoinPage = () => {
                   />
                   <Button
                     size="lg"
-                    onClick={checkNicknameAvailability}
+                    onClick={clickNicknameCheckHandler}
                     className="bg-[#0051FF] ml-[5px] text-white translate-y-[11px]"
                   >
                     중복 확인
@@ -379,7 +391,7 @@ const JoinPage = () => {
               </>
             )}
             {isJoining && (
-              <div>
+              <div className="mt-[20px]">
                 <SyncLoader color="#0051FF" loading={isJoining} size={15} className="text-center" />
                 <p className="text-center mt-[30px] text-[#0051FF]">회원가입이 진행중입니다. 잠시만 기다려주세요...</p>
               </div>
@@ -389,7 +401,7 @@ const JoinPage = () => {
       case 5:
         triggerConfetti();
         return (
-          <div className="mt-[40px] w-[400px] ">
+          <div className="mt-[20px] w-[400px] ">
             <div className="flex  flex-wrap justify-center">
               <p className=" w-full text-center">WhatSurv?에 오신 것을 환영합니다!</p>
 
@@ -414,8 +426,9 @@ const JoinPage = () => {
 
   return (
     <div>
+      <h3 className="w-[400px] mx-auto text-2xl mt-[50px] font-bold">회원가입</h3>
       {/* 프로그래스 바 */}
-      <div className="progress-bar mt-[50px] w-[400px] mx-auto">
+      <div className="progress-bar mt-[30px] w-[400px] mx-auto">
         <div className="bg-gray-200 w-full h-4 rounded-lg">
           <div className="bg-blue-500 h-4 rounded-lg" style={progressBarStyle}></div>
         </div>
