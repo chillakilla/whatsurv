@@ -1,6 +1,6 @@
-import type {ProgressBarProps} from '../_types/joinType';
+import type {ProgressBarTypes} from '../_types/typeJoin';
 
-export default function ProgressBar({progress}: ProgressBarProps) {
+export default function ProgressBar({progress}: ProgressBarTypes) {
   const progressBarStyle = {
     width: `${progress}%`,
     transition: 'width 0.3s ease-in-out',

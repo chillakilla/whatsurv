@@ -3,17 +3,7 @@ import {Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader}
 import {sendPasswordResetEmail} from 'firebase/auth';
 
 import {Firestore, collection, getDocs, query, where} from 'firebase/firestore';
-interface PasswordResetModalProps {
-  isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-  resetEmail: string;
-  setResetEmail: React.Dispatch<React.SetStateAction<string>>;
-  emailCheckMessage: string;
-  setEmailCheckMessage: React.Dispatch<React.SetStateAction<string>>;
-  isEmailSent: boolean;
-  setIsResetModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsEmailSent: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import type {PasswordResetModalTypes} from '../_types/typeAuth';
 const PasswordResetModal = ({
   isOpen,
   onOpenChange,
@@ -25,7 +15,7 @@ const PasswordResetModal = ({
   isEmailSent,
 
   setIsEmailSent,
-}: PasswordResetModalProps) => {
+}: PasswordResetModalTypes) => {
   // 비밀번호 재설정 모달 열기
   const openResetModal = () => setIsResetModalOpen(true);
 

@@ -1,17 +1,6 @@
-interface AuthUseStateCollectionTypes {
-  email: string;
-  setEmailCheck: React.Dispatch<React.SetStateAction<string>>;
-  password: string;
-  setPasswordCheck: React.Dispatch<React.SetStateAction<string>>;
-}
+import type {ValidateInputTypes} from '../_types/typeAuth';
 // 정규표현식 이메일과 비밀번호 유효성검사
-
-export default function ValidateInput({
-  email,
-  setEmailCheck,
-  password,
-  setPasswordCheck,
-}: AuthUseStateCollectionTypes): boolean {
+export default function ValidateInput({email, setEmailCheck, password, setPasswordCheck}: ValidateInputTypes): boolean {
   const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
   const passwordValidation = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
   let isValid = true;

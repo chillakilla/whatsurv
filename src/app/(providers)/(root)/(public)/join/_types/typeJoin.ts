@@ -1,4 +1,4 @@
-export interface ValidateInputProps {
+export interface ValidateInputTypes {
   email: string;
   setEmailCheck: (value: string) => void;
   password: string;
@@ -17,7 +17,7 @@ export interface ValidateInputProps {
   setNicknameValidationClass: (value: string) => void;
 }
 
-export interface RenderStepJoinProps {
+export interface RenderStepJoinTypes {
   email: string;
   setEmail: (value: string) => void;
   password: string;
@@ -47,11 +47,11 @@ export interface RenderStepJoinProps {
   nicknameValidationClass: string;
 }
 
-export interface ProgressBarProps {
+export interface ProgressBarTypes {
   progress: number;
 }
 
-export interface EmailAvailableNickNameAvailableProps {
+export interface EmailAvailableNickNameAvailableTypes {
   email: string;
   setEmailCheck: (message: string) => void;
   setEmailValidationClass: (className: string) => void;

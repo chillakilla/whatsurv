@@ -2,7 +2,7 @@ import {db} from '@/firebase';
 import {collection, getDocs, query, where} from 'firebase/firestore';
 import {emailValidation} from './validationUtils';
 
-import type {EmailAvailableNickNameAvailableProps} from '../_types/joinType';
+import type {EmailAvailableNickNameAvailableTypes} from '../_types/typeJoin';
 
 export default function EmailAvailableNickNameAvailable({
   email,
@@ -13,7 +13,7 @@ export default function EmailAvailableNickNameAvailable({
   setNicknameCheck,
   setNicknameValidationClass,
   setIsNicknameAvailable,
-}: EmailAvailableNickNameAvailableProps) {
+}: EmailAvailableNickNameAvailableTypes) {
   //이메일 중복확인 함수
   const clickEmailCheckHandler = async () => {
     // 이메일이 비어 있는 경우 확인

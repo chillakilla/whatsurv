@@ -8,7 +8,7 @@ import React from 'react';
 import {IoIosCheckmarkCircle} from 'react-icons/io';
 import {SyncLoader} from 'react-spinners';
 
-import type {RenderStepJoinProps} from '../_types/joinType';
+import type {RenderStepJoinTypes} from '../_types/typeJoin';
 
 export default function RenderStepJoin({
   email,
@@ -37,7 +37,7 @@ export default function RenderStepJoin({
   birthDateCheck,
   nicknameCheck,
   nicknameValidationClass,
-}: RenderStepJoinProps) {
+}: RenderStepJoinTypes) {
   const router = useRouter();
 
   // 다음 단계로 이동하는 함수

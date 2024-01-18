@@ -1,6 +1,6 @@
 import {emailValidation, passwordValidation} from './validationUtils';
 
-import type {ValidateInputProps} from '../_types/joinType';
+import type {ValidateInputTypes} from '../_types/typeJoin';
 
 export default function ValidateInput({
   email,
@@ -19,7 +19,7 @@ export default function ValidateInput({
   isEmailAvailable,
   isNicknameAvailable,
   step,
-}: ValidateInputProps) {
+}: ValidateInputTypes) {
   //빈칸에 대한 유효성 검사
   const validate = (): boolean => {
     // isVaild는 각 단계에서 입력값의 유효성을 나타낼때 사용함
