@@ -31,12 +31,17 @@ const ResultModal: React.FC<ResultModalProps> = ({litepost, contents, counts, on
         </div>
         <h2 className="text-2xl font-bold mb-4 border-b border-black pb-4 mb-4">{litepost.title}</h2>
         <div className="mb-4">
-          {litepost.contents.map((item, index) => (
-            <div key={index} className="flex items-center mb-2 border-b border-blue-100 pb-4 mb-4">
-              <span className="text-gray-700 mr-2">{item}</span>
-              <span className="text-blue-500 font-bold">{litepost.counts[index]}표</span>
-            </div>
-          ))}
+          {litepost.contents.map((item, index) => {
+            const percent = totalVotes === 0 ? 0 : (litepost.counts[index] / totalVotes) * 100;
+            return (
+              <div key={index} className="flex items-center mb-2 border-b border-blue-100 pb-4 mb-4">
+                <span className="text-gray-700 mr-2">{item}</span>
+                <span className="text-blue-500 font-bold">
+                  {litepost.counts[index]}표 ({percent.toFixed(2)}%)
+                </span>
+              </div>
+            );
+          })}
         </div>
         <div className="flex justify-end mt-4">
           <button

@@ -48,6 +48,9 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
           // 참여하기 버튼 클릭시 모달 닫기
           onClose();
 
+          // 업데이트된 counts 배열을 litepost에 반영
+          litepost.counts = currentCounts;
+
           console.log('게시물 카운트가 성공적으로 업데이트되었습니다.');
         } else {
           console.error(`게시물 ID ${contentId}에 해당하는 문서가 존재하지 않습니다.`);
