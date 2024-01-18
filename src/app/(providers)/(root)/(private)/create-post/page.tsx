@@ -5,6 +5,8 @@ import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import React, {useEffect, useState} from 'react';
 import PostForm from './_components/PostForm';
+import ToastEditor from './_components/ToastEditor';
+import ContentsViewer from './_components/ContentsViewer';
 
 export default function PostPage() {
   const {
