@@ -4,49 +4,44 @@ import {getLiteSurveyPosts} from '@/app/api/firebaseApi';
 import {litePost} from '@/app/api/typePost';
 import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
-import {useRouter} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import {useState} from 'react';
 import {FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
 import {IoEyeOutline} from 'react-icons/io5';
+import {LuPencilLine} from 'react-icons/lu';
 import Banner from '../../(main)/_components/carousel/Banner';
-import LiteSurveyCreateModal from '../../(main)/_components/lietsurvey/CreatModal';
-import LiteSurveyModal from '../../(main)/_components/lietsurvey/SurveyModal';
-import PostBeauty from '../../(main)/_components/post/PostBeauty';
+import LiteSurveyCreateModal from '../../(main)/_components/modal/CreateModal';
+import LiteSurveyModal from '../../(main)/_components/modal/SurveyModal';
 import Tab from '../../_components/Tab';
-import PostIt from '../survey-it/page';
-import PostMedi from '../survey-medical/page';
+
 export default function page() {
-  const [selectedTab, setSelectedTab] = useState<string>('IT');
-  const renderContent = () => {
-    switch (selectedTab) {
-      case 'IT':
-        return <PostIt />;
-      case 'BEAUTY':
-        return <PostBeauty />;
-      case 'MEDICAL':
-        return <PostMedi />;
-      default:
-        return <PostIt />;
-    }
-  };
+  const searchParams = useSearchParams();
+  const [selectedTab, setSelectedTab] = useState({
+    name: searchParams.get('tab') || 'IT',
+    to: '/',
+  });
   const router = useRouter();
 
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
+  // 게시물 클릭시 게시물 모달창 열기
   const onClickPosthandler = (litepost: litePost) => {
     setSelectedPost(litepost);
   };
 
+  // 게시물 모달창 닫기
   const onCloseModalHandler = () => {
     setSelectedPost(null);
   };
 
+  // 게시물 작성 모달창 열기
   const onClickCreateModalOpen = () => {
     setIsCreateModalOpen(true);
   };
 
+  // FirebaseApi에서 liteSurveyData 가져오기
   const {
     data: liteSurveyData,
     isLoading,
@@ -65,8 +60,8 @@ export default function page() {
         <div className="my-20">
           <div>
             <h1 className="text-2xl font-bold mb-4">Lite한 설문조사</h1>
-            {isLoading && <div>Loading...</div>}
-            {isError && <div>Error fetching survey data</div>}
+            {isLoading && <div>로딩 중...</div>}
+            {isError && <div>로딩 중에 오류가 발생했습니다.</div>}
           </div>
           <div>
             <div>
@@ -77,7 +72,7 @@ export default function page() {
                       <div className="h-[215px] bg-white border-1 border-[#C1C5CC] flex-col justify-between rounded-md p-4">
                         <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
                           <div className="top-content h-[90px]">
-                            <div className="category-box flex justify-between items-center mb-4">
+                            <div className="flex justify-between items-center mb-4">
                               <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
                                 Lite
                               </div>
@@ -126,7 +121,16 @@ export default function page() {
                 onClose={onCloseModalHandler}
               />
             )}
-            <Button onClick={onClickCreateModalOpen}>{'작성하기'}</Button>
+            <div className="flex justify-end sticky bottom-10">
+              <Button
+                onClick={onClickCreateModalOpen}
+                isIconOnly
+                aria-label="write-post"
+                className="w-[50px] h-[50px] rounded-full bg-gray-200"
+              >
+                <LuPencilLine />
+              </Button>
+            </div>
             {isCreateModalOpen && <LiteSurveyCreateModal onCloseCreateModal={() => setIsCreateModalOpen(false)} />}
           </div>
         </div>

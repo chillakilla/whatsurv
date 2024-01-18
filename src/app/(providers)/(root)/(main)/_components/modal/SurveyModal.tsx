@@ -28,13 +28,11 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
   const onClickSurveySubmitHandler = async () => {
     try {
       if (selectedContentIndex !== null) {
-        const contentId = litepost.id; // 게시물 ID 또는 다른 고유 식별자
-        console.log('contentId', contentId);
+        const contentId = litepost.id;
         const postRef = doc(db, 'litesurveyposts', contentId);
 
-        // Firestore에서 해당 게시물의 문서를 가져옵니다.
+        // Firestore에서 해당 게시물의 문서를 가져오기
         const postDoc = await getDoc(postRef);
-        console.log('postDoc', postDoc);
 
         if (postDoc && postDoc.exists()) {
           // 현재 counts 배열 가져오기
@@ -47,32 +45,34 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
             counts: currentCounts,
           });
 
+          // 참여하기 버튼 클릭시 모달 닫기
+          onClose();
+
           console.log('게시물 카운트가 성공적으로 업데이트되었습니다.');
         } else {
           console.error(`게시물 ID ${contentId}에 해당하는 문서가 존재하지 않습니다.`);
         }
-
-        // 참여하기 버튼 클릭시 모달 닫기
-        onClose();
       } else {
         // 선택된 content가 없을 때 알람 표시
         window.alert('답변을 선택해주세요.');
       }
     } catch (error) {
       console.error('게시물 카운트 업데이트 중 오류:', error);
-      // 오류 발생시에 대한 처리 추가
     }
   };
 
+  // 결과보기 모달창 닫기
   const resultModalClosehandler = () => {
     setShowResultModal(false);
     onClose();
   };
 
+  // 참여인원수
+  const totalVotes = litepost.counts.reduce((acc, count) => acc + count, 0);
+
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white w-1/2 p-8 rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">{litepost.title}</h2>
+      <div className="bg-white w-[39rem] p-8 rounded-lg">
         <div className="mb-4 flex justify-center gap-4">
           {litepost.images.map((image, index) => (
             <img
@@ -83,20 +83,25 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
             />
           ))}
         </div>
+        <div className="mb-2 flex justify-between items-center">
+          <span className="text-sm">조사기간 : 추가해야함</span>
+          <span className="text-sm">참여인원 : {totalVotes}명</span>
+        </div>
+        <h2 className="text-2xl font-bold mb-4 border-b border-black pb-4 mb-4">{litepost.title}</h2>
         <div className="mb-4">
           {contents.map((item, index) => (
             <div
               key={index}
-              className={`flex items-center mb-2 cursor-pointer ${
-                selectedContentIndex === index ? 'text-blue-500 underline' : 'text-gray-700'
-              }`}
+              className="flex items-center mb-2 cursor-pointer border-b border-blue-100 pb-4 mb-4"
               onClick={() => onClickContentsHandler(index)}
             >
-              <div
+              <input
+                type="radio"
+                name="contentRadioGroup"
                 className={`w-4 h-4 rounded-full border border-blue-500 mr-2 ${
                   selectedContentIndex === index ? 'bg-blue-500' : 'bg-white'
                 }`}
-              ></div>
+              ></input>
               {item}
             </div>
           ))}
