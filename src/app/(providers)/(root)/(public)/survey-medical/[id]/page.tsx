@@ -27,11 +27,11 @@ const SurveyItDetailPage: React.FC = () => {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>로딩 중...</div>;
   }
 
   if (isError) {
-    return <div>Error fetching post data</div>;
+    return <div>로딩 중 오류가 발생했습니다.</div>;
   }
 
   return (
