@@ -83,7 +83,7 @@ export default function RenderStepJoin({
         email,
         birthdate: birthDate,
         nickname,
-        ageGroup: '--미설정--',
+
         sexType: '--미설정--',
       });
 

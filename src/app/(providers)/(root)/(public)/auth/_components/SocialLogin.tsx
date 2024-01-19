@@ -22,7 +22,7 @@ export const googleLogin = async () => {
       email: user.email,
       // 구글API에서 생년월일은 미지원으로 생년월일은 초기에 빈 값으로 설정
       birthdate: '',
-      ageGroup: '--미설정--',
+
       sexType: '--미설정--',
     };
 
@@ -52,7 +52,7 @@ export const githubLogin = async () => {
       email: userEmail,
       //생년월일은 초기에 빈 값으로 설정
       birthdate: '',
-      ageGroup: '--미설정--',
+
       sexType: '--미설정--',
     };
 

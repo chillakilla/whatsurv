@@ -9,7 +9,6 @@ interface UserProfileType {
   nickName: string | null;
   birthDate?: string;
   sexType?: string;
-  ageGroup?: string;
 }
 export default function ProfilePage() {
   //유저 프로필 불러오기
@@ -21,7 +20,6 @@ export default function ProfilePage() {
 
   //연령대와 성별
   const [sexType, setSexType] = useState('--미설정--');
-  const [ageGroup, setAgeGroup] = useState('--미설정--');
 
   //성별 설정 한번만 가능한지 확인 여부
   const showSexTypeDropdown = userProfile?.sexType === '--미설정--';
@@ -47,7 +45,7 @@ export default function ProfilePage() {
             email: user.email,
             nickName: userData.nickname,
             birthDate: userData.birthdate,
-            ageGroup: userData.ageGroup,
+
             sexType: userData.sexType,
           });
         }
@@ -150,7 +148,6 @@ export default function ProfilePage() {
           <label>성별:</label>
           <select value={sexType} onChange={e => setSexType(e.target.value)}>
             <option value="--미설정--">--미설정--</option>
-            <option value="전체">전체</option>
             <option value="남성">남성</option>
             <option value="여성">여성</option>
           </select>
@@ -159,8 +156,6 @@ export default function ProfilePage() {
       ) : (
         <p>성별: {userProfile.sexType}</p>
       )}
-
-      <p>연령대: {userProfile.ageGroup}</p>
     </div>
   );
 }
