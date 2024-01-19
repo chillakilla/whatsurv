@@ -22,10 +22,13 @@ export type Post = {
 
 export type litePost = {
   counts: number[];
+  likes: number;
+  views: number;
 
   id: string;
   title: string;
   contents: string[];
   images: string[];
   createdAt: Date;
+  deadlineDate: Date;
 };

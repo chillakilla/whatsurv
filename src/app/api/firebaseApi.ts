@@ -135,10 +135,13 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
       return {
         id: doc.id,
         counts: data?.counts || 0,
+        likes: data?.likes || 0,
+        views: data?.views || 0,
         title: data?.title || '',
         contents: data?.contents || '',
         images: data?.images || '',
         createdAt: data?.createdAt?.toDate() || new Date(),
+        deadlineDate: data?.deadlineDate || null,
       };
     });
 

@@ -1,10 +1,9 @@
 import {getPosts} from '@/app/api/firebaseApi';
 import {useQuery} from '@tanstack/react-query';
+import Link from 'next/link';
+import {FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
 import {IoEyeOutline} from 'react-icons/io5';
-import {FaRegHeart} from 'react-icons/fa';
-import React from 'react';
-import Link from 'next/link';
 import SortingPost from '../../(main)/_components/post/SortingPost';
 
 export default function PostIt() {

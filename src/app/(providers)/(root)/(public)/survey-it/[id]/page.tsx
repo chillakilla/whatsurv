@@ -2,10 +2,10 @@
 import {getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
+import Image from 'next/image';
 import {useParams} from 'next/navigation';
 import {FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
-import Image from 'next/image';
 
 export default function SurveyItDetailPage() {
   const {id} = useParams();
@@ -21,7 +21,7 @@ export default function SurveyItDetailPage() {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>로딩 중...</div>;
   }
 
   if (isError) {
