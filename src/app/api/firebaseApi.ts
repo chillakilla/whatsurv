@@ -4,6 +4,7 @@ import {
   DocumentReference,
   DocumentSnapshot,
   QuerySnapshot,
+  Timestamp,
   addDoc,
   collection,
   deleteDoc,
@@ -47,7 +48,7 @@ export const getPosts = async (): Promise<Post[]> => {
         researchTime: data?.researchTime || '',
         createdAt: data?.createdAt?.toDate() || new Date(),
         updatedAt: data?.updatedAt?.toDate() || new Date(),
-        deadlineDate: data?.deadlineDate || null,
+        deadlineDate: data?.deadlineDate instanceof Timestamp ? data.deadlineDate.toDate() : null,
       };
     });
 
@@ -150,7 +151,7 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
 };
 
 // 게시글+사용자(작성자) 정보 불러오기 fetchPostWithUser
-//TODO: 240111 할 것 = 유저 정보 불러오는 로직 작성
+//TODO: 유저 정보 불러오는 로직 작성
 //TODO: 해당 로직은 미완성.
 // export const fetchPostsWithUser = async (): Promise<PostWithUser[]> => {
 //   try {

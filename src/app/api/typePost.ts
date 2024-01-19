@@ -1,3 +1,6 @@
+import firebase from 'firebase/compat/app';
+import {Timestamp} from 'firebase/firestore';
+
 export type Post = {
   likes: number;
   views: number;
@@ -15,9 +18,10 @@ export type Post = {
   researchLocation: string;
   researchTime: string;
 
-  createdAt: Date;
+  // createdAt: Date,
+  createdAt: firebase.firestore.Timestamp;
   updatedAt: Date;
-  deadlineDate: Date;
+  deadlineDate: Date | null;
 };
 
 export type litePost = {

@@ -2,8 +2,8 @@ export const majorCategories = [
   {value: '대분류', label: '대분류'},
   {value: '전체', label: '전체'},
   {value: 'IT', label: 'IT'},
-  {value: '메디컬', label: '메디컬'},
-  {value: '뷰티', label: '뷰티'},
+  {value: 'Medical', label: '메디컬'},
+  {value: 'Beauty', label: '뷰티'},
 ];
 
 export const sexType = [

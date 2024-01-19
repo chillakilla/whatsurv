@@ -1,7 +1,7 @@
 'use client';
 
 import {Swiper, SwiperSlide} from 'swiper/react';
-
+import {useRef} from 'react';
 import {getPosts} from '@/app/api/firebaseApi';
 import {useQuery} from '@tanstack/react-query';
 import Link from 'next/link';
@@ -12,6 +12,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
+import SwiperCore from 'swiper';
 import {Navigation, Pagination} from 'swiper/modules';
 
 export default function Popular() {

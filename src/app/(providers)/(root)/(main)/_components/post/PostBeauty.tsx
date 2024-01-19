@@ -48,10 +48,7 @@ export default function PostBeauty() {
                   <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs mb-[10px]">
                     {post.category}
                   </div>
-                  <p className="text-xs text-[#666]">
-                    작성일 |{' '}
-                    {post.createdAt.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})}
-                  </p>
+                  <p className="text-xs text-[#666]">작성일 | {post.createdAt.toLocaleString()}</p>
                   <h3 className="text-lg font-bold">{post.title}</h3>
 
                   <Button

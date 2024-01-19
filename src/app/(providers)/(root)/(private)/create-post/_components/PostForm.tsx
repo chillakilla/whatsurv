@@ -150,7 +150,7 @@ export default function PostForm({
                 className="p-[2px] border border-sky-500 rounded-lg"
                 type="date"
                 name="deadlineDate"
-                value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
+                value={formData.deadlineDate ? formData.deadlineDate.toISOString().split('T')[0] : ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
               />
             </div>
@@ -196,15 +196,21 @@ export default function PostForm({
               </div>
             )}
             <div className="flex flex-col w-[64.625rem] ">
-              <ToastEditor />
-              {/* <label>내용: </label>
+              {/* <ToastEditor
+                onChange={(content: string) => {
+                  onInputChange({target: {name: 'content', value: content}} as React.ChangeEvent<
+                    HTMLInputElement | HTMLTextAreaElement
+                  >);
+                }}
+              /> */}
+              <label>내용: </label>
               <textarea
                 className="border border-sky-500 rounded-lg resize-none"
                 name="content"
                 value={formData.content}
                 onChange={onInputChange}
                 required
-              /> */}
+              />
             </div>
             <div className="flex justify-end items-start self-stretch gap-6">
               <button

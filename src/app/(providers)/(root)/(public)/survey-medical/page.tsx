@@ -58,9 +58,7 @@ export default function PostMedi() {
                     </div>
                     <p className="text-xs text-[#666] mb-4">
                       마감일 |{' '}
-                      {post.deadlineDate
-                        ? post.deadlineDate.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})
-                        : '2099.12.31'}
+                      {post.deadlineDate?.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})}
                     </p>
                     <h3 className="text-base font-bold">{post.title}</h3>
                   </div>
