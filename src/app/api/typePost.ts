@@ -18,7 +18,6 @@ export type Post = {
   researchLocation: string;
   researchTime: string;
 
-  // createdAt: Date,
   createdAt: firebase.firestore.Timestamp;
   updatedAt: Date;
   deadlineDate: Date | null;

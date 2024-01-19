@@ -29,6 +29,7 @@ export default function SurveyBeautyDetailPage() {
   const createdAtDate = post?.createdAt.toDate() as Date;
 
   return (
+    //TODO: 조회수 카운팅, 좋아요 카운팅, 로그인된 사용자 정보 불러오기
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Beauty Post Detail Page</h1>
       <p>{post?.title}</p>
