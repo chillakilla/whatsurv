@@ -11,7 +11,7 @@ interface UserProfileType {
 export default function ProfilePage() {
   const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [isNickNameEditing, setIsNickNameEditing] = useState(false);
   const [newNickName, setNewNickName] = useState('');
 
   useEffect(() => {
@@ -47,13 +47,13 @@ export default function ProfilePage() {
   }
 
   // 닉네임 편집 모드 전환 함수
-  const toggleEdit = () => {
-    setIsEditing(!isEditing);
+  const clickNickNameEditModeHandler = () => {
+    setIsNickNameEditing(!isNickNameEditing);
     setNewNickName(userProfile?.nickName || '');
   };
 
   // 닉네임 저장 함수
-  const saveNickName = async () => {
+  const clickNickNameSaveHandler = async () => {
     if (auth.currentUser) {
       await updateDoc(doc(db, 'users', auth.currentUser.uid), {
         nickname: newNickName,
@@ -65,21 +65,24 @@ export default function ProfilePage() {
           nickName: newNickName, // 닉네임만 업데이트
         };
       });
-      setIsEditing(false);
+      setIsNickNameEditing(false);
     }
   };
 
   return (
     <div>
-      <h1>프로필 페이지</h1>
+      <h1>프로필</h1>
       <p>이메일: {userProfile.email}</p>
-      {isEditing ? (
+      {isNickNameEditing ? (
         <div>
-          <input type="text" value={newNickName} onChange={e => setNewNickName(e.target.value)} />
-          <button onClick={saveNickName}>저장</button>
+          닉네임: <input type="text" value={newNickName} onChange={e => setNewNickName(e.target.value)} />
+          <button onClick={clickNickNameSaveHandler}>저장</button>
         </div>
       ) : (
-        <button onClick={toggleEdit}>닉네임 변경</button>
+        <div className="flex">
+          <p>닉네임: {userProfile?.nickName}</p>
+          <button onClick={clickNickNameEditModeHandler}>닉네임 변경</button>
+        </div>
       )}
       <p>생년월일: {userProfile.birthDate}</p>
     </div>
