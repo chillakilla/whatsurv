@@ -1,5 +1,4 @@
 'use client';
-
 import {getLiteSurveyPosts} from '@/app/api/firebaseApi';
 import {litePost} from '@/app/api/typePost';
 import {db} from '@/firebase';
