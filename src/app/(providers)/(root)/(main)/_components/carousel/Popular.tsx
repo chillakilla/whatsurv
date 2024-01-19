@@ -5,7 +5,6 @@ import {useQuery} from '@tanstack/react-query';
 import Link from 'next/link';
 import {useRef} from 'react';
 import {GrView} from 'react-icons/gr';
-import SwiperCore from 'swiper';
 import {Swiper, SwiperSlide} from 'swiper/react';
 
 // Swiper styles
@@ -13,6 +12,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
+import SwiperCore from 'swiper';
 import {Navigation, Pagination} from 'swiper/modules';
 
 export default function Popular() {
