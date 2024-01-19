@@ -7,12 +7,23 @@ interface UserProfileType {
   email: string | null;
   nickName: string | null;
   birthDate?: string;
+  sexType?: string;
+  ageGroup?: string;
 }
 export default function ProfilePage() {
+  //유저 프로필 불러오기
   const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
 
+  //닉네임 변경 관련
   const [isNickNameEditing, setIsNickNameEditing] = useState(false);
   const [newNickName, setNewNickName] = useState('');
+
+  //연령대와 성별
+  const [sexType, setSexType] = useState('--미설정--');
+  const [ageGroup, setAgeGroup] = useState('--미설정--');
+
+  //성별 설정 한번만 가능하도록 하기 위한 여부
+  const showSexTypeDropdown = userProfile?.sexType === '--미설정--';
 
   useEffect(() => {
     //현재 로그인 한 사용자의 상태 감지
@@ -32,6 +43,8 @@ export default function ProfilePage() {
             email: user.email,
             nickName: userData.nickname,
             birthDate: userData.birthdate,
+            ageGroup: userData.ageGroup,
+            sexType: userData.sexType,
           });
         }
       } else {
@@ -69,6 +82,19 @@ export default function ProfilePage() {
     }
   };
 
+  // 성별 저장 함수
+  const clickSaveSexTypeHandler = async () => {
+    if (auth.currentUser && userProfile) {
+      await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+        sexType: sexType,
+      });
+      setUserProfile({
+        ...userProfile,
+        sexType: sexType,
+      });
+    }
+  };
+
   return (
     <div>
       <h1>프로필</h1>
@@ -85,6 +111,23 @@ export default function ProfilePage() {
         </div>
       )}
       <p>생년월일: {userProfile.birthDate}</p>
+      {/* 성별 선택 드롭다운 또는 텍스트 표시 */}
+      {userProfile.sexType === '--미설정--' ? (
+        <div>
+          <label>성별:</label>
+          <select value={sexType} onChange={e => setSexType(e.target.value)}>
+            <option value="--미설정--">--미설정--</option>
+            <option value="전체">전체</option>
+            <option value="남성">남성</option>
+            <option value="여성">여성</option>
+          </select>
+          <button onClick={clickSaveSexTypeHandler}>성별 저장</button>
+        </div>
+      ) : (
+        <p>성별: {userProfile.sexType}</p>
+      )}
+
+      <p>연령대: {userProfile.ageGroup}</p>
     </div>
   );
 }

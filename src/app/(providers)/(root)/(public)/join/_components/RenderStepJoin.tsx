@@ -83,6 +83,8 @@ export default function RenderStepJoin({
         email,
         birthdate: birthDate,
         nickname,
+        ageGroup: '--미설정--',
+        sexType: '--미설정--',
       });
 
       // 회원가입 성공 후 즉시 로그아웃
