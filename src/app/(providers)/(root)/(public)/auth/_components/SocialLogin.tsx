@@ -22,6 +22,8 @@ export const googleLogin = async () => {
       email: user.email,
       // 구글API에서 생년월일은 미지원으로 생년월일은 초기에 빈 값으로 설정
       birthdate: '',
+
+      sexType: '--미설정--',
     };
 
     // 사용자 정보 저장
@@ -50,6 +52,8 @@ export const githubLogin = async () => {
       email: userEmail,
       //생년월일은 초기에 빈 값으로 설정
       birthdate: '',
+
+      sexType: '--미설정--',
     };
 
     // 사용자 정보 저장
@@ -67,10 +71,10 @@ export default function SocialLogin() {
     <div className="text-center font-bold mt-[30px]">
       <p className="text-xl">간편 로그인</p>
       <Button onClick={googleLogin} className="h-[50px] mt-[20px] bg-transparent	">
-        <img src="/img/google_icon.svg" />
+        <img src="/image/google_icon.svg" />
       </Button>
       <Button onClick={githubLogin} className="h-[50px] mt-[20px] bg-transparent	">
-        <img src="/img/github_icon.svg" />
+        <img src="/image/github_icon.svg" />
       </Button>
     </div>
   );
