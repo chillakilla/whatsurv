@@ -1,5 +1,6 @@
 'use client';
 import {auth, db} from '@/firebase';
+import {Button, Input} from '@nextui-org/react';
 import {onAuthStateChanged} from 'firebase/auth';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import {useEffect, useState} from 'react';
@@ -22,8 +23,11 @@ export default function ProfilePage() {
   const [sexType, setSexType] = useState('--미설정--');
   const [ageGroup, setAgeGroup] = useState('--미설정--');
 
-  //성별 설정 한번만 가능하도록 하기 위한 여부
+  //성별 설정 한번만 가능한지 확인 여부
   const showSexTypeDropdown = userProfile?.sexType === '--미설정--';
+
+  //생일 없는 경우 추가하기 위한 상태
+  const [newBirthDate, setNewBirthDate] = useState('');
 
   useEffect(() => {
     //현재 로그인 한 사용자의 상태 감지
@@ -95,22 +99,51 @@ export default function ProfilePage() {
     }
   };
 
+  // 생년월일 저장 함수
+  const clickSaveBirthDateHandler = async () => {
+    if (auth.currentUser && newBirthDate) {
+      await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+        birthdate: newBirthDate,
+      });
+      setUserProfile({
+        ...userProfile,
+        birthDate: newBirthDate,
+      });
+    }
+  };
+
   return (
     <div>
       <h1>프로필</h1>
       <p>이메일: {userProfile.email}</p>
       {isNickNameEditing ? (
-        <div>
-          닉네임: <input type="text" value={newNickName} onChange={e => setNewNickName(e.target.value)} />
-          <button onClick={clickNickNameSaveHandler}>저장</button>
+        <div className="flex">
+          닉네임:
+          <Input type="text" value={newNickName} className="w-[3/4]" onChange={e => setNewNickName(e.target.value)} />
+          <Button onClick={clickNickNameSaveHandler}>저장</Button>
         </div>
       ) : (
         <div className="flex">
           <p>닉네임: {userProfile?.nickName}</p>
-          <button onClick={clickNickNameEditModeHandler}>닉네임 변경</button>
+          <Button onClick={clickNickNameEditModeHandler}>닉네임 변경</Button>
         </div>
       )}
-      <p>생년월일: {userProfile.birthDate}</p>
+      {userProfile.birthDate === '' ? (
+        <div>
+          <label>생년월일:</label>
+          <div className="flex">
+            <Input
+              type="date"
+              className="w-[3/4]"
+              value={newBirthDate}
+              onChange={e => setNewBirthDate(e.target.value)}
+            />
+            <Button onClick={clickSaveBirthDateHandler}>생년월일 저장</Button>
+          </div>
+        </div>
+      ) : (
+        <p>생년월일: {userProfile.birthDate}</p>
+      )}
       {/* 성별 선택 드롭다운 또는 텍스트 표시 */}
       {userProfile.sexType === '--미설정--' ? (
         <div>
@@ -121,7 +154,7 @@ export default function ProfilePage() {
             <option value="남성">남성</option>
             <option value="여성">여성</option>
           </select>
-          <button onClick={clickSaveSexTypeHandler}>성별 저장</button>
+          <Button onClick={clickSaveSexTypeHandler}>성별 저장</Button>
         </div>
       ) : (
         <p>성별: {userProfile.sexType}</p>
