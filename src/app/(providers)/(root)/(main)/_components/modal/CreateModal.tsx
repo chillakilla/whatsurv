@@ -13,6 +13,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
   const [title, setTitle] = useState('');
   const [contents, setContents] = useState<string[]>(['']);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [defaultImage, setDefaultImage] = useState(true);
 
   // 게시물 등록하기
   const onSubmitHandler = () => {
@@ -55,12 +56,16 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
     const files = e.target.files;
     if (files && files.length > 0) {
       setSelectedImages(prevImages => [...prevImages, ...Array.from(files)]);
+      setDefaultImage(false); // 기본 이미지 감추기
     }
   };
 
   // 이미지 삭제하기
   const removeImage = (index: number) => {
     setSelectedImages(prevImages => prevImages.filter((_, i) => i !== index));
+    if (setSelectedImages.length === 1) {
+      return setDefaultImage(true);
+    }
   };
 
   // 내용 입력하기
@@ -86,17 +91,23 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
       <div className="relative bg-white rounded-lg w-[39rem] p-8 flex flex-col">
         <div className="modal-content flex flex-col">
+          <div className="text-3xl flex items-center justify-center text-blue-500 font-bold mb-5">What Surv?</div>
           <div className="mb-4 flex items-center">
+            {selectedImages.length === 0 && defaultImage && (
+              <div className="mx-auto my-auto">
+                <img src="/img/default-img.gif" alt="기본 이미지" className="w-[10rem] h-[11.5rem] object-cover pb-1" />
+              </div>
+            )}
             {selectedImages.map((image, index) => (
-              <div key={index}>
+              <div key={index} className="mx-auto my-auto">
                 <img
                   src={URL.createObjectURL(image)}
                   alt={`Image${index}`}
-                  className="w-[9.375rem] h-[9.375rem] object-cover mr-2"
+                  className="w-[10rem] h-[10rem] object-cover"
                 />
                 <button
                   onClick={() => removeImage(index)}
-                  className="ml-2 border-sky-500 bg-white px-[3.125rem] rounded-xl
+                  className="ml-10 bg-white px-[1rem] rounded-xl
                 hover:bg-[#0051FF]
                 hover:text-white"
                 >
@@ -115,6 +126,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
               value={title}
               onChange={e => setTitle(e.target.value)}
               className="text-2xl p-2 w-[25rem] h-[2rem]"
+              placeholder="제목을 입력해주세요"
             />
           </label>
           {contents.map((contentsEntry, index) => (

@@ -2,8 +2,10 @@
 
 import {getLiteSurveyPosts} from '@/app/api/firebaseApi';
 import {litePost} from '@/app/api/typePost';
+import {db} from '@/firebase';
 import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
+import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import {useSearchParams} from 'next/navigation';
 import {useState} from 'react';
 import {FaRegHeart} from 'react-icons/fa';
@@ -25,9 +27,28 @@ export default function page() {
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  // 게시물 클릭시 게시물 모달창 열기
+  const updateViewsCount = async (postId: string) => {
+    try {
+      const postRef = doc(db, 'litesurveyposts', postId);
+      const postSnapshot = await getDoc(postRef);
+
+      if (postSnapshot.exists()) {
+        const currentViews = postSnapshot.data().views || 0;
+        await updateDoc(postRef, {
+          views: currentViews + 1, // 'views' 카운트 증가
+        });
+      } else {
+        console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
+      }
+    } catch (error) {
+      console.error('Views 카운트 업데이트 중 오류:', error);
+    }
+  };
+
+  // 게시물 클릭을 처리하는 함수
   const onClickPosthandler = (litepost: litePost) => {
     setSelectedPost(litepost);
+    updateViewsCount(litepost.id); // 'views' 카운트를 업데이트하는 함수 호출
   };
 
   // 게시물 모달창 닫기
