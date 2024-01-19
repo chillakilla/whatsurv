@@ -1,5 +1,5 @@
 import {Post} from '@/app/api/typePost';
-import React, {ChangeEvent, useRef} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import {majorCategories, sexType, ageGroup, researchLocation, researchType} from './categories';
 import {Spacer} from '@nextui-org/react';
 import {MdArrowBackIos} from 'react-icons/md';

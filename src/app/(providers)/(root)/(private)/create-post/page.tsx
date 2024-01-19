@@ -37,6 +37,11 @@ export default function PostPage() {
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [editorContent, setEditorContent] = useState<string>('');
+
+  const onEditorChange = (content: string) => {
+    setEditorContent(content);
+  };
 
   if (isLoading) {
     return <div>로딩 중...</div>;
@@ -95,6 +100,7 @@ export default function PostPage() {
 
       setSelectedFile(null);
       setPreviewImage(null);
+      setEditorContent('');
 
       setFormData({
         title: '',
@@ -148,6 +154,8 @@ export default function PostPage() {
               [name]: value,
             }));
           }}
+          onEditorChange={onEditorChange}
+          editorContent={editorContent}
         />
       </div>
     </div>
