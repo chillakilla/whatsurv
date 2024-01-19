@@ -17,7 +17,7 @@ export default function ToastEditor() {
   return (
     <div className="edit_wrap w-[64.625rem]">
       <Editor
-        initialValue="hello react editor world!"
+        initialValue="내용을 입력해주세요."
         previewStyle="vertical"
         height="18.75rem"
         initialEditType="markdown"

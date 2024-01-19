@@ -196,15 +196,15 @@ export default function PostForm({
               </div>
             )}
             <div className="flex flex-col w-[64.625rem] ">
-              {/* <ToastEditor /> */}
-              <label>내용: </label>
+              <ToastEditor />
+              {/* <label>내용: </label>
               <textarea
                 className="border border-sky-500 rounded-lg resize-none"
                 name="content"
                 value={formData.content}
                 onChange={onInputChange}
                 required
-              />
+              /> */}
             </div>
             <div className="flex justify-end items-start self-stretch gap-6">
               <button
