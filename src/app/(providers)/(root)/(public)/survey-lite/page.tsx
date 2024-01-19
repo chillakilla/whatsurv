@@ -117,7 +117,7 @@ export default function page() {
                                 <FaRegCircleUser />
                                 <p className="font-semibold">작성자 닉네임</p>
                               </div>
-                              <div className="viewer flex mt-4 gap-2 text-[#818490]">
+                              <div className="viewer flex mt-4 gap-2 text-[#818490] ">
                                 <IoEyeOutline />
                                 {litepost.views}
                               </div>
@@ -145,7 +145,7 @@ export default function page() {
                 onClick={onClickCreateModalOpen}
                 isIconOnly
                 aria-label="write-post"
-                className="w-[3.125rem] h-[3.125rem] rounded-full bg-gray-200"
+                className="w-[50px] h-[50px] rounded-full text-lg text-[#0051FF] bg-white shadow-md shadow-[#888]"
               >
                 <LuPencilLine />
               </Button>

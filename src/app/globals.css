@@ -26,7 +26,7 @@
   box-sizing: border-box;
 }
 html {
-  height: 100vh;
+  height: 1005;
   background-color: rgb(248 250 252);
 }
 
@@ -34,12 +34,10 @@ body {
   color: rgb(var(--foreground-rgb));
   /*background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));*/
   background-color: #f2f3f7;
-  height: 100vh;
+  min-height: 100vh;
   font-family: 'Pretendard-Regular' !important;
 }
-body > div {
-  height: 100vh;
-}
+
 header {
   background-color: #f9f9f9;
 }
