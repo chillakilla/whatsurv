@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 import {getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
@@ -7,14 +8,20 @@ import {useParams} from 'next/navigation';
 import {FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
 
-export default function SurveyItDetailPage() {
+const DetailInfoBox = ({label, value}: {label: string; value: string | number}) => (
+  <div className="type-box flex gap-2 justify-center items-center">
+    <p className="text-sm font-semibold">{label}</p>
+    <p className="border-1 border-[#C1C5CC] bg-white w-32 h-[35px] rounded-xl text-sm p-2 text-center">{value}</p>
+  </div>
+);
+
+const SurveyItDetailPage: React.FC = () => {
   const {id} = useParams();
 
   const {
     data: post,
     isLoading,
     isError,
-    refetch,
   } = useQuery<Post | null, Error>({
     queryKey: ['post', id],
     queryFn: () => getPostById(id as string),
@@ -28,101 +35,54 @@ export default function SurveyItDetailPage() {
     return <div>Error fetching post data</div>;
   }
 
-  const isValidUrl = (url: string) => {
-    const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/;
-    return urlPattern.test(url);
-  };
-
   return (
-    <div className="container h-[900px] w-[88.5rem] m-auto mt-10 border-1 border-[#C1C5CC] bg-white p-4">
-      <div className="condition-box w-full h-52 bg-gray-200 grid grid-cols-4 items-center p-4">
-        <div className="category-box flex gap-2 justify-center items-center">
-          <p className="text-sm font-semibold">카테고리</p>
-          <p className="border-1 border-[#C1C5CC] bg-white w-32 h-[35px] rounded-xl text-sm p-2 text-center">
-            {post?.category}
-          </p>
-        </div>
-        <div className="age-box flex gap-2 justify-center items-center">
-          <p className="text-sm font-semibold">연령</p>
-          <p className="border-1 border-[#C1C5CC] bg-white w-32 h-[35px] rounded-xl text-sm p-2 text-center">
-            {post?.ageGroup}
-          </p>
-        </div>
-        <div className="gender-box flex gap-2 justify-center items-center">
-          <p className="text-sm font-semibold">성별</p>
-          <p className="border-1 border-[#C1C5CC] bg-white w-32 h-[35px] rounded-xl text-sm p-2 text-center">
-            {post?.sexType}
-          </p>
-        </div>
-        <div className="age-box flex gap-2 justify-center items-center">
-          <p className="text-sm font-semibold">소요 시간</p>
-          <p className="border-1 border-[#C1C5CC] bg-white w-32 h-[35px] rounded-xl text-sm p-2 text-center">
-            {post?.researchTime}
-          </p>
-        </div>
-        <div className="process-box flex gap-2 justify-center items-center">
-          <p className="text-sm font-semibold">진행방식</p>
-          <p className="border-1 border-[#C1C5CC] bg-white w-32 h-[35px] rounded-xl text-sm p-2 text-center">
-            {post?.researchLocation}
-          </p>
-        </div>
-        <div className="type-box flex gap-2 justify-center items-center">
-          <p className="text-sm font-semibold">유형</p>
-          <p className="border-1 border-[#C1C5CC] bg-white w-32 h-[35px] rounded-xl text-sm p-2 text-center">
-            {post?.researchType}
-          </p>
-        </div>
-        <div className="type-box flex gap-2 justify-center items-center">
-          <p className="text-sm font-semibold">리워드</p>
-          <p className="border-1 border-[#C1C5CC] bg-white w-32 h-[35px] rounded-xl text-sm p-2 text-center">
-            {post?.rewards}
-          </p>
-        </div>
-        <div className="deadline-box flex gap-2 justify-center items-center">
-          <p className="text-sm font-semibold">마감일</p>
-          <p className="border-1 border-[#C1C5CC] bg-white w-32 h-[35px] rounded-xl text-sm p-2 text-center">
-            {post?.deadlineDate
+    <div className="container h-[940px] w-[88.5rem] m-auto mt-10 border-1 border-[#C1C5CC] bg-white p-4">
+      <div className="flex justify-between items-center">
+        <div className="bg-[#0051FF] text-[#D6FF00] w-24 p-1 text-center font-semibold text-lg">IT</div>
+        <button className="like-button flex  gap-2 text-[#0051FF] bg-transparent">
+          <FaRegHeart />
+          {post?.likes}
+        </button>
+      </div>
+      <div className="border-b-1 border-[#d2d7e0] h-14 flex items-center p-2">
+        <h1 className="text-xl font-bold ">{post?.title}</h1>
+      </div>
+      <div className="condition-box w-full h-52 bg-gray-200 grid grid-cols-4 items-center p-4 mt-4">
+        <DetailInfoBox label="카테고리" value={post?.category || ''} />
+        <DetailInfoBox label="연령" value={post?.ageGroup || ''} />
+        <DetailInfoBox label="성별" value={post?.sexType || ''} />
+        <DetailInfoBox label="소요 시간" value={post?.researchTime || ''} />
+        <DetailInfoBox label="진행방식" value={post?.researchLocation || ''} />
+        <DetailInfoBox label="유형" value={post?.researchType || ''} />
+        <DetailInfoBox label="리워드" value={post?.rewards || ''} />
+        <DetailInfoBox
+          label="마감일"
+          value={
+            post?.deadlineDate
               ? post?.deadlineDate.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})
-              : '2099.12.31'}
-          </p>
-        </div>
+              : '2099.12.31'
+          }
+        />
       </div>
-      <div className="flex justify-between items-center border-1 border-[#C1C5CC] mt-4 p-2">
-        <div className=" profile flex gap-2 items-center">
+      <div className="flex justify-between items-center p-2 h-[40px] mt-4 border-b-1 border-[#eee]">
+        <div className="user flex  gap-2">
           <FaRegCircleUser />
-          <p>작성자 닉네임 자리</p>
+          <p className="font-semibold">작성자 닉네임</p>
         </div>
-        <p className="text-xs text-[#666]">
-          작성일 |{' '}
-          {post?.createdAt
-            ? post?.createdAt.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})
-            : '비밀'}
-        </p>
+        <div>
+          <p className="text-xs text-[#888]">작성일 | {post?.createdAt.toLocaleString()}</p>
+        </div>
       </div>
-      <div className="content-box border-1 border-[#C1C5CC] mt-4 p-4 flex gap-8 h-[500px]">
-        <div className="img-box w-[420px] h-full">
-          {post?.imageUrl && isValidUrl(post?.imageUrl) ? (
-            <Image src={post.imageUrl} alt="survey-img" width={420} height={200} className="border-1 border-[#eee]" />
-          ) : (
-            <Image
-              src="http://www.fifatown.co.kr/upfile/product/no_image.gif"
-              alt="survey-img"
-              width={420}
-              height={200}
-              className="alternative-img"
-            />
-          )}
+      <div className="content-box  mt-4 flex gap-8 h-[500px]">
+        <div className="img-box w-[420px] h-full border-1 border-[#eee] flex items-center justify-center">
+          <img src={post?.imageUrl} alt="Post Image" />
         </div>
-        <div className="w-3/4">
-          <h1 className="text-xl font-bold border-b-1 border-[#d2d7e0]">{post?.title}</h1>
+        <div className="w-3/4 border-1 border-[#ddd] pl-4">
           <p className="h-[400px] mt-4">{post?.content}</p>
-          <div className="flex items-center justify-end">
-            <button className="like-button text-[#0051FF] bg-transparent">
-              <FaRegHeart />
-            </button>
-          </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default SurveyItDetailPage;
