@@ -11,6 +11,9 @@
   "dependencies": {
     "@nextui-org/react": "^2.2.9",
     "@tanstack/react-query": "^5.17.9",
+    "@toast-ui/editor": "^3.2.2",
+    "@toast-ui/editor-plugin-color-syntax": "^3.1.0",
+    "@toast-ui/react-editor": "^3.2.3",
     "@types/react-slick": "^0.23.13",
     "canvas-confetti": "^1.9.2",
     "firebase": "^10.7.1",

@@ -34,6 +34,8 @@ const SurveyItDetailPage: React.FC = () => {
     return <div>로딩 중 오류가 발생했습니다.</div>;
   }
 
+  const createdAtDate = post?.createdAt.toDate() as Date;
+
   return (
     <div className="container h-[940px] w-[88.5rem] m-auto mt-10 border-1 border-[#C1C5CC] bg-white p-4">
       <div className="flex justify-between items-center">
@@ -54,14 +56,7 @@ const SurveyItDetailPage: React.FC = () => {
         <DetailInfoBox label="진행방식" value={post?.researchLocation || ''} />
         <DetailInfoBox label="유형" value={post?.researchType || ''} />
         <DetailInfoBox label="리워드" value={post?.rewards || ''} />
-        <DetailInfoBox
-          label="마감일"
-          value={
-            post?.deadlineDate
-              ? post?.deadlineDate.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})
-              : '2099.12.31'
-          }
-        />
+        <DetailInfoBox label="마감일" value={createdAtDate.toLocaleString()} />
       </div>
       <div className="flex justify-between items-center p-2 h-[40px] mt-4 border-b-1 border-[#eee]">
         <div className="user flex  gap-2">
