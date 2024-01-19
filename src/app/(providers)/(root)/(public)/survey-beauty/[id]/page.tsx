@@ -30,6 +30,8 @@ export default function SurveyBeautyDetailPage() {
 
   return (
     //TODO: 조회수 카운팅, 좋아요 카운팅, 로그인된 사용자 정보 불러오기
+    //TODO: 버튼 추가(수정, 삭제)
+    //TODO: 유저 로그인 기반에 따른 수정, 삭제 상호작용 여부
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Beauty Post Detail Page</h1>
       <p>{post?.title}</p>

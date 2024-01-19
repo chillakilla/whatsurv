@@ -1,16 +1,10 @@
 'use client';
 
-<<<<<<< HEAD
-import {Swiper, SwiperSlide} from 'swiper/react';
-import {useRef} from 'react';
-=======
->>>>>>> dev
 import {getPosts} from '@/app/api/firebaseApi';
 import {useQuery} from '@tanstack/react-query';
 import Link from 'next/link';
 import {useRef} from 'react';
 import {GrView} from 'react-icons/gr';
-import SwiperCore from 'swiper';
 import {Swiper, SwiperSlide} from 'swiper/react';
 
 // Swiper styles
