@@ -3,8 +3,6 @@
 import {useRef} from 'react';
 import SwiperCore from 'swiper';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import SwiperCore from 'swiper';
-import {useRef} from 'react';
 import {useQuery} from '@tanstack/react-query';
 import {getPosts} from '@/app/api/firebaseApi';
 import Link from 'next/link';

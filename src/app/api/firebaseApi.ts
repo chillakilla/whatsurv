@@ -12,6 +12,7 @@ import {
   getDocs,
   query,
   updateDoc,
+  orderBy,
 } from 'firebase/firestore';
 import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
 import {Post, litePost} from './typePost';
@@ -22,7 +23,7 @@ export type PostInput = Omit<Post, 'id' | 'updatedAt' | 'views'>;
 // 게시글 목록 불러오기 fetchPosts
 export const getPosts = async (): Promise<Post[]> => {
   try {
-    const postsQuery = query(collection(db, 'posts'));
+    const postsQuery = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
     const snapshot: QuerySnapshot<DocumentData> = await getDocs(postsQuery);
     const posts: Post[] = snapshot.docs.map((doc: DocumentSnapshot<DocumentData>) => {
       const data = doc.data();
