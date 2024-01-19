@@ -10,14 +10,15 @@ interface LiteSurveyModalProps {
   litepost: litePost;
   contents: string[];
   images: string[];
-  onClose: () => void;
+  onCloseLiteSurveyModal: () => void;
 }
 
-const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, onClose}) => {
+const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, onCloseLiteSurveyModal}) => {
   const [selectedContentIndex, setSelectedContentIndex] = useState<number | null>(null);
   const [contentsCounts, setContentsCounts] = useState<number[]>(new Array(contents.length).fill(0));
   const [showResultModal, setShowResultModal] = useState(false);
 
+  // 어떤 내용을 카운트 하는지 정하기
   const onClickContentsHandler = (index: number) => {
     const newCounts = [...contentsCounts];
     newCounts[index] += 1;
@@ -25,6 +26,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
     setContentsCounts(newCounts);
   };
 
+  // Lite 설문조사 게시물 등록하기
   const onClickSurveySubmitHandler = async () => {
     try {
       if (selectedContentIndex !== null) {
@@ -46,7 +48,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
           });
 
           // 참여하기 버튼 클릭시 모달 닫기
-          onClose();
+          onCloseLiteSurveyModal();
 
           // 업데이트된 counts 배열을 litepost에 반영
           litepost.counts = currentCounts;
@@ -67,7 +69,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
   // 결과보기 모달창 닫기
   const resultModalClosehandler = () => {
     setShowResultModal(false);
-    onClose();
+    onCloseLiteSurveyModal();
   };
 
   // 참여인원수
@@ -126,7 +128,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
           </button>
           <button
             className="bg-[#EB271C] text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring focus:border-red-300"
-            onClick={onClose}
+            onClick={onCloseLiteSurveyModal}
           >
             닫기
           </button>

@@ -9,7 +9,7 @@ interface ResultModalProps {
   onClickResultModalCloseHandler: () => void;
 }
 
-const ResultModal: React.FC<ResultModalProps> = ({litepost, contents, counts, onClickResultModalCloseHandler}) => {
+const ResultModal: React.FC<ResultModalProps> = ({litepost, onClickResultModalCloseHandler}) => {
   // 참여인원수
   const totalVotes = litepost.counts.reduce((acc, count) => acc + count, 0);
   return (

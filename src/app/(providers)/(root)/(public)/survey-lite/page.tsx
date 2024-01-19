@@ -138,7 +138,7 @@ export default function page() {
                 litepost={selectedPost}
                 contents={selectedPost.contents}
                 images={selectedPost.images}
-                onClose={onCloseModalHandler}
+                onCloseLiteSurveyModal={onCloseModalHandler}
               />
             )}
             <div className="flex justify-end sticky bottom-10">

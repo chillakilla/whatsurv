@@ -153,7 +153,6 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
           >
             내용 추가
           </button>
-          {/* 게시물 등록 하기*/}
           <div className="flex justify-end mt-4">
             <button
               onClick={onSubmitHandler}
