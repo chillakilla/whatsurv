@@ -9,7 +9,7 @@ import {useSearchParams} from 'next/navigation';
 import {useState} from 'react';
 import {FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
-import {IoEyeOutline} from 'react-icons/io5';
+import {GrView} from 'react-icons/gr';
 import {LuPencilLine} from 'react-icons/lu';
 import Banner from '../../(main)/_components/carousel/Banner';
 import LiteSurveyCreateModal from '../../(main)/_components/modal/CreateModal';
@@ -118,7 +118,7 @@ export default function page() {
                                 <p className="font-semibold">작성자 닉네임</p>
                               </div>
                               <div className="viewer flex mt-4 gap-2 text-[#818490]">
-                                <IoEyeOutline />
+                                <GrView />
                                 {litepost.views}
                               </div>
                             </div>

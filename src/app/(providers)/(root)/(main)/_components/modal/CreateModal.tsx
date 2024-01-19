@@ -17,8 +17,19 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
 
   // 게시물 등록하기
   const onSubmitHandler = () => {
-    saveDataToFirebase(title, contents, selectedImages);
-    onCloseCreateModal();
+    const isTitleEmpty = title.trim() === '';
+    const areContentsEmpty = contents.some(content => content.trim() === '');
+
+    if (isTitleEmpty && areContentsEmpty) {
+      window.alert('제목과 내용을 입력하세요.');
+    } else if (isTitleEmpty) {
+      window.alert('제목을 입력하세요.');
+    } else if (areContentsEmpty) {
+      window.alert('내용을 입력하세요.');
+    } else {
+      saveDataToFirebase(title, contents, selectedImages);
+      onCloseCreateModal();
+    }
   };
 
   const saveDataToFirebase = async (title: string, contents: string[], images: File[]) => {
