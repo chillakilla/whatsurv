@@ -1,14 +1,16 @@
 'use client';
-import {auth, db} from '@/firebase';
+import {auth, db, storage} from '@/firebase';
 import {Button, Input} from '@nextui-org/react';
 import {onAuthStateChanged} from 'firebase/auth';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
+import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
 import {useEffect, useState} from 'react';
 interface UserProfileType {
   email: string | null;
   nickName: string | null;
   birthDate?: string;
   sexType?: string;
+  photoURL?: string;
 }
 export default function ProfilePage() {
   //유저 프로필 불러오기
@@ -45,7 +47,7 @@ export default function ProfilePage() {
             email: user.email,
             nickName: userData.nickname,
             birthDate: userData.birthdate,
-
+            photoURL: userData.photoURL,
             sexType: userData.sexType,
           });
         }
@@ -110,9 +112,34 @@ export default function ProfilePage() {
     }
   };
 
+  // 이미지 업로드 및 Firestore에 URL 저장
+  const clickProfileImageHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !auth.currentUser) return;
+
+    const storageRef = ref(storage, `ProfilePic/${auth.currentUser.uid}`);
+    await uploadBytes(storageRef, file);
+    const photoURL = await getDownloadURL(storageRef);
+
+    await updateDoc(doc(db, 'users', auth.currentUser.uid), {photoURL});
+    setUserProfile(prev => {
+      if (prev === null) return null;
+      return {
+        ...prev,
+        photoURL: photoURL,
+      };
+    });
+  };
+
   return (
     <div>
       <h1>프로필</h1>
+      <input type="file" onChange={clickProfileImageHandler} />
+      {userProfile?.photoURL && (
+        <div className="w-[200px]">
+          <img src={userProfile.photoURL} alt="Profile" />
+        </div>
+      )}
       <p>이메일: {userProfile.email}</p>
       {isNickNameEditing ? (
         <div className="flex">
