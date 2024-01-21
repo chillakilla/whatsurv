@@ -2,16 +2,16 @@ import {Post} from '@/app/api/typePost';
 import React, {ChangeEvent, useState} from 'react';
 import {majorCategories, sexType, ageGroup, researchLocation, researchType} from './categories';
 import {Spacer} from '@nextui-org/react';
-import {MdArrowBackIos} from 'react-icons/md';
 import {BsPersonCircle} from 'react-icons/bs';
 import {Input} from '@nextui-org/react';
 import firebase from 'firebase/compat/app';
 import ToastEditor from './ToastEditor';
+import {FormData} from '@/app/api/typeFormData';
+import {MdArrowBackIos} from 'react-icons/md';
+import {useRouter} from 'next/navigation';
 
 interface PostFormProps {
-  formData: Omit<Post, 'views' | 'id' | 'createdAt' | 'updatedAt'> & {
-    deadlineDate: firebase.firestore.Timestamp | null;
-  };
+  formData: Omit<FormData, 'updatedAt' | 'email'> & {};
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onImgFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -29,6 +29,7 @@ export default function PostForm({
   onSubmit,
   previewImage,
 }: PostFormProps) {
+  const router = useRouter();
   const isFormValid =
     formData.title.trim() !== '' &&
     formData.category !== '' &&
@@ -39,15 +40,34 @@ export default function PostForm({
     formData.researchTime !== '' &&
     formData.deadlineDate !== null;
 
-  const buttonHandler = () => {
-    console.log('clicked!');
+  const backButtonHandler = () => {
+    const isContentModified =
+      formData.title.trim() !== '' ||
+      // formData.content.trim() !== '' ||
+      formData.category !== '' ||
+      formData.sexType !== '' ||
+      formData.ageGroup !== '' ||
+      formData.researchType !== '' ||
+      formData.researchLocation !== '' ||
+      formData.researchTime !== '' ||
+      formData.deadlineDate !== null;
+
+    if (isContentModified) {
+      const userConfirmed = window.confirm('정말 뒤로 가시겠습니까? 작성된 내용은 저장되지 않습니다.');
+
+      if (userConfirmed) {
+        router.back();
+      }
+    } else {
+      router.back();
+    }
   };
 
   return (
     <div>
       <div className="flex flex-col justify-center items-center">
         <div>
-          <button onClick={buttonHandler} className="self-start">
+          <button onClick={backButtonHandler} className="self-start">
             <MdArrowBackIos />
           </button>
           <Spacer y={6} />

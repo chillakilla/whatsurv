@@ -1,11 +1,9 @@
 import firebase from 'firebase/compat/app';
 import {Timestamp} from 'firebase/firestore';
 
-export type Post = {
-  id: string;
-  likes: number;
-  views: number;
+export type FormData = {
   rewards: number;
+  id: string;
 
   title: string;
   content: string;
@@ -18,23 +16,8 @@ export type Post = {
   researchLocation: string;
   researchTime: string;
 
-  userId: string | undefined;
-  email: string | null;
-  nickname?: string | undefined;
+  email?: string | null;
+  nickname?: string | null;
   createdAt: Timestamp;
-  updatedAt: Date;
   deadlineDate: firebase.firestore.Timestamp | null;
-};
-
-export type litePost = {
-  counts: number[];
-  likes: number;
-  views: number;
-
-  id: string;
-  title: string;
-  contents: string[];
-  images: string[];
-  createdAt: Date;
-  deadlineDate: Date;
 };

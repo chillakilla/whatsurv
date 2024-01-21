@@ -17,9 +17,7 @@ import {
 } from 'firebase/firestore';
 import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
 import {Post, litePost} from './typePost';
-
-// 3가지의 인풋 영역을 제외하기 위한 Post 의 얕은 복사본
-export type PostInput = Omit<Post, 'id' | 'updatedAt' | 'views'>;
+import {getAuth} from 'firebase/auth';
 
 // 게시글 목록 불러오기 fetchPosts
 export const getPosts = async (): Promise<Post[]> => {
@@ -41,7 +39,9 @@ export const getPosts = async (): Promise<Post[]> => {
         images: data?.images || '',
         category: data?.category || '',
         userId: data?.userId || '',
-        userNickname: data?.userNickname || '',
+        // TODO: firebase 에서 지원하는 건 displayName 이었던 것으로 기억.
+        nickname: data?.nickname || '',
+        email: data?.email || '',
         ageGroup: data?.ageGroup || '',
         sexType: data?.sexType || '',
         researchLocation: data?.researchLocation || '',
@@ -79,13 +79,23 @@ export const getPostById = async (postId: string): Promise<Post | null> => {
 };
 
 // 게시글 추가하기 addPost
-export const addPost = async (newPost: PostInput & {views: number}): Promise<DocumentReference> => {
+export const addPost = async (newPost: Post): Promise<DocumentReference> => {
   try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (!user) {
+      throw new Error('로그인이 필요한 유저입니다.');
+    }
+
     const createdAt = new Date();
     const docRef = await addDoc(collection(db, 'posts'), {
       ...newPost,
       createdAt,
       views: 0,
+      userId: user.uid,
+      email: user.email,
+      nickname: user.displayName || '',
     });
 
     return docRef;

@@ -1,36 +1,44 @@
 'use client';
 
-import {PostInput, addPost, getPosts, uploadImageToStorage} from '@/app/api/firebaseApi';
+import {addPost, uploadImageToStorage} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
-import {useQuery} from '@tanstack/react-query';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import PostForm from './_components/PostForm';
 import ToastEditor from './_components/ToastEditor';
 import {Editor} from '@toast-ui/react-editor';
+import {getAuth} from 'firebase/auth';
+import {FormData} from '@/app/api/typeFormData';
 import firebase from 'firebase/compat/app';
 import {Timestamp} from 'firebase/firestore';
 
 export default function PostPage() {
   const editorRef = useRef<Editor>(null);
+  const auth = getAuth();
+  const user = auth.currentUser;
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
+    id: '',
     title: '',
     content: '',
     imageUrl: '',
-    likes: 0,
     category: '',
     ageGroup: '',
     sexType: '',
     researchType: '',
     researchTime: '',
     researchLocation: '',
-    deadlineDate: null as firebase.firestore.Timestamp | null, // Ensure it's initialized as null
+    deadlineDate: null as firebase.firestore.Timestamp | null,
+    createdAt: Timestamp.now(),
     rewards: 0,
+    email: user?.email,
+    nickname: user?.displayName,
   });
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedDeadline, setSelectedDeadline] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState<string | null>(null);
 
   const ImgFileChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imgFile = e.target.files?.[0] || null;
@@ -57,22 +65,26 @@ export default function PostPage() {
         imageUrl = await uploadImageToStorage(selectedFile);
       }
 
-      const updatedFormData: PostInput & {views: number} = {
+      const updatedFormData: Post = {
+        id: formData.id,
         title: formData.title,
         content: formData.content,
         imageUrl: imageUrl,
-        likes: formData.likes,
         category: formData.category,
         sexType: formData.sexType,
         ageGroup: formData.ageGroup,
         researchType: formData.researchType,
         researchTime: formData.researchTime,
         researchLocation: formData.researchLocation,
-        //TODO: 타입 유형 수정 필요
+        userId: user?.uid,
+        email: user?.email ?? null,
+        nickname: user?.displayName || undefined,
         deadlineDate: selectedDeadline ? firebase.firestore.Timestamp.fromDate(selectedDeadline) : null,
         rewards: formData.rewards,
-        createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
+        createdAt: Timestamp.now(),
+        likes: 0,
         views: 0,
+        updatedAt: new Date(),
       };
       await addPost(updatedFormData);
 
@@ -80,10 +92,10 @@ export default function PostPage() {
       setPreviewImage(null);
 
       setFormData({
+        id: '',
         title: '',
         content: '',
         imageUrl: '',
-        likes: 0,
         category: '',
         ageGroup: '',
         sexType: '',
@@ -91,11 +103,15 @@ export default function PostPage() {
         researchTime: '',
         researchLocation: '',
         deadlineDate: null,
+        createdAt: Timestamp.now(),
         rewards: 0,
       });
       alert('등록되었습니다.');
     } catch (error) {
       console.error('에러', error);
+      setIsError('게시글을 등록하는 중에 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
