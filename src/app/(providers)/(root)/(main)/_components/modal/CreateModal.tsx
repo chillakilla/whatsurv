@@ -106,7 +106,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
           <div className="mb-4 flex items-center">
             {selectedImages.length === 0 && defaultImage && (
               <div className="mx-auto my-auto">
-                <img src="/img/default-img.gif" alt="기본 이미지" className="w-[10rem] h-[11.5rem] object-cover pb-1" />
+                <img src="/image/default.jpg" alt="기본 이미지" className="w-[10rem] h-[11.5rem] object-cover pb-1" />
               </div>
             )}
             {selectedImages.map((image, index) => (

@@ -16,6 +16,14 @@ import LiteSurveyCreateModal from '../../(main)/_components/modal/CreateModal';
 import LiteSurveyModal from '../../(main)/_components/modal/SurveyModal';
 import Tab from '../../_components/Tab';
 
+// 새로운 게시물 알려주기
+const isWithin24Hours = (createdAt: Date): boolean => {
+  const currentTime = new Date();
+  const timeDifference = currentTime.getTime() - createdAt.getTime();
+  const hoursDifference = timeDifference / (1000 * 60 * 60);
+  return hoursDifference <= 24;
+};
+
 export default function page() {
   const searchParams = useSearchParams();
   const [selectedTab, setSelectedTab] = useState({
@@ -76,13 +84,6 @@ export default function page() {
     queryKey: ['surveyData'],
     queryFn: getLiteSurveyPosts,
   });
-
-  const isWithin24Hours = (createdAt: Date): boolean => {
-    const currentTime = new Date();
-    const timeDifference = currentTime.getTime() - createdAt.getTime();
-    const hoursDifference = timeDifference / (1000 * 60 * 60);
-    return hoursDifference <= 24;
-  };
 
   // 게시물 정렬하기
   const sortByCreatedAt = (a: litePost, b: litePost) => {
@@ -172,7 +173,7 @@ export default function page() {
                 onClick={onClickCreateModalOpen}
                 isIconOnly
                 aria-label="write-post"
-                className="w-[3.125rem] h-[3.125rem] rounded-full bg-gray-200"
+                className="w-[3.125rem] h-[3.125rem] rounded-full text-lg text-[#0051FF] bg-white shadow-md shadow-[#888]"
               >
                 <LuPencilLine />
               </Button>
