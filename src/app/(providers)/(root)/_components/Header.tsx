@@ -37,7 +37,9 @@ export default function Header() {
       <section className="w-[1400px] flex justify-between items-center m-auto ">
         <div className="flex items-center justify-center">
           <Link href="/">
-            <h1 className="font-bold text-xl">What Surv?</h1>
+            <h1 className="font-bold text-xl">
+              <img src="/image/whatsurv.svg" className="h-[30px]" />
+            </h1>
           </Link>
         </div>
         <div className=" flex justify-end gap-4 p-2">
