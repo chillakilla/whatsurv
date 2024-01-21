@@ -4,7 +4,8 @@ import {Button, Input} from '@nextui-org/react';
 import {onAuthStateChanged} from 'firebase/auth';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
+import {PiUserRectangleFill} from 'react-icons/pi';
 interface UserProfileType {
   email: string | null;
   nickName: string | null;
@@ -59,6 +60,9 @@ export default function ProfilePage() {
     return () => unsubscribe();
   }, []);
 
+  // 파일 입력 참조 생성
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   if (!userProfile) {
     return <div>로딩 중...</div>;
   }
@@ -112,6 +116,11 @@ export default function ProfilePage() {
     }
   };
 
+  // 이미지 클릭 핸들러
+  const clickImageHandler = () => {
+    fileInputRef.current?.click();
+  };
+
   // 이미지 업로드 및 Firestore에 URL 저장
   const clickProfileImageHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -134,12 +143,15 @@ export default function ProfilePage() {
   return (
     <div>
       <h1>프로필</h1>
-      <input type="file" onChange={clickProfileImageHandler} />
-      {userProfile?.photoURL && (
-        <div className="w-[200px]">
+      <div className="w-[200px]" onClick={clickImageHandler} style={{cursor: 'pointer'}}>
+        {userProfile?.photoURL ? (
           <img src={userProfile.photoURL} alt="Profile" />
-        </div>
-      )}
+        ) : (
+          <PiUserRectangleFill size={200} /> // 기본 아이콘 표시
+        )}
+      </div>
+      <input type="file" onChange={clickProfileImageHandler} ref={fileInputRef} className="hidden" />
+
       <p>이메일: {userProfile.email}</p>
       {isNickNameEditing ? (
         <div className="flex">
