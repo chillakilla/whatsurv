@@ -71,6 +71,18 @@ export default function page() {
     queryFn: getLiteSurveyPosts,
   });
 
+  const isWithin24Hours = (createdAt: Date): boolean => {
+    const currentTime = new Date();
+    const timeDifference = currentTime.getTime() - createdAt.getTime();
+    const hoursDifference = timeDifference / (1000 * 60 * 60);
+    return hoursDifference <= 24;
+  };
+
+  // 게시물 정렬하기
+  const sortByCreatedAt = (a: litePost, b: litePost) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  };
+
   return (
     <>
       <Tab selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
@@ -86,14 +98,23 @@ export default function page() {
             <div>
               {liteSurveyData && liteSurveyData.length > 0 ? (
                 <div className="post-container grid grid-cols-4 gap-4">
-                  {liteSurveyData?.map(litepost => (
+                  {liteSurveyData?.sort(sortByCreatedAt).map(litepost => (
                     <div key={litepost.id}>
                       <div className="h-[13.4375rem] bg-white border-1 border-[#C1C5CC] flex-col justify-between rounded-md p-4">
                         <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
                           <div className="top-content h-[5.625rem]">
                             <div className="flex justify-between items-center mb-4">
-                              <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
-                                Lite
+                              <div className="flex gap-2">
+                                <p className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
+                                  Lite
+                                </p>
+                                <p
+                                  className={`bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs ${
+                                    isWithin24Hours(litepost.createdAt) ? '' : 'hidden'
+                                  }`}
+                                >
+                                  {isWithin24Hours(litepost.createdAt) ? 'New🔥' : ''}
+                                </p>
                               </div>
                               <button className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF] bg-transparent">
                                 <FaRegHeart />

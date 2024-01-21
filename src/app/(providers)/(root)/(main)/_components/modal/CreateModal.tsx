@@ -35,7 +35,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
   const saveDataToFirebase = async (title: string, contents: string[], images: File[]) => {
     try {
       const liteSurveyPostsCollection = collection(db, 'litesurveyposts');
-      const timestamp = serverTimestamp();
+      const createdAt = serverTimestamp();
 
       // 이미지 업로드하고 다운로드 URL 얻기
       const imageUrls = await Promise.all(
@@ -51,7 +51,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
         title,
         contents,
         images: imageUrls,
-        timestamp,
+        createdAt,
         counts,
       });
 
