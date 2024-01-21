@@ -20,7 +20,7 @@ export type Post = {
 
   createdAt: firebase.firestore.Timestamp;
   updatedAt: Date;
-  deadlineDate: Date | null;
+  deadlineDate: firebase.firestore.Timestamp | null;
 };
 
 export type litePost = {

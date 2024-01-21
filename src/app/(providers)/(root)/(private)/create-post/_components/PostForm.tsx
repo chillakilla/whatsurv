@@ -5,11 +5,12 @@ import {Spacer} from '@nextui-org/react';
 import {MdArrowBackIos} from 'react-icons/md';
 import {BsPersonCircle} from 'react-icons/bs';
 import {Input} from '@nextui-org/react';
+import firebase from 'firebase/compat/app';
 import ToastEditor from './ToastEditor';
 
 interface PostFormProps {
   formData: Omit<Post, 'views' | 'id' | 'createdAt' | 'updatedAt'> & {
-    deadlineDate: Date;
+    deadlineDate: firebase.firestore.Timestamp | null;
   };
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -150,7 +151,7 @@ export default function PostForm({
                 className="p-[2px] border border-sky-500 rounded-lg"
                 type="date"
                 name="deadlineDate"
-                value={formData.deadlineDate ? formData.deadlineDate.toISOString().split('T')[0] : ''}
+                value={formData.deadlineDate ? formData.deadlineDate.toDate().toISOString().split('T')[0] : ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
               />
             </div>

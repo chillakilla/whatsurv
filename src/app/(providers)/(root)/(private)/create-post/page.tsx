@@ -24,7 +24,7 @@ export default function PostPage() {
     researchType: '',
     researchTime: '',
     researchLocation: '',
-    deadlineDate: new Date(),
+    deadlineDate: null as firebase.firestore.Timestamp | null, // Ensure it's initialized as null
     rewards: 0,
   });
 
@@ -68,7 +68,8 @@ export default function PostPage() {
         researchType: formData.researchType,
         researchTime: formData.researchTime,
         researchLocation: formData.researchLocation,
-        deadlineDate: formData.deadlineDate,
+        //TODO: 타입 유형 수정 필요
+        deadlineDate: selectedDeadline ? firebase.firestore.Timestamp.fromDate(selectedDeadline) : null,
         rewards: formData.rewards,
         createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
         views: 0,
@@ -89,7 +90,7 @@ export default function PostPage() {
         researchType: '',
         researchTime: '',
         researchLocation: '',
-        deadlineDate: new Date(),
+        deadlineDate: null,
         rewards: 0,
       });
       alert('등록되었습니다.');
