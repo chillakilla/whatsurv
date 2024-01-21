@@ -161,14 +161,18 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="text-center text-lg leading-10">
-      <h1 className="text-2xl mb-[20px] mt-[20px]">
+    <div className="text-lg leading-10 w-[500px] m-auto mt-[80px]">
+      <h1 className="text-[#0051FF] text-3xl mb-[20px] mt-[30px] text-center">
         <span className="font-bold">{userProfile?.nickName}</span>님의 프로필
       </h1>
-      <div className="w-[200px] m-auto" onClick={clickImageHandler} style={{cursor: 'pointer'}}>
+      <div className="w-[200px] m-auto mt-[30px]" onClick={clickImageHandler} style={{cursor: 'pointer'}}>
         {userProfile?.photoURL ? (
-          <div className="w-[200px]">
-            <img src={userProfile.photoURL} className="w-full h-full  rounded-full " alt="Profile" />
+          <div className="w-[200px] h-[200px] bg-green-100 rounded-full relative overflow-hidden ">
+            <img
+              src={userProfile.photoURL}
+              className="w-full h-full  absolute top-0 left-0  object-cover  "
+              alt="Profile"
+            />
           </div>
         ) : (
           <PiUserRectangleFill size={200} /> // 기본 아이콘 표시
@@ -176,15 +180,17 @@ export default function ProfilePage() {
       </div>
       <input type="file" onChange={clickProfileImageHandler} ref={fileInputRef} className="hidden" />
 
-      <p className="mb-[15px] mt-[15px]">이메일 {userProfile.email}</p>
+      <p className="mb-[15px] mt-[40px]">
+        <span className="font-bold ">이메일</span> {userProfile.email}
+      </p>
       {isNickNameEditing ? (
-        <div className="flex justify-center items-center bg-red-400 ">
-          <label>닉네임</label>
+        <div className="flex justify-start items-center mb-[20px]">
+          <label className="font-bold">닉네임</label>
           <Input
             type="text"
             value={newNickName}
             variant="bordered"
-            className="text-lg w-[3/4] ml-[10px] mb-[15px]  bg-[#fff] rounded-xl "
+            className="text-lg w-[3/4] ml-[10px]    bg-[#fff] rounded-xl "
             labelPlacement="outside"
             onChange={e => setNewNickName(e.target.value)}
           />
@@ -193,19 +199,20 @@ export default function ProfilePage() {
           </Button>
         </div>
       ) : (
-        <div className="flex justify-center  items-center mb-[15px]">
-          <p>닉네임 {userProfile?.nickName}</p>
+        <div className="flex justify-start   items-center mb-[15px]">
+          <p className="font-bold ">닉네임 {userProfile?.nickName}</p>
           <Button onClick={clickNickNameEditModeHandler} className="bg-[#0051FF] text-white ml-[10px]">
             닉네임 변경
           </Button>
         </div>
       )}
       {userProfile.birthDate === '' ? (
-        <div className="flex justify-center items-center mb-[15px]">
-          <label className="mr-[10px]">생년월일</label>
+        <div className="flex justify-start  items-center mb-[15px]">
+          <label className="mr-[10px] font-bold">생년월일</label>
           <Input
             variant="bordered"
             type="date"
+            labelPlacement="outside-left"
             className="w-[3/4]  bg-[#fff] rounded-xl "
             value={newBirthDate}
             onChange={e => setNewBirthDate(e.target.value)}
@@ -215,18 +222,19 @@ export default function ProfilePage() {
           </Button>
         </div>
       ) : (
-        <p>생년월일: {userProfile.birthDate}</p>
+        <p className="font-bold mb-[10px]">생년월일: {userProfile.birthDate}</p>
       )}
       {/* 성별 선택 드롭다운 또는 텍스트 표시 */}
       {userProfile.sexType === '--미설정--' ? (
         <div>
-          <label className="mr-[10px]">성별</label>
+          <label className="mr-[10px] font-bold">성별</label>
           <Select
             items={sexTypes}
             variant="bordered"
             placeholder="--성별을 선택해주세요--"
             className="max-w-xs bg-[#fff] rounded-xl"
             value={sexType}
+            labelPlacement="outside-left"
             onChange={clickSelectSexHandler}
           >
             {item => <SelectItem key={item.value}>{item.label}</SelectItem>}
@@ -236,7 +244,7 @@ export default function ProfilePage() {
           </Button>
         </div>
       ) : (
-        <p>성별: {userProfile.sexType}</p>
+        <p className="font-bold">성별: {userProfile.sexType}</p>
       )}
     </div>
   );
