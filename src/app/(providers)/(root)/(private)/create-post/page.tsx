@@ -11,11 +11,13 @@ import {FormData} from '@/app/api/typeFormData';
 import firebase from 'firebase/compat/app';
 import {Timestamp} from 'firebase/firestore';
 import 'firebase/compat/firestore';
+import {useRouter} from 'next/navigation';
 
 export default function PostPage() {
   const editorRef = useRef<Editor>(null);
   const auth = getAuth();
   const user = auth.currentUser;
+  const router = useRouter();
 
   const [formData, setFormData] = useState<FormData>({
     id: '',
@@ -40,6 +42,7 @@ export default function PostPage() {
   const [selectedDeadline, setSelectedDeadline] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<string | null>(null);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const ImgFileChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imgFile = e.target.files?.[0] || null;
@@ -107,14 +110,28 @@ export default function PostPage() {
         createdAt: Timestamp.now(),
         rewards: 0,
       });
+      setIsRedirecting(true);
       alert('등록되었습니다.');
+      // 등록 성공 시, 메인으로 이동.
+      router.push('/');
+      const currentUserRoute = window.location.pathname;
+      localStorage.setItem('latestRoute', currentUserRoute);
     } catch (error) {
       console.error('에러', error);
       setIsError('게시글을 등록하는 중에 오류가 발생했습니다.');
     } finally {
+      setIsRedirecting(false);
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const latestRoute = localStorage.getItem('latestRoute');
+    if (latestRoute) {
+      localStorage.removeItem('latestRoute');
+      router.push(latestRoute);
+    }
+  }, []);
 
   const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
@@ -130,6 +147,12 @@ export default function PostPage() {
 
   return (
     <div>
+      {/* isRedirecting = 로딩 스피너 추가 */}
+      {isRedirecting && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-white bg-opacity-80 z-50">
+          <div className="loading-spinner-overlay animate-spin border-t-4 border-blue-500 rounded-full h-12 w-12"></div>
+        </div>
+      )}
       <div>
         <PostForm
           formData={formData}

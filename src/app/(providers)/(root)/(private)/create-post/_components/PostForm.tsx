@@ -74,7 +74,7 @@ export default function PostForm({
           </button>
           <Spacer y={6} />
           <form onSubmit={onSubmit} className="mt-[0.5rem]">
-            <div className="w-[64.625rem] p-[0.625rem] flex items-center self-stretch border border-sky-500 rounded-xl gap-[0.5rem]">
+            <div className="w-[64.625rem] p-[0.625rem] flex items-center self-stretch border border-sky-500 rounded-xl gap-[0.5rem] bg-white">
               <input
                 className="w-[59.8125rem] h-[1.625rem] text-base font-semibold"
                 type="text"

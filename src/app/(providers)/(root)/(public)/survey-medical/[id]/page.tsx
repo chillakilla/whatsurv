@@ -48,6 +48,18 @@ const SurveyItDetailPage: React.FC = () => {
     return <div>로딩 중 오류가 발생했습니다.</div>;
   }
 
+  // 게시글을 작성한 유저 userId 비교 검사
+  // 동일할 시에 renderEditDeleteButton 실행
+  const isCurrentUser = user && post && user.uid === post.userId;
+  const renderEditDeleteButton = () => {
+    return (
+      <div className="flex flex-col justify-center items-center">
+        <button className="border border-sky-500 rounded-lg">수정</button>
+        <button className="border border-sky-500 rounded-lg">삭제</button>
+      </div>
+    );
+  };
+
   const createdAtDate = post?.createdAt.toDate() as Date;
   const deadlineDate = post?.deadlineDate?.toDate() as Date;
 
@@ -104,12 +116,7 @@ const SurveyItDetailPage: React.FC = () => {
           <p className="h-[400px] mt-4">{post?.content}</p>
         </div>
         {/* 유저 로그인 상태에 따른 버튼 렌더링 */}
-        {user && (
-          <div className="flex flex-col justify-center items-center">
-            <button className="border border-sky-500 rounded-lg ">수정</button>
-            <button className="border border-sky-500 rounded-lg ">삭제</button>
-          </div>
-        )}
+        {isCurrentUser && renderEditDeleteButton()}
       </div>
     </div>
   );
