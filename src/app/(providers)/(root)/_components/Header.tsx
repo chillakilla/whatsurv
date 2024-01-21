@@ -1,11 +1,10 @@
 'use client';
 
 import {auth} from '@/firebase';
-import {Button} from '@nextui-org/react';
+import {Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger} from '@nextui-org/react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
@@ -25,23 +24,32 @@ export default function Header() {
 
   return (
     <header>
-      <section className="flex justify-between items-center border-b-1 bg-white p-2">
-        <div className="flex items-center justify-center w-80">
+      <section className="w-[1400px] flex justify-between items-center m-auto ">
+        <div className="flex items-center justify-center">
           <Link href="/">
             <h1 className="font-bold text-xl">What Surv?</h1>
           </Link>
         </div>
-        <div className="w-80 flex justify-center gap-4 p-2">
+        <div className=" flex justify-end gap-4 p-2">
           {isLoggedIn ? (
             <>
-              <Link href="/profile">
-                <Button variant="ghost" color="primary" className="  font-bold ">
-                  프로필 설정
-                </Button>
-              </Link>
-              <Button variant="ghost" color="danger" onClick={handleLogout} className=" font-bold">
-                로그아웃
-              </Button>
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button variant="bordered">Open Menu</Button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Static Actions">
+                  <DropdownItem>
+                    <Link href="/profile">
+                      <p className="  font-bold ">프로필 설정</p>
+                    </Link>
+                  </DropdownItem>
+                  <DropdownItem key="copy">
+                    <p onClick={handleLogout} className=" font-bold">
+                      로그아웃
+                    </p>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
             </>
           ) : (
             <>
