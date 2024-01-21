@@ -1,17 +1,27 @@
 'use client';
-
-import {auth} from '@/firebase';
-import {Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger} from '@nextui-org/react';
+import {auth, db} from '@/firebase';
+import {Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger} from '@nextui-org/react';
+import {doc, getDoc} from 'firebase/firestore';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userPhotoURL, setUserPhotoURL] = useState<string | null>(null);
+
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
+    const unsubscribe = auth.onAuthStateChanged(async user => {
       setIsLoggedIn(!!user);
+      if (user) {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        const photoURL = userDoc.data()?.photoURL;
+        setUserPhotoURL(photoURL);
+        console.log(user);
+      } else {
+        setUserPhotoURL(null);
+      }
     });
 
     return () => unsubscribe();
@@ -33,18 +43,18 @@ export default function Header() {
         <div className=" flex justify-end gap-4 p-2">
           {isLoggedIn ? (
             <>
-              <Dropdown>
+              <Dropdown placement="bottom-end">
                 <DropdownTrigger>
-                  <Button variant="bordered">Open Menu</Button>
+                  <Avatar isBordered as="button" className="transition-transform" src={userPhotoURL || ''} />
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Static Actions">
-                  <DropdownItem>
+                  <DropdownItem textValue="프로필 설정">
                     <Link href="/profile">
                       <p className="  font-bold ">프로필 설정</p>
                     </Link>
                   </DropdownItem>
-                  <DropdownItem key="copy">
-                    <p onClick={handleLogout} className=" font-bold">
+                  <DropdownItem textValue="로그아웃">
+                    <p onClick={handleLogout} className=" text-red-500 font-bold">
                       로그아웃
                     </p>
                   </DropdownItem>
