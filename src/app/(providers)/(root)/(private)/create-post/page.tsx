@@ -10,6 +10,7 @@ import {getAuth} from 'firebase/auth';
 import {FormData} from '@/app/api/typeFormData';
 import firebase from 'firebase/compat/app';
 import {Timestamp} from 'firebase/firestore';
+import 'firebase/compat/firestore';
 
 export default function PostPage() {
   const editorRef = useRef<Editor>(null);
@@ -117,12 +118,14 @@ export default function PostPage() {
 
   const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
-    const selectedDeadline = new Date(value);
+    const dateValue = value ? new Date(value) : null;
+
+    setSelectedDeadline(dateValue);
+
     setFormData(prevData => ({
       ...prevData,
-      [name]: selectedDeadline,
+      [name]: dateValue,
     }));
-    setSelectedDeadline(selectedDeadline);
   };
 
   return (

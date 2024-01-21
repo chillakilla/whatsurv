@@ -4,11 +4,12 @@ import {majorCategories, sexType, ageGroup, researchLocation, researchType} from
 import {Spacer} from '@nextui-org/react';
 import {BsPersonCircle} from 'react-icons/bs';
 import {Input} from '@nextui-org/react';
-import firebase from 'firebase/compat/app';
+import {Timestamp} from '@firebase/firestore-types';
 import ToastEditor from './ToastEditor';
 import {FormData} from '@/app/api/typeFormData';
 import {MdArrowBackIos} from 'react-icons/md';
 import {useRouter} from 'next/navigation';
+// next/router 가 아니고 navigation....하
 
 interface PostFormProps {
   formData: Omit<FormData, 'updatedAt' | 'email'> & {};
@@ -43,6 +44,7 @@ export default function PostForm({
   const backButtonHandler = () => {
     const isContentModified =
       formData.title.trim() !== '' ||
+      // content 부분 테스트 할 것이 있어 주석
       // formData.content.trim() !== '' ||
       formData.category !== '' ||
       formData.sexType !== '' ||
@@ -171,7 +173,7 @@ export default function PostForm({
                 className="p-[2px] border border-sky-500 rounded-lg"
                 type="date"
                 name="deadlineDate"
-                value={formData.deadlineDate ? formData.deadlineDate.toDate().toISOString().split('T')[0] : ''}
+                value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
               />
             </div>
@@ -246,6 +248,10 @@ export default function PostForm({
             hover:bg-[#0051FF]
             hover:text-white
             "
+                onClick={e => {
+                  e.preventDefault();
+                  backButtonHandler();
+                }}
               >
                 취소
               </button>

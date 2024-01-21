@@ -105,6 +105,45 @@ export const addPost = async (newPost: Post): Promise<DocumentReference> => {
   }
 };
 
+// 게시글 조회수 증가 (광희님 코드 참고)
+export const updateViewsCount = async (postId: string) => {
+  try {
+    const postRef = doc(db, 'posts', postId);
+    const postSnapshot = await getDoc(postRef);
+
+    if (postSnapshot.exists()) {
+      const currentViews = postSnapshot.data().views || 0;
+      await updateDoc(postRef, {
+        views: currentViews + 1, // 'views' 카운트 증가
+      });
+    } else {
+      console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
+    }
+  } catch (error) {
+    console.error('Views 카운트 업데이트 중 오류:', error);
+  }
+};
+
+// 게시글 좋아요 증가 (광희님 코드 참고)
+// TODO: 좋아요 감소 추가,  optimistic update 적용 필요
+export const updateLikesCount = async (postId: string): Promise<void> => {
+  try {
+    const postRef = doc(db, 'posts', postId);
+    const postSnapshot = await getDoc(postRef);
+
+    if (postSnapshot.exists()) {
+      const currentLikes = postSnapshot.data().likes || 0;
+      await updateDoc(postRef, {
+        likes: currentLikes + 1, // 'likes' 카운트 증가
+      });
+    } else {
+      console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
+    }
+  } catch (error) {
+    console.error('Likes 카운트 업데이트 중 오류:', error);
+  }
+};
+
 // 게시글 수정하기 updatePost
 export const updatePost = async (postId: string, updatedPost: Omit<Post, 'id' | 'createdAt'>): Promise<void> => {
   try {
