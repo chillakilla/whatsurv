@@ -4,6 +4,7 @@ import {Button, Input} from '@nextui-org/react';
 import {onAuthStateChanged} from 'firebase/auth';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
+import {useRouter} from 'next/navigation';
 import {useEffect, useRef, useState} from 'react';
 import {PiUserRectangleFill} from 'react-icons/pi';
 interface UserProfileType {
@@ -54,11 +55,15 @@ export default function ProfilePage() {
         }
       } else {
         setUserProfile(null);
+        alert('로그인이 필요합니다');
+        router.push('/auth');
       }
     });
     // 컴포넌트가 언마운트될 때 제거
     return () => unsubscribe();
   }, []);
+
+  const router = useRouter();
 
   // 파일 입력 참조 생성
   const fileInputRef = useRef<HTMLInputElement>(null);
