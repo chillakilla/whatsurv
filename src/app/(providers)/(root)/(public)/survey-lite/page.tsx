@@ -1,7 +1,7 @@
 'use client';
 import {getLiteSurveyPosts} from '@/app/api/firebaseApi';
 import {litePost} from '@/app/api/typePost';
-import {db} from '@/firebase';
+import {auth, db} from '@/firebase';
 import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
@@ -25,6 +25,8 @@ export default function page() {
 
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const user = auth.currentUser;
 
   const updateViewsCount = async (postId: string) => {
     try {
@@ -57,7 +59,11 @@ export default function page() {
 
   // 게시물 작성 모달창 열기
   const onClickCreateModalOpen = () => {
-    setIsCreateModalOpen(true);
+    if (!user) {
+      window.alert('로그인이 필요합니다.');
+    } else {
+      setIsCreateModalOpen(true);
+    }
   };
 
   // FirebaseApi에서 liteSurveyData 가져오기

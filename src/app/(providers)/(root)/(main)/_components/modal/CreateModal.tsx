@@ -19,7 +19,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
   const onSubmitHandler = () => {
     const isTitleEmpty = title.trim() === '';
     const areContentsEmpty = contents.some(content => content.trim() === '');
-
+    // 로그인 한 유저인지 확인
     if (isTitleEmpty && areContentsEmpty) {
       window.alert('제목과 내용을 입력하세요.');
     } else if (isTitleEmpty) {

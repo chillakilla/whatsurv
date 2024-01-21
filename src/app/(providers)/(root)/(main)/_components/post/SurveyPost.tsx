@@ -1,11 +1,11 @@
 'use client';
 import {getPosts} from '@/app/api/firebaseApi';
+import {Spinner} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
 import {GrView} from 'react-icons/gr';
 import SortingPost from './SortingPost';
-import {Spinner} from '@nextui-org/react';
 
 const isWithin24Hours = (createdAt: Date): boolean => {
   const currentTime = new Date();
