@@ -27,7 +27,7 @@ export default function Header() {
     return () => unsubscribe();
   }, []);
 
-  const handleLogout = async () => {
+  const clickLogoutHandler = async () => {
     await auth.signOut();
     router.push('/auth');
   };
@@ -56,7 +56,7 @@ export default function Header() {
                     </Link>
                   </DropdownItem>
                   <DropdownItem textValue="로그아웃">
-                    <p onClick={handleLogout} className=" text-red-500 font-bold">
+                    <p onClick={clickLogoutHandler} className=" text-red-500 font-bold">
                       로그아웃
                     </p>
                   </DropdownItem>
