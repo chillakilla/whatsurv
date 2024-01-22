@@ -13,7 +13,7 @@ import {
 import {useRouter} from 'next/navigation';
 import {FormEvent, useEffect} from 'react';
 import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai';
-import {MoonLoader} from 'react-spinners';
+import Swal from 'sweetalert2';
 import AuthUseStateCollection from './_components/AuthUseStateCollection';
 import PasswordResetModal from './_components/PasswordResetModal';
 import SocialLogin from './_components/SocialLogin';
@@ -99,7 +99,12 @@ export default function AuthPage() {
         return signInWithEmailAndPassword(auth, email, password);
       })
       .then(() => {
-        alert('로그인 성공!');
+        Swal.fire({
+          title: '로그인 성공!',
+          icon: 'success',
+          confirmButtonText: '확인',
+          confirmButtonColor: '#0051FF',
+        });
         setEmail('');
         setPassword('');
         router.replace('/');
@@ -141,17 +146,17 @@ export default function AuthPage() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center flex-wrap items-center overflow-y-hidden mt-[300px]">
-        <p>
-          <MoonLoader color="#0051FF" size={100} />
-        </p>
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex justify-center flex-wrap items-center overflow-y-hidden mt-[300px]">
+  //       <p>
+  //         <MoonLoader color="#0051FF" size={100} />
+  //       </p>
 
-        <p className="text-[#0051FF] w-full text-center mt-[30px]">잠시만 기다려 주세요..</p>
-      </div>
-    ); // 로딩 인디케이터 표시
-  }
+  //       <p className="text-[#0051FF] w-full text-center mt-[30px]">잠시만 기다려 주세요..</p>
+  //     </div>
+  //   ); // 로딩 인디케이터 표시
+  // }
 
   // if (user) {
   //   return (

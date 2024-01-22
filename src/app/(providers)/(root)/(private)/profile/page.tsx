@@ -7,6 +7,8 @@ import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
 import {useRouter} from 'next/navigation';
 import {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {PiUserRectangleFill} from 'react-icons/pi';
+import {MoonLoader} from 'react-spinners';
+import Swal from 'sweetalert2';
 interface UserProfileType {
   email: string | null;
   nickName: string | null;
@@ -61,7 +63,11 @@ export default function ProfilePage() {
         }
       } else {
         setUserProfile(null);
-        alert('로그인이 필요합니다');
+        Swal.fire({
+          title: '로그인이 필요합니다.',
+          confirmButtonColor: '#0051FF',
+          icon: 'error',
+        });
         router.push('/auth');
       }
     });
@@ -75,7 +81,12 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!userProfile) {
-    return <div>로딩 중...</div>;
+    return (
+      <div className="flex justify-center flex-wrap items-center overflow-y-hidden mt-[300px]">
+        <MoonLoader color="#0051FF" size={100} />
+        <p className="text-[#0051FF] w-full text-center mt-[30px]">잠시만 기다려 주세요..</p>
+      </div>
+    );
   }
 
   // 닉네임 편집 모드 전환 함수
