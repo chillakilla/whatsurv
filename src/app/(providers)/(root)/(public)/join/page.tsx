@@ -104,7 +104,7 @@ export default function JoinPage() {
   });
 
   return (
-    <div>
+    <div className="select-none">
       <h3 className="w-[400px] mx-auto text-2xl mt-[50px] font-bold">회원가입</h3>
       {/* 프로그래스 바 */}
       <ProgressBar progress={progress} />

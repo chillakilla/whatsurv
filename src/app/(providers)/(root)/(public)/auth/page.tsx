@@ -168,7 +168,7 @@ export default function AuthPage() {
   // }
 
   return (
-    <div className="place-items-center grid ">
+    <div className="place-items-center grid select-none ">
       <form onSubmit={clickLoginHandler} className=" w-[400px]">
         <h3 className="w-full mx-auto text-2xl mt-[20px] mb-[20px]  font-bold">로그인</h3>
         <Input
