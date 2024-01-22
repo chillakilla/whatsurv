@@ -8,6 +8,7 @@ import {useRouter} from 'next/navigation';
 import {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {PiUserRectangleFill} from 'react-icons/pi';
 import {MoonLoader} from 'react-spinners';
+import Swal from 'sweetalert2';
 interface UserProfileType {
   email: string | null;
   nickName: string | null;
@@ -62,7 +63,11 @@ export default function ProfilePage() {
         }
       } else {
         setUserProfile(null);
-        alert('로그인이 필요합니다');
+        Swal.fire({
+          title: '로그인이 필요합니다.',
+          confirmButtonColor: '#0051FF',
+          icon: 'error',
+        });
         router.push('/auth');
       }
     });

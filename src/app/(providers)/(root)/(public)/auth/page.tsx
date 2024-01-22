@@ -13,6 +13,7 @@ import {
 import {useRouter} from 'next/navigation';
 import {FormEvent, useEffect} from 'react';
 import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai';
+import Swal from 'sweetalert2';
 import AuthUseStateCollection from './_components/AuthUseStateCollection';
 import PasswordResetModal from './_components/PasswordResetModal';
 import SocialLogin from './_components/SocialLogin';
@@ -98,7 +99,12 @@ export default function AuthPage() {
         return signInWithEmailAndPassword(auth, email, password);
       })
       .then(() => {
-        alert('로그인 성공!');
+        Swal.fire({
+          title: '로그인 성공!',
+          icon: 'success',
+          confirmButtonText: '확인',
+          confirmButtonColor: '#0051FF',
+        });
         setEmail('');
         setPassword('');
         router.replace('/');

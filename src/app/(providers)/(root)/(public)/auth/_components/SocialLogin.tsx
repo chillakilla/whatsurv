@@ -9,6 +9,7 @@ import {
 } from 'firebase/auth';
 import {doc, setDoc} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
+import Swal from 'sweetalert2';
 
 export default function SocialLogin() {
   const router = useRouter();
@@ -32,7 +33,12 @@ export default function SocialLogin() {
       // 사용자 정보 저장
       await setDoc(doc(db, 'users', user.uid), userData);
 
-      alert('Google 로그인 성공!');
+      Swal.fire({
+        title: '로그인 성공!',
+        icon: 'success',
+        confirmButtonText: '확인',
+        confirmButtonColor: '#0051FF',
+      });
       router.push('/');
     } catch (error) {
       console.error('Google 로그인 실패:', error);
@@ -63,7 +69,12 @@ export default function SocialLogin() {
       // 사용자 정보 저장
       await setDoc(doc(db, 'users', user.uid), userData);
 
-      alert('GitHub 로그인 성공!');
+      Swal.fire({
+        title: '로그인 성공!',
+        icon: 'success',
+        confirmButtonText: '확인',
+        confirmButtonColor: '#0051FF',
+      });
       router.push('/');
     } catch (error) {
       console.error('GitHub 로그인 실패:', error);
