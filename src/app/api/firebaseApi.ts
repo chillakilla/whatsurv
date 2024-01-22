@@ -1,4 +1,5 @@
 import {db} from '@/firebase';
+import {getAuth} from 'firebase/auth';
 import {
   DocumentData,
   DocumentReference,
@@ -17,7 +18,6 @@ import {
 } from 'firebase/firestore';
 import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
 import {Post, litePost} from './typePost';
-import {getAuth} from 'firebase/auth';
 
 // 게시글 목록 불러오기 fetchPosts
 export const getPosts = async (): Promise<Post[]> => {
@@ -192,8 +192,7 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
         contents: data?.contents || '',
         images: data?.images || '',
         createdAt: data?.createdAt?.toDate() || new Date(),
-        deadlineDate: data?.deadlineDate || null,
-        displayName: data?.userNickname || '',
+        deadlineDate: data?.deadlineDate instanceof Timestamp ? data.deadlineDate : data?.deadlineDate || null,
         user: {id: '', displayName: '', email: ''},
       };
     });

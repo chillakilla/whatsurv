@@ -1,7 +1,7 @@
 'use client';
 
 import {uploadImageToStorage} from '@/app/api/firebaseApi';
-import {db} from '@/firebase';
+import {auth, db} from '@/firebase';
 import {addDoc, collection, serverTimestamp} from 'firebase/firestore';
 import React, {useState} from 'react';
 
@@ -27,6 +27,8 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
     } else if (areContentsEmpty) {
       window.alert('내용을 입력하세요.');
     } else {
+      const currentUser = auth.currentUser;
+      console.log('currentUser', currentUser);
       saveDataToFirebase(title, contents, selectedImages);
       onCloseCreateModal();
     }
@@ -36,10 +38,6 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
     try {
       const liteSurveyPostsCollection = collection(db, 'litesurveyposts');
       const createdAt = serverTimestamp();
-
-      // // TO DO: 사용자 정보 가져오기
-      // const user = await getCurrentUser();
-      // console.log('user', user);
 
       // 이미지 업로드하고 다운로드 URL 얻기
       const imageUrls = await Promise.all(
@@ -189,3 +187,5 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
 };
 
 export default LiteSurveyCreateModal;
+
+// 그치.. 두 컬렉션간의 관계가 필요함 어케함?

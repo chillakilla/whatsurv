@@ -164,16 +164,21 @@ export default function page() {
                                 <FaRegHeart />
                               </button>
                             </div>
-                            <p className="text-xs text-[#666] mb-4">
-                              작성일 |{' '}
-                              {litepost.createdAt
-                                ? litepost.createdAt.toLocaleString('ko-KR', {
-                                    year: 'numeric',
-                                    month: '2-digit',
-                                    day: '2-digit',
-                                  })
-                                : '2099.12.31'}
-                            </p>
+                            <div className="flex justify-between">
+                              <p className="text-xs text-[#666] mb-4">
+                                작성일 |{' '}
+                                {litepost.createdAt
+                                  ? litepost.createdAt.toLocaleString('ko-KR', {
+                                      year: 'numeric',
+                                      month: '2-digit',
+                                      day: '2-digit',
+                                    })
+                                  : '2099.12.31'}
+                              </p>
+                              <p className="text-xs text-[#666] mb-4">
+                                마감일 | {litepost.deadlineDate ? litepost.deadlineDate.toLocaleString() : '2099.12.31'}
+                              </p>
+                            </div>
                             <h3 className="text-lg font-bold">{litepost.title}</h3>
                           </div>
                           <div className="bottom-content flex items-end">
