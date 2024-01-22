@@ -26,6 +26,7 @@
     "react-paginate": "^8.2.0",
     "react-spinners": "^0.13.8",
     "styled-components": "^6.1.8",
+    "sweetalert2": "^11.10.3",
     "swiper": "^11.0.5"
   },
   "devDependencies": {

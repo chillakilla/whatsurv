@@ -7,7 +7,7 @@ import {useRouter} from 'next/navigation';
 import React from 'react';
 import {IoIosCheckmarkCircle} from 'react-icons/io';
 import {SyncLoader} from 'react-spinners';
-
+import Swal from 'sweetalert2';
 import type {RenderStepJoinTypes} from '../_types/typeJoin';
 
 export default function RenderStepJoin({
@@ -91,7 +91,12 @@ export default function RenderStepJoin({
       await signOut(auth);
 
       // 회원가입 성공 메시지 표시
-      alert('회원가입 성공!');
+      Swal.fire({
+        title: '회원가입 성공!',
+        icon: 'success',
+        confirmButtonText: '확인',
+        confirmButtonColor: '#0051FF',
+      });
       setStep(5);
       // 프로그래스 바 완료 상태로 설정
       setProgress(100);
