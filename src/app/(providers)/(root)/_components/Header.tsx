@@ -21,6 +21,8 @@ export default function Header() {
       } else {
         setUserPhotoURL(null);
       }
+
+      console.log(user);
     });
 
     return () => unsubscribe();
@@ -33,15 +35,15 @@ export default function Header() {
 
   return (
     <header>
-      <section className="w-[1400px] flex justify-between items-center m-auto ">
-        <div className="flex items-center justify-center">
+      <section className="max-w-[1450px] flex justify-between items-center m-auto ">
+        <div className="flex items-center justify-center ml-[30px]">
           <Link href="/">
             <h1 className="font-bold text-xl">
               <img src="/image/whatsurv.svg" className="h-[24px]" />
             </h1>
           </Link>
         </div>
-        <div className=" flex justify-end gap-4 p-2">
+        <div className=" flex justify-end gap-4 p-2 mr-[20px]">
           {isLoggedIn ? (
             <>
               <Dropdown placement="bottom-end">

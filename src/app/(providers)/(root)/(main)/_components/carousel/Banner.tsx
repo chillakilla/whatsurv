@@ -31,7 +31,9 @@ export default function Banner() {
         modules={[Pagination, Navigation]}
         className="banner-swiper"
       >
-        <SwiperSlide>Slide 1</SwiperSlide>
+        <SwiperSlide>
+          <img src="/image/img1.png" />
+        </SwiperSlide>
         <SwiperSlide>Slide 2</SwiperSlide>
         <SwiperSlide>Slide 3</SwiperSlide>
       </Swiper>
