@@ -2,15 +2,28 @@
 import {getPosts} from '@/app/api/firebaseApi';
 import {Spinner} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
 import {FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
 import {GrView} from 'react-icons/gr';
 import SortingPost from './SortingPost';
 
-const isWithin24Hours = (createdAt: Date): boolean => {
+// const isWithin24Hours = (createdAt: Date): boolean => {
+//   const currentTime = new Date();
+//   const timeDifference = currentTime.getTime() - createdAt.getTime();
+//   const hoursDifference = timeDifference / (1000 * 60 * 60);
+//   return hoursDifference <= 24;
+// };
+// TODO: 이 부분 충돌나서 주석시키고 잠깐 해결해놨어요.
+const isWithin24Hours = (createdAt: Date | firebase.firestore.Timestamp): boolean => {
   const currentTime = new Date();
-  const timeDifference = currentTime.getTime() - createdAt.getTime();
+
+  const createdAtDate = createdAt instanceof firebase.firestore.Timestamp ? createdAt.toDate() : createdAt;
+
+  const timeDifference = currentTime.getTime() - createdAtDate.getTime();
   const hoursDifference = timeDifference / (1000 * 60 * 60);
+
   return hoursDifference <= 24;
 };
 
@@ -82,7 +95,9 @@ export default function SurveyPost({target}: {target: string}) {
                   <p className="text-xs text-[#666] mb-4">
                     마감일 |{' '}
                     {post.deadlineDate
-                      ? post.deadlineDate.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})
+                      ? post.deadlineDate
+                          .toDate()
+                          .toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})
                       : '2099.12.31'}
                   </p>
                   <a href={`/survey-${target.toLowerCase()}/${post.id}`}>

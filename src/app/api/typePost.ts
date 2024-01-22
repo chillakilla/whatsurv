@@ -1,12 +1,13 @@
 import firebase from 'firebase/compat/app';
+import {Timestamp} from 'firebase/firestore';
 import {User} from './typeUser';
 
 export type Post = {
+  id: string;
   likes: number;
   views: number;
   rewards: number;
 
-  id: string;
   title: string;
   content: string;
   imageUrl: string;
@@ -18,9 +19,12 @@ export type Post = {
   researchLocation: string;
   researchTime: string;
 
-  createdAt: firebase.firestore.Timestamp;
+  userId: string | undefined;
+  email: string | null;
+  nickname?: string | undefined;
+  createdAt: Timestamp;
   updatedAt: Date;
-  deadlineDate: Date | null;
+  deadlineDate: firebase.firestore.Timestamp | null;
 };
 
 export type litePost = {
