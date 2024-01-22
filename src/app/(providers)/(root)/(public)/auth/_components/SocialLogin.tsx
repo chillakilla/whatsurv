@@ -27,6 +27,7 @@ export default function SocialLogin() {
         email: userEmail,
         birthdate: '',
         sexType: '--미설정--',
+        photoURL: user.photoURL || '',
       };
       await setDoc(userRef, userData);
     }
