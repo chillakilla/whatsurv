@@ -1,3 +1,5 @@
+'use client';
+
 import {useRouter} from 'next/navigation';
 import React from 'react';
 
@@ -30,31 +32,30 @@ export default function Tab({selectedTab, setSelectedTab}: TabProps) {
     <nav className=" hide-nav h-12 w-full border-b-1 bg-white">
       <ul className="flex items-center divide-x-2 text-center h-12 ml-[70px]">
         <li
+          className={`w-24 ${selectedTab.name === 'LITE' ? 'text-[#0051FF]' : ''}`}
+          onClick={() => clickTabHandler({name: 'LITE', to: '/'})}
+        >
+          LITE
+        </li>
+        <li
           className={`w-24 ${selectedTab.name === 'IT' ? 'text-[#0051FF]' : ''}`}
-          onClick={() => clickTabHandler({name: 'IT', to: '/'})}
+          onClick={() => clickTabHandler({name: 'IT', to: '/new'})}
         >
           IT
         </li>
 
         <li
           className={`w-24 ${selectedTab.name === 'Beauty' ? 'text-[#0051FF]' : ''}`}
-          onClick={() => clickTabHandler({name: 'Beauty', to: '/'})}
+          onClick={() => clickTabHandler({name: 'Beauty', to: '/new'})}
         >
           BEAUTY
         </li>
 
         <li
           className={`w-24 ${selectedTab.name === 'Medical' ? 'text-[#0051FF]' : ''}`}
-          onClick={() => clickTabHandler({name: 'Medical', to: '/'})}
+          onClick={() => clickTabHandler({name: 'Medical', to: '/new'})}
         >
           MEDICAL
-        </li>
-
-        <li
-          className={`w-24 ${selectedTab.name === 'LITE' ? 'text-[#0051FF]' : ''}`}
-          onClick={() => clickTabHandler({name: 'LITE', to: '/survey-lite'})}
-        >
-          LITE
         </li>
       </ul>
     </nav>

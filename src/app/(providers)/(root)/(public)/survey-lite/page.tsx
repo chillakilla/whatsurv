@@ -128,9 +128,9 @@ export default function page() {
                               </button>
                             </div>
                             <p className="text-xs text-[#666] mb-4">
-                              마감일 |{' '}
-                              {litepost.deadlineDate
-                                ? litepost.deadlineDate.toLocaleString('ko-KR', {
+                              작성일 |{' '}
+                              {litepost.createdAt
+                                ? litepost.createdAt.toLocaleString('ko-KR', {
                                     year: 'numeric',
                                     month: '2-digit',
                                     day: '2-digit',

@@ -11,9 +11,9 @@ import {
   doc,
   getDoc,
   getDocs,
+  orderBy,
   query,
   updateDoc,
-  orderBy,
 } from 'firebase/firestore';
 import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
 import {Post, litePost} from './typePost';
@@ -144,6 +144,8 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
         images: data?.images || '',
         createdAt: data?.createdAt?.toDate() || new Date(),
         deadlineDate: data?.deadlineDate || null,
+        displayName: data?.userNickname || '',
+        user: {id: '', displayName: '', email: ''},
       };
     });
 
@@ -153,6 +155,28 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
     throw new Error('게시글을 불러오는 것에 실패했습니다.');
   }
 };
+
+// // TO DO: Nickname을 dispalyName으로 해야하는가? 알아보기
+// // 현재 로그인한 사용자 정보 가져오기
+// export const getCurrentUser = () => {
+//   return new Promise((resolve, reject) => {
+//     onAuthStateChanged(
+//       auth,
+//       user => {
+//         if (user) {
+//           // 사용자가 로그인한 상태
+//           resolve(user);
+//         } else {
+//           // 사용자가 로그인하지 않은 상태
+//           resolve(null);
+//         }
+//       },
+//       error => {
+//         reject(error);
+//       },
+//     );
+//   });
+// };
 
 // 게시글+사용자(작성자) 정보 불러오기 fetchPostWithUser
 //TODO: 유저 정보 불러오는 로직 작성

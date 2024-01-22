@@ -37,6 +37,10 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
       const liteSurveyPostsCollection = collection(db, 'litesurveyposts');
       const createdAt = serverTimestamp();
 
+      // // TO DO: 사용자 정보 가져오기
+      // const user = await getCurrentUser();
+      // console.log('user', user);
+
       // 이미지 업로드하고 다운로드 URL 얻기
       const imageUrls = await Promise.all(
         images.map(async image => {
