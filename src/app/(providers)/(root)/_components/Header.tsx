@@ -34,7 +34,7 @@ export default function Header() {
   };
 
   return (
-    <header>
+    <header className="select-none">
       <section className="max-w-[1450px] flex justify-between items-center m-auto ">
         <div className="flex items-center justify-center ml-[30px]">
           <Link href="/">

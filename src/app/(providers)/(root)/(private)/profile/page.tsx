@@ -172,7 +172,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="text-lg leading-10 w-[500px] m-auto mt-[80px]">
+    <div className="text-lg leading-10 w-[500px] m-auto mt-[80px] select-none">
       <h1 className="text-[#0051FF] text-3xl mb-[20px] mt-[30px] text-center">
         <span className="font-bold">{userProfile?.nickName}</span>님의 프로필
       </h1>
