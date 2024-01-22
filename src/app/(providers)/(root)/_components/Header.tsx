@@ -18,7 +18,6 @@ export default function Header() {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         const photoURL = userDoc.data()?.photoURL;
         setUserPhotoURL(photoURL);
-        console.log(user);
       } else {
         setUserPhotoURL(null);
       }

@@ -189,7 +189,13 @@ export default function ProfilePage() {
           <PiUserRectangleFill size={200} /> // 기본 아이콘 표시
         )}
       </div>
-      <input type="file" onChange={clickProfileImageHandler} ref={fileInputRef} className="hidden" />
+      <input
+        type="file"
+        onChange={clickProfileImageHandler}
+        aria-label="프로필 이미지 업로드"
+        ref={fileInputRef}
+        className="hidden"
+      />
 
       <p className="mb-[15px] mt-[40px]">
         <span className="font-bold ">이메일</span> {userProfile.email}
@@ -200,6 +206,7 @@ export default function ProfilePage() {
           <Input
             type="text"
             value={newNickName}
+            aria-label="닉네임"
             variant="bordered"
             className="text-lg w-[3/4] ml-[10px]    bg-[#fff] rounded-xl "
             labelPlacement="outside"
@@ -223,6 +230,7 @@ export default function ProfilePage() {
           <Input
             variant="bordered"
             type="date"
+            aria-label="생년월일"
             labelPlacement="outside-left"
             className="w-[3/4]  bg-[#fff] rounded-xl "
             value={newBirthDate}
@@ -241,6 +249,7 @@ export default function ProfilePage() {
           <label className="mr-[10px] font-bold">성별</label>
           <Select
             items={sexTypes}
+            aria-label="성별 선택"
             variant="bordered"
             placeholder="--성별을 선택해주세요--"
             className="max-w-xs bg-[#fff] rounded-xl"
