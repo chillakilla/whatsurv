@@ -178,7 +178,7 @@ export default function ProfilePage() {
       </h1>
       <div className="w-[200px] m-auto mt-[30px]" onClick={clickImageHandler} style={{cursor: 'pointer'}}>
         {userProfile?.photoURL ? (
-          <div className="w-[200px] h-[200px] bg-green-100 rounded-full relative overflow-hidden ">
+          <div className="w-[200px] h-[200px]  rounded-full relative overflow-hidden ">
             <img
               src={userProfile.photoURL}
               className="w-full h-full  absolute top-0 left-0  object-cover  "
