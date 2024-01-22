@@ -36,6 +36,7 @@ const SurveyItDetailPage: React.FC = () => {
   }
 
   const createdAtDate = post?.createdAt.toDate() as Date;
+  const deadlineDate = post?.deadlineDate?.toDate() as Date;
 
   return (
     <div className="container h-[940px] w-[88.5rem] m-auto mt-10 border-1 border-[#C1C5CC] bg-white p-4">
@@ -57,7 +58,7 @@ const SurveyItDetailPage: React.FC = () => {
         <DetailInfoBox label="진행방식" value={post?.researchLocation || ''} />
         <DetailInfoBox label="유형" value={post?.researchType || ''} />
         <DetailInfoBox label="리워드" value={post?.rewards || ''} />
-        <DetailInfoBox label="마감일" value={createdAtDate.toLocaleString()} />
+        <DetailInfoBox label="마감일" value={deadlineDate.toLocaleDateString()} />
       </div>
       <div className="flex justify-between items-center p-2 h-[40px] mt-4 border-b-1 border-[#eee]">
         <div className="user flex  gap-2">
@@ -65,7 +66,7 @@ const SurveyItDetailPage: React.FC = () => {
           <p className="font-semibold">작성자 닉네임</p>
         </div>
         <div>
-          <p className="text-xs text-[#888]">작성일 | {post?.createdAt.toLocaleString()}</p>
+          <p className="text-xs text-[#888]">작성일 | {createdAtDate.toLocaleString()}</p>
         </div>
       </div>
       <div className="content-box  mt-4 flex gap-8 h-[500px]">

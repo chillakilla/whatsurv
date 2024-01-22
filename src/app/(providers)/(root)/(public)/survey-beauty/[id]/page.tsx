@@ -35,6 +35,7 @@ const SurveyItDetailPage: React.FC = () => {
   }
 
   const createdAtDate = post?.createdAt.toDate() as Date;
+  const deadlineDate = post?.deadlineDate?.toDate() as Date | null;
 
   return (
     //TODO: 조회수 카운팅, 좋아요 카운팅, 로그인된 사용자 정보 불러오기
@@ -59,7 +60,7 @@ const SurveyItDetailPage: React.FC = () => {
         <DetailInfoBox label="진행방식" value={post?.researchLocation || ''} />
         <DetailInfoBox label="유형" value={post?.researchType || ''} />
         <DetailInfoBox label="리워드" value={post?.rewards || ''} />
-        <DetailInfoBox label="마감일" value={createdAtDate.toLocaleString()} />
+        <DetailInfoBox label="마감일" value={deadlineDate ? deadlineDate.toLocaleDateString() : 'N/A'} />
       </div>
       <div className="flex justify-between items-center p-2 h-[40px] mt-4 border-b-1 border-[#eee]">
         <div className="user flex  gap-2">

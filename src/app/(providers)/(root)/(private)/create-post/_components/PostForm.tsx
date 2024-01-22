@@ -2,15 +2,17 @@ import {Post} from '@/app/api/typePost';
 import React, {ChangeEvent, useState} from 'react';
 import {majorCategories, sexType, ageGroup, researchLocation, researchType} from './categories';
 import {Spacer} from '@nextui-org/react';
-import {MdArrowBackIos} from 'react-icons/md';
 import {BsPersonCircle} from 'react-icons/bs';
 import {Input} from '@nextui-org/react';
+import {Timestamp} from '@firebase/firestore-types';
 import ToastEditor from './ToastEditor';
+import {FormData} from '@/app/api/typeFormData';
+import {MdArrowBackIos} from 'react-icons/md';
+import {useRouter} from 'next/navigation';
+// next/router 가 아니고 navigation....하
 
 interface PostFormProps {
-  formData: Omit<Post, 'views' | 'id' | 'createdAt' | 'updatedAt'> & {
-    deadlineDate: Date;
-  };
+  formData: Omit<FormData, 'updatedAt' | 'email'> & {};
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onImgFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -28,6 +30,7 @@ export default function PostForm({
   onSubmit,
   previewImage,
 }: PostFormProps) {
+  const router = useRouter();
   const isFormValid =
     formData.title.trim() !== '' &&
     formData.category !== '' &&
@@ -38,20 +41,40 @@ export default function PostForm({
     formData.researchTime !== '' &&
     formData.deadlineDate !== null;
 
-  const buttonHandler = () => {
-    console.log('clicked!');
+  const backButtonHandler = () => {
+    const isContentModified =
+      formData.title.trim() !== '' ||
+      // content 부분 테스트 할 것이 있어 주석
+      // formData.content.trim() !== '' ||
+      formData.category !== '' ||
+      formData.sexType !== '' ||
+      formData.ageGroup !== '' ||
+      formData.researchType !== '' ||
+      formData.researchLocation !== '' ||
+      formData.researchTime !== '' ||
+      formData.deadlineDate !== null;
+
+    if (isContentModified) {
+      const userConfirmed = window.confirm('정말 뒤로 가시겠습니까? 작성된 내용은 저장되지 않습니다.');
+
+      if (userConfirmed) {
+        router.back();
+      }
+    } else {
+      router.back();
+    }
   };
 
   return (
     <div>
       <div className="flex flex-col justify-center items-center">
         <div>
-          <button onClick={buttonHandler} className="self-start">
+          <button onClick={backButtonHandler} className="self-start">
             <MdArrowBackIos />
           </button>
           <Spacer y={6} />
           <form onSubmit={onSubmit} className="mt-[0.5rem]">
-            <div className="w-[64.625rem] p-[0.625rem] flex items-center self-stretch border border-sky-500 rounded-xl gap-[0.5rem]">
+            <div className="w-[64.625rem] p-[0.625rem] flex items-center self-stretch border border-sky-500 rounded-xl gap-[0.5rem] bg-white">
               <input
                 className="w-[59.8125rem] h-[1.625rem] text-base font-semibold"
                 type="text"
@@ -150,7 +173,7 @@ export default function PostForm({
                 className="p-[2px] border border-sky-500 rounded-lg"
                 type="date"
                 name="deadlineDate"
-                value={formData.deadlineDate ? formData.deadlineDate.toISOString().split('T')[0] : ''}
+                value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
               />
             </div>
@@ -225,6 +248,10 @@ export default function PostForm({
             hover:bg-[#0051FF]
             hover:text-white
             "
+                onClick={e => {
+                  e.preventDefault();
+                  backButtonHandler();
+                }}
               >
                 취소
               </button>

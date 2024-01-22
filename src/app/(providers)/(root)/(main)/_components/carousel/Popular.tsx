@@ -74,7 +74,11 @@ export default function Popular() {
                     <p className="text-xs text-[#666]">
                       마감일 |{' '}
                       {post.deadlineDate
-                        ? post.deadlineDate.toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})
+                        ? post.deadlineDate.toDate
+                          ? post.deadlineDate
+                              .toDate()
+                              .toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})
+                          : '2099.12.31'
                         : '2099.12.31'}
                     </p>
                     <div className="viewer flex  gap-2 text-[#818490]">
