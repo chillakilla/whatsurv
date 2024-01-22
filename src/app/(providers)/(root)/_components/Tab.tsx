@@ -26,9 +26,11 @@ export default function Tab({selectedTab, setSelectedTab}: TabProps) {
     setSelectedTab(tab);
   };
 
+  // TODO: li cursor pointer 작동 X , seo 불리 => button or a 태그로 교체
+
   return (
     <nav className=" hide-nav h-12 w-full border-b-1 bg-white">
-      <ul className="flex items-center divide-x-2 text-center h-12 ml-[70px]">
+      <ul className="flex items-center divide-x-2 text-center h-12 m-auto w-[1450px]">
         <li
           className={`w-24 ${selectedTab.name === 'IT' ? 'text-[#0051FF]' : ''}`}
           onClick={() => clickTabHandler({name: 'IT', to: '/'})}

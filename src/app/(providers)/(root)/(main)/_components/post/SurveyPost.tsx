@@ -6,18 +6,9 @@ import {FaRegCircleUser} from 'react-icons/fa6';
 import {GrView} from 'react-icons/gr';
 import SortingPost from './SortingPost';
 import {Spinner} from '@nextui-org/react';
-import {Firestore} from 'firebase/firestore';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
-import {Timestamp} from 'firebase/firestore';
 
-// const isWithin24Hours = (createdAt: Date): boolean => {
-//   const currentTime = new Date();
-//   const timeDifference = currentTime.getTime() - createdAt.getTime();
-//   const hoursDifference = timeDifference / (1000 * 60 * 60);
-//   return hoursDifference <= 24;
-// };
-// TODO: 이 부분 충돌나서 주석시키고 잠깐 해결해놨어요.
 const isWithin24Hours = (createdAt: Date | firebase.firestore.Timestamp): boolean => {
   const currentTime = new Date();
 
