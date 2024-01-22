@@ -3,36 +3,41 @@ import {Button} from '@nextui-org/react';
 import {
   GithubAuthProvider,
   GoogleAuthProvider,
+  User,
   browserSessionPersistence,
   setPersistence,
   signInWithPopup,
 } from 'firebase/auth';
-import {doc, setDoc} from 'firebase/firestore';
+import {doc, getDoc, setDoc} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
 import Swal from 'sweetalert2';
-
 export default function SocialLogin() {
   const router = useRouter();
+
+  const updateUserProfile = async (user: User) => {
+    const userRef = doc(db, 'users', user.uid);
+    const docSnap = await getDoc(userRef);
+
+    // Firestore에 사용자 데이터가 없는 경우에만 초기 데이터 설정
+    if (!docSnap.exists()) {
+      // 이메일이 없는 경우, 대체 이메일 주소 생성
+      const userEmail = user.email || `${user.uid}@no-email.com`;
+      const userData = {
+        nickname: user.displayName || userEmail.split('@')[0],
+        email: userEmail,
+        birthdate: '',
+        sexType: '--미설정--',
+      };
+      await setDoc(userRef, userData);
+    }
+  };
+
   const googleLogin = async () => {
     try {
       await setPersistence(auth, browserSessionPersistence); // 세션 지속성 설정
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
 
-      // Firestore에 저장할 사용자 정보
-      const userData = {
-        nickname: user.displayName || '기본닉네임',
-        email: user.email,
-        // 구글API에서 생년월일은 미지원으로 생년월일은 초기에 빈 값으로 설정
-        birthdate: '',
-
-        sexType: '--미설정--',
-      };
-
-      // 사용자 정보 저장
-      await setDoc(doc(db, 'users', user.uid), userData);
-
+      const result = await signInWithPopup(auth, new GoogleAuthProvider());
+      await updateUserProfile(result.user);
       Swal.fire({
         title: '로그인 성공!',
         icon: 'success',
@@ -49,25 +54,8 @@ export default function SocialLogin() {
   const githubLogin = async () => {
     try {
       await setPersistence(auth, browserSessionPersistence); // 세션 지속성 설정
-      const provider = new GithubAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      // 이메일이 없는 경우, 대체할 값을 사용
-      const userEmail = user.email || `${user.uid}@no-email.com`;
-
-      // Firestore에 저장할 사용자 정보
-      const userData = {
-        nickname: user.displayName || userEmail.split('@')[0], // GitHub username 또는 이메일을 사용
-        email: userEmail,
-        //생년월일은 초기에 빈 값으로 설정
-        birthdate: '',
-
-        sexType: '--미설정--',
-      };
-
-      // 사용자 정보 저장
-      await setDoc(doc(db, 'users', user.uid), userData);
+      const result = await signInWithPopup(auth, new GithubAuthProvider());
+      await updateUserProfile(result.user); // updateUserProfile 함수 사용
 
       Swal.fire({
         title: '로그인 성공!',
