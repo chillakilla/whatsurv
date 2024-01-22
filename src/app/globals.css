@@ -34,7 +34,7 @@ body {
   color: rgb(var(--foreground-rgb));
   /*background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));*/
   background-color: #f2f3f7;
-  height: 100vh;
+  min-height: 100vh;
   font-family: 'Pretendard-Regular' !important;
 }
 
