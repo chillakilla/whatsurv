@@ -31,7 +31,7 @@ export const researchType = [
   {value: 'ARS', label: 'ARS'},
   {value: '유치', label: '제품 유치 조사'},
   {value: '좌담회', label: '좌담회'},
-  {value: 'r심층 면접 조사', label: '심층 면접 조사'},
+  {value: '심층 면접 조사', label: '심층 면접 조사'},
   {value: '갱서베이', label: '갱서베이'},
 ];
 
