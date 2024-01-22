@@ -102,6 +102,7 @@ export default function AuthPage() {
         alert('로그인 성공!');
         setEmail('');
         setPassword('');
+        router.replace('/');
       })
       .catch(error => {
         const authError = error as AuthError;
@@ -152,14 +153,14 @@ export default function AuthPage() {
     ); // 로딩 인디케이터 표시
   }
 
-  if (user) {
-    return (
-      <div>
-        로그인 상태입니다! 사용자 이메일: {user.email} &nbsp;
-        <Button onClick={clickLogoutHandler}>로그아웃</Button>
-      </div>
-    );
-  }
+  // if (user) {
+  //   return (
+  //     <div>
+  //       로그인 상태입니다! 사용자 이메일: {user.email} &nbsp;
+  //       <Button onClick={clickLogoutHandler}>로그아웃</Button>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="place-items-center grid ">
