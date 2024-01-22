@@ -38,7 +38,7 @@ export default function Header() {
         <div className="flex items-center justify-center">
           <Link href="/">
             <h1 className="font-bold text-xl">
-              <img src="/image/whatsurv.svg" className="h-[30px]" />
+              <img src="/image/whatsurv.svg" className="h-[24px]" />
             </h1>
           </Link>
         </div>
@@ -66,7 +66,7 @@ export default function Header() {
           ) : (
             <>
               <Link href="/join">
-                <Button color="success" variant="ghost" className="font-bold">
+                <Button variant="ghost" className="font-bold border-[#D2D7E0] border-2">
                   회원가입
                 </Button>
               </Link>
