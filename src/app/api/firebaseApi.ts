@@ -194,6 +194,7 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
         createdAt: data?.createdAt?.toDate() || new Date(),
         deadlineDate: data?.deadlineDate instanceof Timestamp ? data.deadlineDate : data?.deadlineDate || null,
         user: {id: '', displayName: '', email: ''},
+        nickname: data?.nickname || '',
       };
     });
 

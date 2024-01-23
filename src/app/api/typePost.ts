@@ -38,5 +38,6 @@ export type litePost = {
   images: string[];
   createdAt: Date;
   deadlineDate: firebase.firestore.Timestamp | null;
+  nickname: string;
   user: User;
 };
