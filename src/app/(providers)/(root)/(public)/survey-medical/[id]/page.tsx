@@ -1,6 +1,6 @@
 'use client';
 import React, {useEffect, useState} from 'react';
-import {getPostById} from '@/app/api/firebaseApi';
+import {deletePost, getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import {useParams} from 'next/navigation';
@@ -48,6 +48,28 @@ const SurveyItDetailPage: React.FC = () => {
     return <div>로딩 중 오류가 발생했습니다.</div>;
   }
 
+  const deletePostHandler = async () => {
+    if (post) {
+      const deleteConfirmed = window.confirm('게시글을 삭제하시겠습니까?');
+      console.log('click');
+
+      if (deleteConfirmed) {
+        try {
+          await deletePost(post.id);
+          router.push('/');
+        } catch (error) {
+          console.error('게시글 삭제 도중 알 수 없는 오류가 발생했습니다.', error);
+        }
+      }
+    }
+  };
+
+  const editPostHandler = () => {
+    if (post) {
+      router.push('/edit-post/${post.id}');
+    }
+  };
+
   // 게시글을 작성한 유저 userId 비교 검사
   // 동일할 시에 renderEditDeleteButton 실행
   const isCurrentUser = user && post && user.uid === post.userId;
@@ -55,7 +77,9 @@ const SurveyItDetailPage: React.FC = () => {
     return (
       <div className="flex flex-col justify-center items-center">
         <button className="border border-sky-500 rounded-lg">수정</button>
-        <button className="border border-sky-500 rounded-lg">삭제</button>
+        <button className="border border-sky-500 rounded-lg" onClick={deletePostHandler}>
+          삭제
+        </button>
       </div>
     );
   };
@@ -102,7 +126,7 @@ const SurveyItDetailPage: React.FC = () => {
       <div className="flex justify-between items-center p-2 h-[40px] mt-4 border-b-1 border-[#eee]">
         <div className="user flex  gap-2">
           <FaRegCircleUser />
-          <p className="font-semibold">작성자 닉네임</p>
+          <p className="font-semibold">{post?.nickname}</p>
         </div>
         <div>
           <p className="text-xs text-[#888]">작성일 | {createdAtDate.toLocaleString()}</p>
