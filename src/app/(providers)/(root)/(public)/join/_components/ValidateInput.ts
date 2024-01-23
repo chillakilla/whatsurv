@@ -27,7 +27,7 @@ export default function ValidateInput({
 
     //* !email은 email이 빈 문자열이거나 undefined일 경우 true가 됨
 
-    if (step === 1) {
+    if (step === 2) {
       if (!email) {
         setEmailCheck('이메일을 입력해주세요');
         setEmailValidationClass('text-red-500');
@@ -46,7 +46,7 @@ export default function ValidateInput({
       }
     }
 
-    if (step === 2) {
+    if (step === 3) {
       if (!password) {
         setPasswordCheck('비밀번호를 입력해주세요');
         isValid = false;
@@ -73,14 +73,14 @@ export default function ValidateInput({
       }
     }
 
-    if (step === 3 && !birthDate) {
+    if (step === 4 && !birthDate) {
       setBirthDateCheck('생년월일을 입력해주세요');
       isValid = false;
     } else {
       setBirthDateCheck('');
     }
 
-    if (step === 4) {
+    if (step === 5) {
       if (!nickname) {
         setNicknameCheck('닉네임을 입력해주세요');
         setNicknameValidationClass('text-red-500');

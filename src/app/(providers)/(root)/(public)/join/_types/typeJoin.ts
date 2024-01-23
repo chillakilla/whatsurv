@@ -45,6 +45,8 @@ export interface RenderStepJoinTypes {
   birthDateCheck: string;
   nicknameCheck: string;
   nicknameValidationClass: string;
+  isAgreedToTerms: boolean;
+  setIsAgreedToTerms: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface ProgressBarTypes {

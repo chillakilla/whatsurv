@@ -1,5 +1,5 @@
 import {auth, db} from '@/firebase';
-import {Button, Input} from '@nextui-org/react';
+import {Button, Checkbox, Input} from '@nextui-org/react';
 import confetti from 'canvas-confetti';
 import {createUserWithEmailAndPassword, signOut} from 'firebase/auth';
 import {doc, setDoc} from 'firebase/firestore';
@@ -9,6 +9,7 @@ import {IoIosCheckmarkCircle} from 'react-icons/io';
 import {SyncLoader} from 'react-spinners';
 import Swal from 'sweetalert2';
 import type {RenderStepJoinTypes} from '../_types/typeJoin';
+import TermsModal from './TermsModal';
 
 export default function RenderStepJoin({
   email,
@@ -27,6 +28,8 @@ export default function RenderStepJoin({
   setProgress,
   isJoining,
   setIsJoining,
+  isAgreedToTerms,
+  setIsAgreedToTerms,
   validate,
   clickEmailCheckHandler,
   clickNicknameCheckHandler,
@@ -46,7 +49,7 @@ export default function RenderStepJoin({
     setStep(newStep);
 
     // 진행률 갱신
-    setProgress((newStep / 5) * 100);
+    setProgress((newStep / 6) * 100);
   };
 
   //가입축하 폭죽
@@ -97,7 +100,7 @@ export default function RenderStepJoin({
         confirmButtonText: '확인',
         confirmButtonColor: '#0051FF',
       });
-      setStep(5);
+      setStep(6);
       // 프로그래스 바 완료 상태로 설정
       setProgress(100);
     } catch (error) {
@@ -112,6 +115,31 @@ export default function RenderStepJoin({
   const renderStep = () => {
     switch (step) {
       case 1:
+        return (
+          <div className="mt-[20px] w-[400px]">
+            {/* 체크박스 */}
+            <div>
+              <TermsModal />
+              <label className="flex items-center pt-[8px]">
+                <Checkbox checked={isAgreedToTerms} size="lg" onChange={e => setIsAgreedToTerms(e.target.checked)} />
+                <span className="text-lg">약관에 동의합니다.</span>
+              </label>
+            </div>
+
+            <Button
+              className="mt-[20px] w-full bg-[#0051FF] text-white"
+              size="lg"
+              disabled={!isAgreedToTerms}
+              onClick={() => {
+                if (validate()) moveToNextStep();
+              }}
+              type="button"
+            >
+              다음
+            </Button>
+          </div>
+        );
+      case 2:
         return (
           <div className="mt-[20px] w-[400px]">
             <div className="flex items-center ">
@@ -145,7 +173,7 @@ export default function RenderStepJoin({
             </Button>
           </div>
         );
-      case 2:
+      case 3:
         return (
           <div className="mt-[20px] w-[400px]">
             <Input
@@ -178,7 +206,7 @@ export default function RenderStepJoin({
             </Button>
           </div>
         );
-      case 3:
+      case 4:
         return (
           <div className="mt-[20px] w-[400px]">
             <Input
@@ -204,7 +232,7 @@ export default function RenderStepJoin({
             </Button>
           </div>
         );
-      case 4:
+      case 5:
         return (
           <div className="mt-[20px] w-[400px]">
             {!isJoining && (
@@ -246,7 +274,7 @@ export default function RenderStepJoin({
             )}
           </div>
         );
-      case 5:
+      case 6:
         triggerConfetti();
         return (
           <div className="mt-[20px] w-[400px] ">
