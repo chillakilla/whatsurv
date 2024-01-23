@@ -1,3 +1,40 @@
+// 'use client';
+
+// import {useSearchParams} from 'next/navigation';
+// import {useState} from 'react';
+
+// import Tab from '../_components/Tab';
+// import FloatingBtn from './_components/FloatingBtn';
+// import Banner from './_components/carousel/Banner';
+// import Popular from './_components/carousel/Popular';
+
+// import SurveyPost from './_components/post/SurveyPost';
+
+// export default function MainPage() {
+//   const searchParams = useSearchParams();
+//   const [selectedTab, setSelectedTab] = useState({
+//     name: searchParams.get('tab') || 'LITE',
+//     to: '/', // ?
+//   });
+
+//   return (
+//     <div>
+//       <Tab selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+//       <div className="flex-col items-center justify-center w-[88.5rem] m-auto mb-20">
+//         <Banner />
+//         <Popular />
+//         <SurveyPost target={selectedTab.name} />
+//         <FloatingBtn />
+//       </div>
+//     </div>
+//   );
+// }
+
+// 1. IT, Beauty, Medical 을 메인 페이지 & Lite는 다른 페이지로 만든다
+// 2. PostIT, PostBeauty, PostMedi 를 하나의 컴포넌트로 만든다
+// 3. Lite 클릭 시 /survey-lite 페이지로 이동한다. (같은 페이지의 경우 이동 X)
+// 4. IT, Beauty, Medical 클릭 시 / 페이지로 이동한다. (같은 페이지의 경우 이동 X)
+
 'use client';
 import {getLiteSurveyPosts} from '@/app/api/firebaseApi';
 import {litePost} from '@/app/api/typePost';
@@ -27,7 +64,7 @@ const isWithin24Hours = (createdAt: Date): boolean => {
 export default function page() {
   const searchParams = useSearchParams();
   const [selectedTab, setSelectedTab] = useState({
-    name: searchParams.get('tab') || 'IT',
+    name: searchParams.get('tab') || 'LITE',
     to: '/',
   });
 
@@ -127,16 +164,21 @@ export default function page() {
                                 <FaRegHeart />
                               </button>
                             </div>
-                            <p className="text-xs text-[#666] mb-4">
-                              작성일 |{' '}
-                              {litepost.createdAt
-                                ? litepost.createdAt.toLocaleString('ko-KR', {
-                                    year: 'numeric',
-                                    month: '2-digit',
-                                    day: '2-digit',
-                                  })
-                                : '2099.12.31'}
-                            </p>
+                            <div className="flex justify-between">
+                              <p className="text-xs text-[#666] mb-4">
+                                작성일 |{' '}
+                                {litepost.createdAt
+                                  ? litepost.createdAt.toLocaleString('ko-KR', {
+                                      year: 'numeric',
+                                      month: '2-digit',
+                                      day: '2-digit',
+                                    })
+                                  : '2099.12.31'}
+                              </p>
+                              <p className="text-xs text-[#666] mb-4">
+                                마감일 | {litepost.deadlineDate ? litepost.deadlineDate.toLocaleString() : '2099.12.31'}
+                              </p>
+                            </div>
                             <h3 className="text-lg font-bold">{litepost.title}</h3>
                           </div>
                           <div className="bottom-content flex items-end">
