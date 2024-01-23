@@ -12,6 +12,8 @@ export default function ValidateInput({
   setNicknameValidationClass,
   setConfirmPasswordCheck,
   birthDate,
+  isAgreedToTerms,
+  setTermsCheck,
   setBirthDateCheck,
   nickname,
   setIsPasswordMatch,
@@ -25,9 +27,14 @@ export default function ValidateInput({
     // isVaild는 각 단계에서 입력값의 유효성을 나타낼때 사용함
     let isValid = true;
 
+    if (step === 1 && !isAgreedToTerms) {
+      setTermsCheck('약관에 동의하셔야 회원가입이 가능합니다.');
+      return false; // 약관에 동의하지 않았으므로 유효하지 않음
+    } else {
+      setTermsCheck(''); // 약관 동의했으므로 메시지 초기화
+    }
     //* !email은 email이 빈 문자열이거나 undefined일 경우 true가 됨
-
-    if (step === 1) {
+    if (step === 2) {
       if (!email) {
         setEmailCheck('이메일을 입력해주세요');
         setEmailValidationClass('text-red-500');
@@ -46,7 +53,7 @@ export default function ValidateInput({
       }
     }
 
-    if (step === 2) {
+    if (step === 3) {
       if (!password) {
         setPasswordCheck('비밀번호를 입력해주세요');
         isValid = false;
@@ -73,14 +80,14 @@ export default function ValidateInput({
       }
     }
 
-    if (step === 3 && !birthDate) {
+    if (step === 4 && !birthDate) {
       setBirthDateCheck('생년월일을 입력해주세요');
       isValid = false;
     } else {
       setBirthDateCheck('');
     }
 
-    if (step === 4) {
+    if (step === 5) {
       if (!nickname) {
         setNicknameCheck('닉네임을 입력해주세요');
         setNicknameValidationClass('text-red-500');

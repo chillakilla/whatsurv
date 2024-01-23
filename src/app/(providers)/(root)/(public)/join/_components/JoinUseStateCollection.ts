@@ -33,13 +33,23 @@ export default function JoinUseStateCollection() {
   const [emailValidationClass, setEmailValidationClass] = useState<string>('');
   const [nicknameValidationClass, setNicknameValidationClass] = useState<string>('');
 
+  //회원가입 약관 동의
+  const [isAgreedToTerms, setIsAgreedToTerms] = useState<boolean>(false);
+
+  //회원가입 약관 동의 상태
+  const [termsCheck, setTermsCheck] = useState('');
+
   return {
     email,
     setEmail,
+    termsCheck,
+    setTermsCheck,
     password,
     setPassword,
     confirmPassword,
     setConfirmPassword,
+    isAgreedToTerms,
+    setIsAgreedToTerms,
     birthDate,
     setBirthDate,
     nickname,
