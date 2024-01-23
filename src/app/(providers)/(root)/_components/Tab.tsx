@@ -1,63 +1,38 @@
-import {useRouter} from 'next/navigation';
 import React from 'react';
+import Link from 'next/link';
+import {usePathname} from 'next/navigation';
 
-export type TabProps = {
-  selectedTab: {
-    name: string;
-    to: string;
-  };
-  setSelectedTab: React.Dispatch<
-    React.SetStateAction<{
-      name: string;
-      to: string;
-    }>
-  >;
-};
-
-// 3. Lite 클릭 시 /survey-lite 페이지로 이동한다. (같은 페이지의 경우 이동 X)
-// 4. IT, Beauty, Medical 클릭 시 / 페이지로 이동한다. (같은 페이지의 경우 이동 X)
-export default function Tab({selectedTab, setSelectedTab}: TabProps) {
-  const router = useRouter();
-
-  const clickTabHandler = (tab: {name: string; to: string}) => {
-    // 페이지 이동을 기본으로 둠
-
-    router.push(`${tab.to}?tab=${tab.name}`);
-    setSelectedTab(tab);
-  };
-
-  // TODO: li cursor pointer 작동 X , seo 불리 => button or a 태그로 교체
-
+export default function Tab() {
+  const pathname = usePathname();
+  const tabData = [
+    {
+      id: 'It',
+      name: 'IT',
+      path: '/survey-it',
+    },
+    {
+      id: 'Lite',
+      name: '참여해Surv',
+      path: '/survey-lite',
+    },
+    {
+      id: 'Faq',
+      name: 'FAQ',
+      path: '/faq',
+    },
+  ];
+  // 탭 클릭 후 페이지 이동
+  // 현재 페이지가 각각의 탭의 href와 같다면 해당 link 태그의 글자에 파란색 포인트 주기
   return (
-    <nav className=" hide-nav h-12 w-full border-b-1 bg-white">
+    <nav className=" hide-nav h-12 w-full border-t-1 bg-white select-none ">
       <ul className="flex items-center divide-x-2 text-center h-12 m-auto w-[1450px]">
-        <li
-          className={`w-24 ${selectedTab.name === 'IT' ? 'text-[#0051FF]' : ''}`}
-          onClick={() => clickTabHandler({name: 'IT', to: '/'})}
-        >
-          IT
-        </li>
-
-        <li
-          className={`w-24 ${selectedTab.name === 'Beauty' ? 'text-[#0051FF]' : ''}`}
-          onClick={() => clickTabHandler({name: 'Beauty', to: '/'})}
-        >
-          BEAUTY
-        </li>
-
-        <li
-          className={`w-24 ${selectedTab.name === 'Medical' ? 'text-[#0051FF]' : ''}`}
-          onClick={() => clickTabHandler({name: 'Medical', to: '/'})}
-        >
-          MEDICAL
-        </li>
-
-        <li
-          className={`w-24 ${selectedTab.name === 'LITE' ? 'text-[#0051FF]' : ''}`}
-          onClick={() => clickTabHandler({name: 'LITE', to: '/survey-lite'})}
-        >
-          LITE
-        </li>
+        {tabData.map(tab => {
+          return (
+            <Link href={tab.path} key={tab.id} className={`${tab.path === pathname ? 'text-[#0051FF]' : ''} w-28`}>
+              {tab.name}
+            </Link>
+          );
+        })}
       </ul>
     </nav>
   );

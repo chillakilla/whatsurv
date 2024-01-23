@@ -28,7 +28,7 @@ export default function FloatingBtn() {
   };
 
   return (
-    <div className="flex justify-end sticky bottom-10">
+    <div className="flex justify-end sticky bottom-10 z-99">
       <Button
         isIconOnly
         aria-label="write-post"

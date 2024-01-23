@@ -7,6 +7,8 @@ import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
 import {useRouter} from 'next/navigation';
 import {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {PiUserRectangleFill} from 'react-icons/pi';
+import {MoonLoader} from 'react-spinners';
+import Swal from 'sweetalert2';
 interface UserProfileType {
   email: string | null;
   nickName: string | null;
@@ -61,7 +63,11 @@ export default function ProfilePage() {
         }
       } else {
         setUserProfile(null);
-        alert('로그인이 필요합니다');
+        Swal.fire({
+          title: '로그인이 필요합니다.',
+          confirmButtonColor: '#0051FF',
+          icon: 'error',
+        });
         router.push('/auth');
       }
     });
@@ -75,7 +81,12 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!userProfile) {
-    return <div>로딩 중...</div>;
+    return (
+      <div className="flex justify-center flex-wrap items-center overflow-y-hidden mt-[300px]">
+        <MoonLoader color="#0051FF" size={100} />
+        <p className="text-[#0051FF] w-full text-center mt-[30px]">잠시만 기다려 주세요..</p>
+      </div>
+    );
   }
 
   // 닉네임 편집 모드 전환 함수
@@ -161,13 +172,13 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="text-lg leading-10 w-[500px] m-auto mt-[80px]">
+    <div className="text-lg leading-10 w-[500px] m-auto mt-[80px] select-none">
       <h1 className="text-[#0051FF] text-3xl mb-[20px] mt-[30px] text-center">
         <span className="font-bold">{userProfile?.nickName}</span>님의 프로필
       </h1>
       <div className="w-[200px] m-auto mt-[30px]" onClick={clickImageHandler} style={{cursor: 'pointer'}}>
         {userProfile?.photoURL ? (
-          <div className="w-[200px] h-[200px] bg-green-100 rounded-full relative overflow-hidden ">
+          <div className="w-[200px] h-[200px]  rounded-full relative overflow-hidden ">
             <img
               src={userProfile.photoURL}
               className="w-full h-full  absolute top-0 left-0  object-cover  "
@@ -178,7 +189,13 @@ export default function ProfilePage() {
           <PiUserRectangleFill size={200} /> // 기본 아이콘 표시
         )}
       </div>
-      <input type="file" onChange={clickProfileImageHandler} ref={fileInputRef} className="hidden" />
+      <input
+        type="file"
+        onChange={clickProfileImageHandler}
+        aria-label="프로필 이미지 업로드"
+        ref={fileInputRef}
+        className="hidden"
+      />
 
       <p className="mb-[15px] mt-[40px]">
         <span className="font-bold ">이메일</span> {userProfile.email}
@@ -189,6 +206,7 @@ export default function ProfilePage() {
           <Input
             type="text"
             value={newNickName}
+            aria-label="닉네임"
             variant="bordered"
             className="text-lg w-[3/4] ml-[10px]    bg-[#fff] rounded-xl "
             labelPlacement="outside"
@@ -212,6 +230,7 @@ export default function ProfilePage() {
           <Input
             variant="bordered"
             type="date"
+            aria-label="생년월일"
             labelPlacement="outside-left"
             className="w-[3/4]  bg-[#fff] rounded-xl "
             value={newBirthDate}
@@ -230,6 +249,7 @@ export default function ProfilePage() {
           <label className="mr-[10px] font-bold">성별</label>
           <Select
             items={sexTypes}
+            aria-label="성별 선택"
             variant="bordered"
             placeholder="--성별을 선택해주세요--"
             className="max-w-xs bg-[#fff] rounded-xl"

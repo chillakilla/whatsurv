@@ -3,6 +3,7 @@
 import {useRef} from 'react';
 import SwiperCore from 'swiper';
 import {Swiper, SwiperSlide} from 'swiper/react';
+import Link from 'next/link';
 
 // Swiper styles
 import 'swiper/css';
@@ -31,8 +32,24 @@ export default function Banner() {
         modules={[Pagination, Navigation]}
         className="banner-swiper"
       >
-        <SwiperSlide>Slide 1</SwiperSlide>
-        <SwiperSlide>Slide 2</SwiperSlide>
+        <SwiperSlide className="banner-slide">
+          <div className="flex flex-col justify-center items-center  bg-gradient-to-r from-[#D6FF00]  via-black to-[#0051FF]">
+            <div className="relative z-1 flex flex-col justify-center items-center w-[500px] h-[400px] m-auto">
+              <h1 className="leading-10 text-3xl mb-4 text-white">
+                UT와 리서치 모객이 어려우신가요? <br />
+                WhatSurv으로 초대합니다.
+              </h1>
+              <Link href="/auth">
+                <button className="w-24 h-[35px] bg-[#0051FF] text-white rounded-lg hover:bg-white hover:text-black">
+                  참여하기
+                </button>
+              </Link>
+            </div>
+          </div>
+        </SwiperSlide>
+        <SwiperSlide>
+          <img src="/image/img1.png" />
+        </SwiperSlide>
         <SwiperSlide>Slide 3</SwiperSlide>
       </Swiper>
     </>

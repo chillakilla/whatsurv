@@ -5,6 +5,7 @@ import {doc, getDoc} from 'firebase/firestore';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import Tab from './Tab';
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userPhotoURL, setUserPhotoURL] = useState<string | null>(null);
@@ -18,10 +19,11 @@ export default function Header() {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         const photoURL = userDoc.data()?.photoURL;
         setUserPhotoURL(photoURL);
-        console.log(user);
       } else {
         setUserPhotoURL(null);
       }
+
+      console.log(user);
     });
 
     return () => unsubscribe();
@@ -33,16 +35,16 @@ export default function Header() {
   };
 
   return (
-    <header>
-      <section className="w-[1400px] flex justify-between items-center m-auto ">
-        <div className="flex items-center justify-center">
+    <header className="select-none bg-white">
+      <section className="max-w-[1450px] flex justify-between items-center m-auto ">
+        <div className="flex items-center justify-center ml-[30px]">
           <Link href="/">
             <h1 className="font-bold text-xl">
               <img src="/image/whatsurv.svg" className="h-[24px]" />
             </h1>
           </Link>
         </div>
-        <div className=" flex justify-end gap-4 p-2">
+        <div className=" flex justify-end gap-4 p-2 mr-[20px]">
           {isLoggedIn ? (
             <>
               <Dropdown placement="bottom-end">
@@ -66,7 +68,7 @@ export default function Header() {
           ) : (
             <>
               <Link href="/join">
-                <Button variant="ghost" className="font-bold border-[#d2d7e0] border-2">
+                <Button variant="ghost" className="font-bold border-[#D2D7E0] border-2">
                   회원가입
                 </Button>
               </Link>
@@ -79,6 +81,7 @@ export default function Header() {
           )}
         </div>
       </section>
+      <Tab />
     </header>
   );
 }
