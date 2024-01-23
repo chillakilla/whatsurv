@@ -34,6 +34,7 @@ export default function RenderStepJoin({
   clickEmailCheckHandler,
   clickNicknameCheckHandler,
   emailCheck,
+  termsCheck,
   emailValidationClass,
   passwordCheck,
   confirmPasswordCheck,
@@ -125,11 +126,10 @@ export default function RenderStepJoin({
                 <span className="text-lg">약관에 동의합니다.</span>
               </label>
             </div>
-
+            {termsCheck && <p className="text-red-500 mt-[25px] text-center">{termsCheck}</p>}
             <Button
               className="mt-[20px] w-full bg-[#0051FF] text-white"
               size="lg"
-              disabled={!isAgreedToTerms}
               onClick={() => {
                 if (validate()) moveToNextStep();
               }}

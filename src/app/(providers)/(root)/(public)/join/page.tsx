@@ -30,6 +30,8 @@ export default function JoinPage() {
     setIsJoining,
     emailCheck,
     setEmailCheck,
+    termsCheck,
+    setTermsCheck,
     passwordCheck,
     setPasswordCheck,
     confirmPasswordCheck,
@@ -57,10 +59,14 @@ export default function JoinPage() {
     birthDate,
     setBirthDateCheck,
     nickname,
+    isAgreedToTerms,
+    termsCheck,
+    setTermsCheck,
     setNicknameCheck,
     isEmailAvailable,
     isNicknameAvailable,
     setIsPasswordMatch,
+
     step,
     setEmailValidationClass,
     setNicknameValidationClass,
@@ -104,6 +110,7 @@ export default function JoinPage() {
     nicknameValidationClass,
     validate,
     clickEmailCheckHandler,
+    termsCheck,
     clickNicknameCheckHandler,
   });
 

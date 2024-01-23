@@ -15,6 +15,9 @@ export interface ValidateInputTypes {
   step: number;
   setEmailValidationClass: (value: string) => void;
   setNicknameValidationClass: (value: string) => void;
+  isAgreedToTerms: boolean;
+  termsCheck: string;
+  setTermsCheck: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export interface RenderStepJoinTypes {
@@ -35,7 +38,7 @@ export interface RenderStepJoinTypes {
   isJoining: boolean;
   setIsJoining: (value: boolean) => void;
   validate: () => boolean;
-
+  termsCheck: string;
   clickEmailCheckHandler: () => void;
   clickNicknameCheckHandler: () => void;
   emailCheck: string;

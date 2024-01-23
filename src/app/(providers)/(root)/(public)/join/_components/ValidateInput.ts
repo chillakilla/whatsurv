@@ -12,6 +12,8 @@ export default function ValidateInput({
   setNicknameValidationClass,
   setConfirmPasswordCheck,
   birthDate,
+  isAgreedToTerms,
+  setTermsCheck,
   setBirthDateCheck,
   nickname,
   setIsPasswordMatch,
@@ -25,8 +27,13 @@ export default function ValidateInput({
     // isVaild는 각 단계에서 입력값의 유효성을 나타낼때 사용함
     let isValid = true;
 
+    if (step === 1 && !isAgreedToTerms) {
+      setTermsCheck('약관에 동의하셔야 회원가입이 가능합니다.');
+      return false; // 약관에 동의하지 않았으므로 유효하지 않음
+    } else {
+      setTermsCheck(''); // 약관 동의했으므로 메시지 초기화
+    }
     //* !email은 email이 빈 문자열이거나 undefined일 경우 true가 됨
-
     if (step === 2) {
       if (!email) {
         setEmailCheck('이메일을 입력해주세요');
