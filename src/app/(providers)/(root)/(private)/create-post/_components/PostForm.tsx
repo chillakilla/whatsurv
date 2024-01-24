@@ -1,17 +1,14 @@
-import {Post} from '@/app/api/typePost';
-import React, {ChangeEvent, useState} from 'react';
-import {majorCategories, sexType, ageGroup, researchLocation, researchType} from './categories';
-import {Spacer} from '@nextui-org/react';
-import {BsPersonCircle} from 'react-icons/bs';
-import {Input} from '@nextui-org/react';
-import {Timestamp} from '@firebase/firestore-types';
-import ToastEditor from './ToastEditor';
 import {FormData} from '@/app/api/typeFormData';
-import {MdArrowBackIos} from 'react-icons/md';
+import {Input, Spacer} from '@nextui-org/react';
 import {useRouter} from 'next/navigation';
+import React, {ChangeEvent} from 'react';
+import {BsPersonCircle} from 'react-icons/bs';
+import {MdArrowBackIos} from 'react-icons/md';
+import {ageGroup, majorCategories, researchLocation, researchType, sexType} from './categories';
 // next/router 가 아니고 navigation....하
 
 interface PostFormProps {
+  nickname: string | null | undefined;
   formData: Omit<FormData, 'updatedAt' | 'email'> & {};
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -22,6 +19,7 @@ interface PostFormProps {
 }
 
 export default function PostForm({
+  nickname,
   formData,
   onInputChange,
   onDateChange,
@@ -92,7 +90,7 @@ export default function PostForm({
               <div className="flex justify-center items-center">
                 <BsPersonCircle />
                 <div className="ml-[0.625rem]">
-                  <p className="text-sm font-medium">여기 작성자 닉네임</p>
+                  <p className="text-sm font-medium">{formData.nickname}</p>
                 </div>
               </div>
             </div>

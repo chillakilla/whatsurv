@@ -1,10 +1,11 @@
 'use client';
-import React from 'react';
+
 import {getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 
 import {useParams} from 'next/navigation';
+import React from 'react';
 import {FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
 
@@ -47,7 +48,7 @@ const SurveyItDetailPage: React.FC = () => {
       <div className="flex justify-between items-center p-2 h-[40px] mt-4 border-b-1 border-[#eee]">
         <div className="user flex  gap-2">
           <FaRegCircleUser />
-          <p className="font-semibold">작성자 닉네임</p>
+          <p className="font-semibold">{post?.nickname}</p>
         </div>
         <div>
           <p className="text-xs text-[#888]">작성일 | {createdAtDate.toLocaleString()}</p>

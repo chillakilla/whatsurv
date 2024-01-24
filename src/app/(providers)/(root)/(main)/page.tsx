@@ -1,10 +1,10 @@
 'use client';
 import FloatingBtn from './_components/FloatingBtn';
 import Banner from './_components/carousel/Banner';
-import Popular from './_components/carousel/Popular';
-import SearchBar from './searchForm/SearchBar';
 import ItList from './_components/carousel/ItList';
 import LiteList from './_components/carousel/LiteList';
+import Popular from './_components/carousel/Popular';
+import SearchBar from './searchForm/SearchBar';
 
 export default function MainPage() {
   return (

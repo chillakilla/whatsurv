@@ -1,8 +1,8 @@
 'use client';
 
-import {uploadImageToStorage} from '@/app/api/firebaseApi';
-import {db} from '@/firebase';
-import {addDoc, collection, serverTimestamp} from 'firebase/firestore';
+import {saveDataToFirebase} from '@/app/api/firebaseApi';
+import {auth, db} from '@/firebase';
+import {doc, getDoc} from 'firebase/firestore';
 import React, {useState} from 'react';
 
 interface LiteSurveyCreateModalProps {
@@ -16,38 +16,43 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
   const [defaultImage, setDefaultImage] = useState(true);
 
   // 게시물 등록하기
-  const onSubmitHandler = () => {
-    saveDataToFirebase(title, contents, selectedImages);
-    onCloseCreateModal();
-  };
+  const onSubmitHandler = async () => {
+    const isTitleEmpty = title.trim() === '';
+    const areContentsEmpty = contents.some(content => content.trim() === '');
+    // 로그인 한 유저인지 확인
+    if (isTitleEmpty && areContentsEmpty) {
+      window.alert('제목과 내용을 입력하세요.');
+    } else if (isTitleEmpty) {
+      window.alert('제목을 입력하세요.');
+    } else if (areContentsEmpty) {
+      window.alert('내용을 입력하세요.');
+    } else {
+      try {
+        // 현재 로그인한 사용자 정보 가져오기
+        const currentUser = auth.currentUser;
 
-  const saveDataToFirebase = async (title: string, contents: string[], images: File[]) => {
-    try {
-      const liteSurveyPostsCollection = collection(db, 'litesurveyposts');
-      const timestamp = serverTimestamp();
+        if (currentUser) {
+          // 사용자 uid를 기반으로 users 컬렉션에서 데이터 가져오기
+          const userDocRef = doc(db, 'users', currentUser.uid);
+          const userDoc = await getDoc(userDocRef);
 
-      // 이미지 업로드하고 다운로드 URL 얻기
-      const imageUrls = await Promise.all(
-        images.map(async image => {
-          return await uploadImageToStorage(image);
-        }),
-      );
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            const userNickname = userData.nickname;
 
-      const counts = contents.map(() => 0);
-
-      // Firestore에 데이터 저장
-      const docRef = await addDoc(liteSurveyPostsCollection, {
-        title,
-        contents,
-        images: imageUrls,
-        timestamp,
-        counts,
-      });
-
-      console.log('ID가 포함된 문서 작성 성공: ', docRef.id);
-    } catch (error) {
-      console.error('문서 추가 중 오류 발생: ', error);
-      throw new Error('게시글을 추가하는 것에 실패했습니다.');
+            // 데이터 저장
+            saveDataToFirebase(title, contents, selectedImages, userNickname);
+            onCloseCreateModal();
+          } else {
+            console.log('해당 사용자의 데이터가 없습니다.');
+          }
+        } else {
+          console.log('사용자가 로그인하지 않았습니다.');
+        }
+      } catch (error) {
+        console.error('사용자 정보를 가져오는 중 오류 발생: ', error);
+        throw new Error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
+      }
     }
   };
 
@@ -95,7 +100,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
           <div className="mb-4 flex items-center">
             {selectedImages.length === 0 && defaultImage && (
               <div className="mx-auto my-auto">
-                <img src="/img/default-img.gif" alt="기본 이미지" className="w-[10rem] h-[11.5rem] object-cover pb-1" />
+                <img src="/image/default.jpg" alt="기본 이미지" className="w-[10rem] h-[11.5rem] object-cover pb-1" />
               </div>
             )}
             {selectedImages.map((image, index) => (
@@ -153,7 +158,6 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
           >
             내용 추가
           </button>
-          {/* 게시물 등록 하기*/}
           <div className="flex justify-end mt-4">
             <button
               onClick={onSubmitHandler}

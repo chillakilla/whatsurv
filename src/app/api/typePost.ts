@@ -1,5 +1,6 @@
 import firebase from 'firebase/compat/app';
 import {Timestamp} from 'firebase/firestore';
+import {User} from './typeUser';
 
 export type Post = {
   id: string;
@@ -36,5 +37,7 @@ export type litePost = {
   contents: string[];
   images: string[];
   createdAt: Date;
-  deadlineDate: Date;
+  deadlineDate: firebase.firestore.Timestamp | null;
+  nickname: string;
+  user: User;
 };
