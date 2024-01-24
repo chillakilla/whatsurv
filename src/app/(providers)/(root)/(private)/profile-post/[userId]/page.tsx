@@ -24,31 +24,22 @@ export default function ProfilePost() {
   const params = useParams<{userId: string}>();
   const userId = params.userId;
 
+  const [isLoading, setIsLoading] = useState(false);
+
   //탭 기능 관련 상태
   const [currentTab, setCurrentTab] = useState('IT');
 
   useEffect(() => {
     if (userId) {
-      getUserPostsIT(userId).then(data => {
-        setPosts(
-          data.map(doc => ({
-            id: doc.id,
-            title: doc.title,
-            content: doc.content,
-            deadlineDate: doc.deadlineDate,
-          })),
-        );
-      });
-
-      getUserPostLite(userId).then(data => {
-        setUserPostLite(
-          data.map(doc => ({
-            id: doc.id,
-            title: doc.title,
-            content: doc.content,
-          })),
-        );
-      });
+      setIsLoading(true);
+      Promise.all([getUserPostsIT(userId), getUserPostLite(userId)])
+        .then(([postsIT, postsLite]) => {
+          setPosts(postsIT);
+          setUserPostLite(postsLite);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   }, [userId]);
 
@@ -56,6 +47,10 @@ export default function ProfilePost() {
   const clickUserPostTabHandler = (tabName: Tab) => {
     setCurrentTab(tabName);
   };
+
+  if (isLoading) {
+    return <div>로딩 중......</div>;
+  }
 
   return (
     <div>
@@ -69,7 +64,7 @@ export default function ProfilePost() {
               <Link href={`/survey-it/${post.id}`}>
                 {post.title}
                 <p>
-                  마감일:{' '}
+                  마감일:
                   {post.deadlineDate
                     ? post.deadlineDate.toLocaleDateString('ko-KR', {
                         year: 'numeric',
