@@ -14,6 +14,7 @@ import {
   query,
   updateDoc,
   orderBy,
+  where,
 } from 'firebase/firestore';
 import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
 import {Post, litePost} from './typePost';
@@ -98,6 +99,13 @@ export const addPost = async (newPost: Post): Promise<DocumentReference> => {
       nickname: user.displayName || '',
     });
 
+    // TODO: 유저 콜렉션 > 단일 유저 문서 내부 > 서브콜렉션에 문서추가
+    const userPostsRef = collection(db, 'users', user.uid, 'userPosts');
+    await addDoc(userPostsRef, {
+      postId: docRef.id,
+      createdAt,
+    });
+
     return docRef;
   } catch (error) {
     console.error('Error adding document: ', error);
@@ -141,6 +149,24 @@ export const updateLikesCount = async (postId: string): Promise<void> => {
     }
   } catch (error) {
     console.error('Likes 카운트 업데이트 중 오류:', error);
+  }
+};
+
+// 변경된 닉네임으로 해당 유저가 작성한 문서 검색
+// 그 문서들에 변경된 닉네임 업데이트
+export const updateNicknameInDocs = async (userId: string, newNickName: string) => {
+  try {
+    const q = query(collection(db, 'posts'), where('userId', '==', userId));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach(async doc => {
+      const docRef = doc.ref;
+      await updateDoc(docRef, {nickname: newNickName});
+    });
+
+    console.log('변경된 닉네임이 문서에 반영됨');
+  } catch (error) {
+    console.error('닉네임 업데이트 중 오류', error);
   }
 };
 
