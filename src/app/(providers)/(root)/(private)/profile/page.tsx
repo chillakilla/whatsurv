@@ -1,4 +1,5 @@
 'use client';
+import {updateNicknameInDocs} from '@/app/api/firebaseApi';
 import {auth, db, storage} from '@/firebase';
 import {Button, Input, Select, SelectItem} from '@nextui-org/react';
 import {onAuthStateChanged} from 'firebase/auth';
@@ -108,6 +109,8 @@ export default function ProfilePage() {
           nickName: newNickName, // 닉네임만 업데이트
         };
       });
+
+      await updateNicknameInDocs(auth.currentUser.uid, newNickName);
       setIsNickNameEditing(false);
     }
   };

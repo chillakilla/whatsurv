@@ -92,7 +92,7 @@ export default function ItList() {
                   <div className="mt-4 border-t-1 border-[#eee]">
                     <div className="user-info flex items-center gap-4 mt-4">
                       <FaRegCircleUser />
-                      <p>작성자 닉네임</p>
+                      <p>{post?.nickname}</p>
                     </div>
                   </div>
                 </div>

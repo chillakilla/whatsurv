@@ -8,6 +8,7 @@ import {ageGroup, majorCategories, researchLocation, researchType, sexType} from
 // next/router 가 아니고 navigation....하
 
 interface PostFormProps {
+  nickname: string | null | undefined;
   formData: Omit<FormData, 'updatedAt' | 'email'> & {};
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -18,6 +19,7 @@ interface PostFormProps {
 }
 
 export default function PostForm({
+  nickname,
   formData,
   onInputChange,
   onDateChange,
@@ -88,7 +90,7 @@ export default function PostForm({
               <div className="flex justify-center items-center">
                 <BsPersonCircle />
                 <div className="ml-[0.625rem]">
-                  <p className="text-sm font-medium">여기 작성자 닉네임</p>
+                  <p className="text-sm font-medium">{formData.nickname}</p>
                 </div>
               </div>
             </div>
