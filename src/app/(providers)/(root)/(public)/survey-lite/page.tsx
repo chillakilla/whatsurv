@@ -1,6 +1,6 @@
 'use client';
 
-import {getLiteSurveyPosts} from '@/app/api/firebaseApi';
+import {deleteliteSurveyPostById, getLiteSurveyPosts} from '@/app/api/firebaseApi';
 import {litePost} from '@/app/api/typePost';
 import {auth, db} from '@/firebase';
 import {Button} from '@nextui-org/react';
@@ -27,8 +27,10 @@ export default function page() {
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateDeleteMenuOpen, setIsUpdateDeleteMenuOpen] = useState(false);
+  const [menuStates, setMenuStates] = useState<{[postId: string]: boolean}>({});
 
   const user = auth.currentUser;
+  const userId = user?.uid;
 
   const updateViewsCount = async (postId: string) => {
     try {
@@ -84,9 +86,12 @@ export default function page() {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   };
 
-  //수정, 삭제 토글버튼
-  const onClickUpdateDeleteMenuToggle = () => {
-    setIsUpdateDeleteMenuOpen(prevState => !prevState);
+  // 수정, 삭제 토글버튼
+  const onClickUpdateDeleteMenuToggle = (postId: string) => {
+    setMenuStates(prevStates => ({
+      ...prevStates,
+      [postId]: !prevStates[postId],
+    }));
   };
 
   //수정 버튼
@@ -95,8 +100,12 @@ export default function page() {
   };
 
   //삭제 버튼
-  const onClickDeleteButton = (postId: string) => {
-    console.log('삭제버튼 열림');
+  const onClickDeleteButton = async (postId: string) => {
+    try {
+      await deleteliteSurveyPostById(postId);
+    } catch (error) {
+      console.log('게시물 삭제중 오류 발생', error);
+    }
   };
 
   return (
@@ -129,33 +138,34 @@ export default function page() {
                               >
                                 {isWithin24Hours(litepost.createdAt) ? 'New🔥' : ''}
                               </p>
+                              <button
+                                className="toggle-menu w-8 h-7"
+                                onClick={() => onClickUpdateDeleteMenuToggle(litepost.id)}
+                              >
+                                {userId === litepost.userId && (menuStates[litepost.id] ? '닫기' : '⁝')}
+                              </button>
+                              {menuStates[litepost.id] && (
+                                // 메뉴에 대한 스타일
+                                <div className="z-10 gap-2">
+                                  <button
+                                    className="w-8 h-7 text-blue-800 hover:bg-gray-100"
+                                    onClick={() => onClickUpdateButton(litepost.id)}
+                                  >
+                                    수정
+                                  </button>
+                                  <button
+                                    className="w-8 h-7 text-red-500 hover:bg-gray-100"
+                                    onClick={() => onClickDeleteButton(litepost.id)}
+                                  >
+                                    삭제
+                                  </button>
+                                </div>
+                              )}
                             </div>
                             <div className="flex">
                               <button className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF] bg-transparent">
                                 <FaRegHeart />
                               </button>
-                              <div className="relative">
-                                <button className="toggle-menu w-8 h-8" onClick={() => onClickUpdateDeleteMenuToggle()}>
-                                  {isUpdateDeleteMenuOpen ? '닫기' : '⁝'}
-                                </button>
-                                {isUpdateDeleteMenuOpen && (
-                                  // 메뉴에 대한 스타일
-                                  <div className="menu absolute top-full left-0 bg-white border border-gray-300 z-10">
-                                    <button
-                                      className="menu-button text-gray-800 hover:bg-gray-100"
-                                      onClick={() => onClickUpdateButton(litepost.id)}
-                                    >
-                                      수정
-                                    </button>
-                                    <button
-                                      className="menu-button text-red-500 hover:bg-gray-100"
-                                      onClick={() => onClickDeleteButton(litepost.id)}
-                                    >
-                                      삭제
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
                             </div>
                           </div>
                           <div className="flex justify-between">

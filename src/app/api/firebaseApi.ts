@@ -287,6 +287,7 @@ export const saveDataToFirebase = async (
   }
 };
 
+// litesurvey 닉네임 변경 적용
 export const updateNicknameInLite = async (userId: string, newNickName: string) => {
   try {
     const q = query(collection(db, 'litesurveyposts'), where('userId', '==', userId));
@@ -300,6 +301,19 @@ export const updateNicknameInLite = async (userId: string, newNickName: string) 
     console.log('변경된 닉네임이 문서에 반영됨');
   } catch (error) {
     console.error('닉네임 업데이트 중 오류', error);
+  }
+};
+
+// litesurvey 게시물 삭제
+export const deleteliteSurveyPostById = async (postId: string) => {
+  try {
+    const postRef = doc(db, 'litesurveyposts', postId);
+    await deleteDoc(postRef);
+
+    console.log(`Post with ID ${postId} deleted successfully`);
+  } catch (error) {
+    console.error(`Error deleting post with ID ${postId}:`, error);
+    throw new Error('Failed to delete post.');
   }
 };
 
