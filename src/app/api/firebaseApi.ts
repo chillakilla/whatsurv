@@ -1,4 +1,5 @@
 import {db} from '@/firebase';
+import {getAuth} from 'firebase/auth';
 import {
   DocumentData,
   DocumentReference,
@@ -11,14 +12,14 @@ import {
   doc,
   getDoc,
   getDocs,
-  query,
-  updateDoc,
   orderBy,
+  query,
+  serverTimestamp,
+  updateDoc,
   where,
 } from 'firebase/firestore';
 import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
 import {Post, litePost} from './typePost';
-import {getAuth} from 'firebase/auth';
 
 // 게시글 목록 불러오기 fetchPosts
 export const getPosts = async (): Promise<Post[]> => {
@@ -203,6 +204,7 @@ export const uploadImageToStorage = async (file: File): Promise<string> => {
   return downloadUrl;
 };
 
+//LiteSurvey데이터 불러오기
 export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
   try {
     const postsQuery = query(collection(db, 'litesurveyposts'));
@@ -218,7 +220,9 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
         contents: data?.contents || '',
         images: data?.images || '',
         createdAt: data?.createdAt?.toDate() || new Date(),
-        deadlineDate: data?.deadlineDate || null,
+        deadlineDate: data?.deadlineDate instanceof Timestamp ? data.deadlineDate : data?.deadlineDate || null,
+        user: {id: '', displayName: '', email: ''},
+        nickname: data?.nickname || '',
       };
     });
 
@@ -228,6 +232,60 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
     throw new Error('게시글을 불러오는 것에 실패했습니다.');
   }
 };
+
+// firebase에 데이터 보내기
+export const saveDataToFirebase = async (title: string, contents: string[], images: File[], userNickname: string) => {
+  try {
+    const liteSurveyPostsCollection = collection(db, 'litesurveyposts');
+    const createdAt = serverTimestamp();
+
+    // 이미지 업로드하고 다운로드 URL 얻기
+    const imageUrls = await Promise.all(
+      images.map(async image => {
+        return await uploadImageToStorage(image);
+      }),
+    );
+
+    const counts = contents.map(() => 0);
+
+    // Firestore에 데이터 저장
+    const docRef = await addDoc(liteSurveyPostsCollection, {
+      title,
+      contents,
+      images: imageUrls,
+      createdAt,
+      counts,
+      nickname: userNickname,
+    });
+
+    console.log('ID가 포함된 문서 작성 성공: ', docRef.id);
+  } catch (error) {
+    console.error('문서 추가 중 오류 발생: ', error);
+    throw new Error('게시글을 추가하는 것에 실패했습니다.');
+  }
+};
+
+// // TO DO: Nickname을 dispalyName으로 해야하는가? 알아보기
+// // 현재 로그인한 사용자 정보 가져오기
+// export const getCurrentUser = () => {
+//   return new Promise((resolve, reject) => {
+//     onAuthStateChanged(
+//       auth,
+//       user => {
+//         if (user) {
+//           // 사용자가 로그인한 상태
+//           resolve(user);
+//         } else {
+//           // 사용자가 로그인하지 않은 상태
+//           resolve(null);
+//         }
+//       },
+//       error => {
+//         reject(error);
+//       },
+//     );
+//   });
+// };
 
 // 게시글+사용자(작성자) 정보 불러오기 fetchPostWithUser
 //TODO: 유저 정보 불러오는 로직 작성

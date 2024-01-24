@@ -1,10 +1,11 @@
 'use client';
-import React from 'react';
+
 import {getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 
 import {useParams} from 'next/navigation';
+import React from 'react';
 import {FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
 

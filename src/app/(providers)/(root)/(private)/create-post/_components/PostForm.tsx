@@ -1,14 +1,10 @@
-import {Post} from '@/app/api/typePost';
-import React, {ChangeEvent, useState} from 'react';
-import {majorCategories, sexType, ageGroup, researchLocation, researchType} from './categories';
-import {Spacer} from '@nextui-org/react';
-import {BsPersonCircle} from 'react-icons/bs';
-import {Input} from '@nextui-org/react';
-import {Timestamp} from '@firebase/firestore-types';
-import ToastEditor from './ToastEditor';
 import {FormData} from '@/app/api/typeFormData';
-import {MdArrowBackIos} from 'react-icons/md';
+import {Input, Spacer} from '@nextui-org/react';
 import {useRouter} from 'next/navigation';
+import React, {ChangeEvent} from 'react';
+import {BsPersonCircle} from 'react-icons/bs';
+import {MdArrowBackIos} from 'react-icons/md';
+import {ageGroup, majorCategories, researchLocation, researchType, sexType} from './categories';
 // next/router 가 아니고 navigation....하
 
 interface PostFormProps {
