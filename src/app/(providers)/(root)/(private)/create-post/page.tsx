@@ -156,6 +156,7 @@ export default function PostPage() {
       <div>
         <PostForm
           formData={formData}
+          nickname={user?.displayName}
           onInputChange={e => {
             const {name, value} = e.target;
             setFormData(prevData => ({
