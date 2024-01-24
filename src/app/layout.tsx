@@ -5,6 +5,7 @@ import ProvidersLayout from './(providers)/layout';
 import './globals.css';
 import Header from './(providers)/(root)/_components/Header';
 import MainWrapper from './(providers)/(root)/_components/MainWrapper';
+import Footer from './(providers)/(root)/_components/Footer';
 import React from 'react';
 
 const inter = Inter({subsets: ['latin']});
@@ -25,6 +26,7 @@ export default function HTMLLayout({children}: HTMLLayoutProps) {
         <ProvidersLayout>
           <Header />
           <MainWrapper>{children}</MainWrapper>
+          <Footer />
         </ProvidersLayout>
       </body>
     </html>
