@@ -1,4 +1,5 @@
 import {db} from '@/firebase';
+import {getAuth} from 'firebase/auth';
 import {
   DocumentData,
   DocumentReference,
@@ -11,13 +12,13 @@ import {
   doc,
   getDoc,
   getDocs,
+  orderBy,
   query,
   updateDoc,
-  orderBy,
+  where,
 } from 'firebase/firestore';
 import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
 import {Post, litePost} from './typePost';
-import {getAuth} from 'firebase/auth';
 
 // 게시글 목록 불러오기 fetchPosts
 export const getPosts = async (): Promise<Post[]> => {
@@ -228,3 +229,20 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
 //     throw new Error('게시글을 불러오는 것에 실패했습니다.');
 //   }
 // };
+
+//프로필 페이지의 작성자가 작성한 IT 게시글
+export const getUserPostsIT = async (userId: string) => {
+  const postsQuery = query(collection(db, 'posts'), where('userId', '==', userId));
+  const querySnapshot = await getDocs(postsQuery);
+
+  const posts = querySnapshot.docs.map(doc => {
+    const docData = doc.data();
+    return {
+      id: doc.id,
+      title: docData.title,
+      content: docData.content,
+    };
+  });
+
+  return posts;
+};

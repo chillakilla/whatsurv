@@ -9,18 +9,20 @@ import Tab from './Tab';
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userPhotoURL, setUserPhotoURL] = useState<string | null>(null);
-
+  const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
       setIsLoggedIn(!!user);
       if (user) {
+        setUserId(user.uid);
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         const photoURL = userDoc.data()?.photoURL;
         setUserPhotoURL(photoURL);
       } else {
         setUserPhotoURL(null);
+        setUserId(null);
       }
 
       console.log(user);
@@ -52,6 +54,11 @@ export default function Header() {
                   <Avatar isBordered as="button" className="transition-transform" src={userPhotoURL || ''} />
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Static Actions">
+                  <DropdownItem textValue="내가 작성한 서베이">
+                    <Link href={`/profile-post/${userId}`}>
+                      <p className="font-bold">내가 작성한 서베이</p>
+                    </Link>
+                  </DropdownItem>
                   <DropdownItem textValue="프로필 설정">
                     <Link href="/profile">
                       <p className="  font-bold ">프로필 설정</p>
