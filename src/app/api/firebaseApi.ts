@@ -14,6 +14,7 @@ import {
   getDocs,
   orderBy,
   query,
+  serverTimestamp,
   updateDoc,
 } from 'firebase/firestore';
 import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
@@ -177,6 +178,7 @@ export const uploadImageToStorage = async (file: File): Promise<string> => {
   return downloadUrl;
 };
 
+//LiteSurvey데이터 불러오기
 export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
   try {
     const postsQuery = query(collection(db, 'litesurveyposts'));
@@ -202,6 +204,38 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
   } catch (error) {
     console.error('에러', error);
     throw new Error('게시글을 불러오는 것에 실패했습니다.');
+  }
+};
+
+// firebase에 데이터 보내기
+export const saveDataToFirebase = async (title: string, contents: string[], images: File[], userNickname: string) => {
+  try {
+    const liteSurveyPostsCollection = collection(db, 'litesurveyposts');
+    const createdAt = serverTimestamp();
+
+    // 이미지 업로드하고 다운로드 URL 얻기
+    const imageUrls = await Promise.all(
+      images.map(async image => {
+        return await uploadImageToStorage(image);
+      }),
+    );
+
+    const counts = contents.map(() => 0);
+
+    // Firestore에 데이터 저장
+    const docRef = await addDoc(liteSurveyPostsCollection, {
+      title,
+      contents,
+      images: imageUrls,
+      createdAt,
+      counts,
+      nickname: userNickname,
+    });
+
+    console.log('ID가 포함된 문서 작성 성공: ', docRef.id);
+  } catch (error) {
+    console.error('문서 추가 중 오류 발생: ', error);
+    throw new Error('게시글을 추가하는 것에 실패했습니다.');
   }
 };
 

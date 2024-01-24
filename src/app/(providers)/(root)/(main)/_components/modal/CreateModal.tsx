@@ -1,8 +1,8 @@
 'use client';
 
-import {uploadImageToStorage} from '@/app/api/firebaseApi';
+import {saveDataToFirebase} from '@/app/api/firebaseApi';
 import {auth, db} from '@/firebase';
-import {addDoc, collection, doc, getDoc, serverTimestamp} from 'firebase/firestore';
+import {doc, getDoc} from 'firebase/firestore';
 import React, {useState} from 'react';
 
 interface LiteSurveyCreateModalProps {
@@ -39,7 +39,6 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
           if (userDoc.exists()) {
             const userData = userDoc.data();
             const userNickname = userData.nickname;
-            console.log('userNickname', userNickname);
 
             // 데이터 저장
             saveDataToFirebase(title, contents, selectedImages, userNickname);
@@ -54,38 +53,6 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
         console.error('사용자 정보를 가져오는 중 오류 발생: ', error);
         throw new Error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
       }
-    }
-  };
-
-  // firebase 데이터 전송
-  const saveDataToFirebase = async (title: string, contents: string[], images: File[], userNickname: string) => {
-    try {
-      const liteSurveyPostsCollection = collection(db, 'litesurveyposts');
-      const createdAt = serverTimestamp();
-
-      // 이미지 업로드하고 다운로드 URL 얻기
-      const imageUrls = await Promise.all(
-        images.map(async image => {
-          return await uploadImageToStorage(image);
-        }),
-      );
-
-      const counts = contents.map(() => 0);
-
-      // Firestore에 데이터 저장
-      const docRef = await addDoc(liteSurveyPostsCollection, {
-        title,
-        contents,
-        images: imageUrls,
-        createdAt,
-        counts,
-        nickname: userNickname,
-      });
-
-      console.log('ID가 포함된 문서 작성 성공: ', docRef.id);
-    } catch (error) {
-      console.error('문서 추가 중 오류 발생: ', error);
-      throw new Error('게시글을 추가하는 것에 실패했습니다.');
     }
   };
 

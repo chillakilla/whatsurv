@@ -26,6 +26,7 @@ const isWithin24Hours = (createdAt: Date): boolean => {
 export default function page() {
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isUpdateDeleteMenuOpen, setIsUpdateDeleteMenuOpen] = useState(false);
 
   const user = auth.currentUser;
 
@@ -83,6 +84,21 @@ export default function page() {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   };
 
+  //수정, 삭제 토글버튼
+  const onClickUpdateDeleteMenuToggle = () => {
+    setIsUpdateDeleteMenuOpen(prevState => !prevState);
+  };
+
+  //수정 버튼
+  const onClickUpdateButton = (postId: string) => {
+    console.log('수정버튼 열림');
+  };
+
+  //삭제 버튼
+  const onClickDeleteButton = (postId: string) => {
+    console.log('삭제버튼 열림');
+  };
+
   return (
     <>
       <div className="flex-col items-center justify-center w-[88.5rem] m-auto mb-20">
@@ -100,26 +116,50 @@ export default function page() {
                   {liteSurveyData?.sort(sortByCreatedAt).map(litepost => (
                     <div key={litepost.id}>
                       <div className="h-[13.4375rem] bg-white border-1 border-[#C1C5CC] flex-col justify-between rounded-md p-4">
-                        <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
-                          <div className="top-content h-[5.625rem]">
-                            <div className="flex justify-between items-center mb-4">
-                              <div className="flex gap-2">
-                                <p className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
-                                  Lite
-                                </p>
-                                <p
-                                  className={`bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs ${
-                                    isWithin24Hours(litepost.createdAt) ? '' : 'hidden'
-                                  }`}
-                                >
-                                  {isWithin24Hours(litepost.createdAt) ? 'New🔥' : ''}
-                                </p>
-                              </div>
+                        <div className="top-content h-[5.625rem]">
+                          <div className="flex justify-between items-center mb-4">
+                            <div className="flex gap-2">
+                              <p className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
+                                Lite
+                              </p>
+                              <p
+                                className={`bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs ${
+                                  isWithin24Hours(litepost.createdAt) ? '' : 'hidden'
+                                }`}
+                              >
+                                {isWithin24Hours(litepost.createdAt) ? 'New🔥' : ''}
+                              </p>
+                            </div>
+                            <div className="flex">
                               <button className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF] bg-transparent">
                                 <FaRegHeart />
                               </button>
+                              <div className="relative">
+                                <button className="toggle-menu w-8 h-8" onClick={() => onClickUpdateDeleteMenuToggle()}>
+                                  {isUpdateDeleteMenuOpen ? '닫기' : '⁝'}
+                                </button>
+                                {isUpdateDeleteMenuOpen && (
+                                  // 메뉴에 대한 스타일
+                                  <div className="menu absolute top-full left-0 bg-white border border-gray-300 z-10">
+                                    <button
+                                      className="menu-button text-gray-800 hover:bg-gray-100"
+                                      onClick={() => onClickUpdateButton(litepost.id)}
+                                    >
+                                      수정
+                                    </button>
+                                    <button
+                                      className="menu-button text-red-500 hover:bg-gray-100"
+                                      onClick={() => onClickDeleteButton(litepost.id)}
+                                    >
+                                      삭제
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                            <div className="flex justify-between">
+                          </div>
+                          <div className="flex justify-between">
+                            <div>
                               <p className="text-xs text-[#666] mb-4">
                                 작성일 |{' '}
                                 {litepost.createdAt
@@ -130,25 +170,27 @@ export default function page() {
                                     })
                                   : '2099.12.31'}
                               </p>
-                              {/* <p className="text-xs text-[#666] mb-4">
+                            </div>
+                            {/* <p className="text-xs text-[#666] mb-4">
                                 마감일 | {litepost.deadlineDate ? litepost.deadlineDate.toLocaleString() : '2099.12.31'}
                               </p> */}
-                            </div>
+                          </div>
+                          <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
                             <h3 className="text-lg font-bold">{litepost.title}</h3>
-                          </div>
-                          <div className="bottom-content flex items-end">
-                            <div className="flex justify-between items-center mt-[3.125rem] w-full border-t-1 ">
-                              <div className="user flex mt-4 gap-2">
-                                <FaRegCircleUser />
-                                <p className="font-semibold">{litepost.nickname}</p>
-                              </div>
-                              <div className="viewer flex mt-4 gap-2 text-[#818490]">
-                                <GrView />
-                                {litepost.views}
-                              </div>
+                          </a>
+                        </div>
+                        <div className="bottom-content flex items-end">
+                          <div className="flex justify-between items-center mt-[3.125rem] w-full border-t-1 ">
+                            <div className="user flex mt-4 gap-2">
+                              <FaRegCircleUser />
+                              <p className="font-semibold">{litepost.nickname}</p>
+                            </div>
+                            <div className="viewer flex mt-4 gap-2 text-[#818490]">
+                              <GrView />
+                              {litepost.views}
                             </div>
                           </div>
-                        </a>
+                        </div>
                       </div>
                     </div>
                   ))}
