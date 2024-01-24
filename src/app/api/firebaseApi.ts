@@ -237,10 +237,14 @@ export const getUserPostsIT = async (userId: string) => {
 
   const posts = querySnapshot.docs.map(doc => {
     const docData = doc.data();
+    const deadlineDate = docData.deadlineDate ? docData.deadlineDate.toDate() : null;
+    console.log(doc);
+    console.log(doc.data);
     return {
       id: doc.id,
       title: docData.title,
       content: docData.content,
+      deadlineDate: deadlineDate,
     };
   });
 

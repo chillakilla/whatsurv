@@ -7,6 +7,7 @@ interface Post {
   id: string;
   title: string;
   content: string;
+  deadlineDate: Date | null;
 }
 
 export default function ProfilePost() {
@@ -19,11 +20,13 @@ export default function ProfilePost() {
       getUserPostsIT(userId).then(data => {
         setPosts(
           data.map(doc => {
-            console.log(doc.id); // 여기서 각 게시글의 id를 콘솔에 로그합니다.
+            console.log(doc);
+            console.log(doc.id);
             return {
               id: doc.id,
               title: doc.title,
               content: doc.content,
+              deadlineDate: doc.deadlineDate,
             };
           }),
         );
@@ -37,7 +40,19 @@ export default function ProfilePost() {
       <ul>
         {posts.map(post => (
           <li key={post.id}>
-            <Link href={`/survey-it/${post.id}`}>{post.title}</Link>
+            <Link href={`/survey-it/${post.id}`}>
+              {post.title}
+              <p>
+                마감일:
+                {post.deadlineDate
+                  ? post.deadlineDate.toLocaleDateString('ko-KR', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                    })
+                  : 'No deadline'}
+              </p>
+            </Link>
           </li>
         ))}
       </ul>
