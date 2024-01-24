@@ -42,7 +42,9 @@ export default function ItList() {
   return (
     <>
       <div className="flex justify-between">
-        <h2 className="text-xl font-bold">요즘 IT Surv</h2>
+        <h2 className="text-xl font-bold">
+          요즘 <span className="text-[#0051FF]">IT</span> Surv
+        </h2>
         <Link href={`/survey-it`} className="text-lg font-semibold text-[#0051FF]">
           더보기
         </Link>
@@ -66,7 +68,7 @@ export default function ItList() {
           return (
             <SwiperSlide id="it-slide" key={post.id}>
               <Link href={`/survey-it/${post.id}`}>
-                <div className=" h-[180px] border-2 border-[#C1C5CC] rounded-xl p-4 bg-white">
+                <div className=" h-[260px] border-2 border-[#e1e1e1] rounded-xl p-4 bg-white">
                   <div className="category-box flex justify-between items-center mb-4">
                     <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
                       {post.category}
@@ -88,6 +90,7 @@ export default function ItList() {
                       {post.views}
                     </div>
                   </div>
+                  <div className="survey-method"></div>
                   <h3 className="text-base font-bold">{post.title}</h3>
                   <div className="mt-4 border-t-1 border-[#eee]">
                     <div className="user-info flex items-center gap-4 mt-4">
