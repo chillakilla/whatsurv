@@ -73,7 +73,6 @@ export default function page() {
 
   return (
     <>
-      <Tab selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
       <div className="flex-col items-center justify-center w-[88.5rem] m-auto mb-20">
         <Banner />
         <div className="my-20">
