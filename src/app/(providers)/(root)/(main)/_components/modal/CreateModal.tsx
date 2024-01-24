@@ -1,7 +1,8 @@
 'use client';
 
 import {saveDataToFirebase} from '@/app/api/firebaseApi';
-import {auth, db} from '@/firebase';
+import {db} from '@/firebase';
+import {getAuth} from 'firebase/auth';
 import {doc, getDoc} from 'firebase/firestore';
 import React, {useState} from 'react';
 
@@ -29,6 +30,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
     } else {
       try {
         // 현재 로그인한 사용자 정보 가져오기
+        const auth = getAuth();
         const currentUser = auth.currentUser;
 
         if (currentUser) {
@@ -38,10 +40,13 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
 
           if (userDoc.exists()) {
             const userData = userDoc.data();
+            console.log('userData', userData);
             const userNickname = userData.nickname;
+            const userId = userData.uid;
+            console.log('유저아이디', userId);
 
             // 데이터 저장
-            saveDataToFirebase(title, contents, selectedImages, userNickname);
+            saveDataToFirebase(title, contents, selectedImages, userNickname, userId);
             onCloseCreateModal();
           } else {
             console.log('해당 사용자의 데이터가 없습니다.');
