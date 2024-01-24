@@ -170,7 +170,7 @@ export default function page() {
                 onClick={onClickCreateModalOpen}
                 isIconOnly
                 aria-label="write-post"
-                className="w-[3.125rem] h-[3.125rem] rounded-full text-lg text-[#0051FF] bg-white shadow-md shadow-[#888]"
+                className="w-[3.125rem] h-[3.125rem] rounded-full bg-gray-200"
               >
                 <LuPencilLine />
               </Button>

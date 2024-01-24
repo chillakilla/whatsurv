@@ -1,25 +1,20 @@
 'use client';
-
-import {useSearchParams} from 'next/navigation';
-import {useState} from 'react';
 import FloatingBtn from './_components/FloatingBtn';
 import Banner from './_components/carousel/Banner';
+import ItList from './_components/carousel/ItList';
+import LiteList from './_components/carousel/LiteList';
 import Popular from './_components/carousel/Popular';
-import SurveyPost from './_components/post/SurveyPost';
+import SearchBar from './searchForm/SearchBar';
 
 export default function MainPage() {
-  const searchParams = useSearchParams();
-  const [selectedTab, setSelectedTab] = useState({
-    name: searchParams.get('tab') || 'IT',
-    to: '/', // ?
-  });
-
   return (
     <div>
-      <div className="flex-col items-center justify-center w-[88.5rem] m-auto mb-20">
-        <Banner />
+      <Banner />
+      <div className="flex-col items-center justify-center w-[88.5rem] m-auto ">
+        <SearchBar />
         <Popular />
-        <SurveyPost target={selectedTab.name} />
+        <ItList />
+        <LiteList />
         <FloatingBtn />
       </div>
     </div>
