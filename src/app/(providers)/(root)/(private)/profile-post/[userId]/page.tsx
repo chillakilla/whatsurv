@@ -4,6 +4,7 @@ import {Card, CardBody, Tab, Tabs} from '@nextui-org/react';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import Swal from 'sweetalert2';
 import {getUserPostLite, getUserPostsIT} from '../_components/getUserPost';
 interface PostIT {
   id: string;
@@ -45,12 +46,30 @@ export default function ProfilePost() {
 
   // 게시글 삭제 핸들러
   const clickDeleteITHandler = async (postId: string) => {
-    try {
-      await deletePost(postId);
-      setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
-      setUserPostLite(prevPosts => prevPosts.filter(post => post.id !== postId));
-    } catch (error) {
-      console.error('Failed to delete post: ', error);
+    const result = await Swal.fire({
+      title: '정말 삭제하시겠습니까?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deletePost(postId);
+        setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+        setUserPostLite(prevPosts => prevPosts.filter(post => post.id !== postId));
+
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'Your file has been deleted.',
+          icon: 'success',
+        });
+      } catch (error) {
+        console.error('Failed to delete post: ', error);
+      }
     }
   };
 
