@@ -1,4 +1,5 @@
 'use client';
+import {deletePost} from '@/app/api/firebaseApi';
 import {Card, CardBody, Tab, Tabs} from '@nextui-org/react';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
@@ -42,6 +43,17 @@ export default function ProfilePost() {
     return <div>로딩 중......</div>;
   }
 
+  // 게시글 삭제 핸들러
+  const clickDeleteITHandler = async (postId: string) => {
+    try {
+      await deletePost(postId);
+      setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+      setUserPostLite(prevPosts => prevPosts.filter(post => post.id !== postId));
+    } catch (error) {
+      console.error('Failed to delete post: ', error);
+    }
+  };
+
   return (
     <div className="max-w-[1400px] m-auto mt-[20px] ">
       <Tabs
@@ -74,6 +86,7 @@ export default function ProfilePost() {
                           : 'No deadline'}
                       </p>
                     </Link>
+                    <button onClick={() => clickDeleteITHandler(post.id)}>삭제</button>
                   </li>
                 ))}
               </ul>
