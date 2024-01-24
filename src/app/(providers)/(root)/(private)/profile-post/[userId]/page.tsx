@@ -89,39 +89,47 @@ export default function ProfilePost() {
         <Tab title="내가 작성한 IT 서베이">
           <Card className="bg-transparent border-0  rounded-none shadow-none">
             <CardBody>
-              <ul>
-                {posts.map(post => (
-                  <li key={post.id} className="bg-white mb-[20px] px-[10px]  rounded-xl py-[20px] ">
-                    <Link href={`/survey-it/${post.id}`} className="text-xl">
-                      {post.title}
-                      <p className="text-base">
-                        마감일:
-                        {post.deadlineDate
-                          ? post.deadlineDate.toLocaleDateString('ko-KR', {
-                              year: 'numeric',
-                              month: '2-digit',
-                              day: '2-digit',
-                            })
-                          : 'No deadline'}
-                      </p>
-                    </Link>
-                    <button onClick={() => clickDeleteITHandler(post.id)}>삭제</button>
-                  </li>
-                ))}
-              </ul>
+              {posts.length > 0 ? (
+                <ul>
+                  {posts.map(post => (
+                    <li key={post.id} className="bg-white mb-[20px] px-[10px]  rounded-xl py-[20px] ">
+                      <Link href={`/survey-it/${post.id}`} className="text-xl">
+                        {post.title}
+                        <p className="text-base">
+                          마감일:
+                          {post.deadlineDate
+                            ? post.deadlineDate.toLocaleDateString('ko-KR', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                              })
+                            : 'No deadline'}
+                        </p>
+                      </Link>
+                      <button onClick={() => clickDeleteITHandler(post.id)}>삭제</button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>작성한 글이 없습니다.</p>
+              )}
             </CardBody>
           </Card>
         </Tab>
         <Tab title="내가 작성한 참여했Surv">
           <Card>
             <CardBody>
-              <ul>
-                {userPostLite.map(post => (
-                  <li key={post.id}>
-                    <Link href="/survey-lite">{post.title}</Link>
-                  </li>
-                ))}
-              </ul>
+              {userPostLite.length > 0 ? (
+                <ul>
+                  {userPostLite.map(post => (
+                    <li key={post.id}>
+                      <Link href="/survey-lite">{post.title}</Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>작성한 글이 없습니다.</p>
+              )}
             </CardBody>
           </Card>
         </Tab>
