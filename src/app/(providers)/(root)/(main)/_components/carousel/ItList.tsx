@@ -1,14 +1,11 @@
 'use client';
 import {getPosts} from '@/app/api/firebaseApi';
-import {doc, getDoc, updateDoc} from 'firebase/firestore';
-import {db} from '@/firebase';
 import {useQuery} from '@tanstack/react-query';
 import Link from 'next/link';
 import {useRef} from 'react';
 import {GrView} from 'react-icons/gr';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import {Post} from '@/app/api/typePost';
-import {useState} from 'react';
+import {FaRegCircleUser} from 'react-icons/fa6';
 
 // Swiper styles
 import 'swiper/css';
@@ -18,31 +15,7 @@ import 'swiper/css/pagination';
 import SwiperCore from 'swiper';
 import {Navigation, Pagination} from 'swiper/modules';
 
-export default function Popular() {
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const updateViewsCount = async (postId: string) => {
-    try {
-      const postRef = doc(db, 'litesurveyposts', postId);
-      const postSnapshot = await getDoc(postRef);
-
-      if (postSnapshot.exists()) {
-        const currentViews = postSnapshot.data().views || 0;
-        await updateDoc(postRef, {
-          views: currentViews + 1, // 'views' 카운트 증가
-        });
-      } else {
-        console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
-      }
-    } catch (error) {
-      console.error('Views 카운트 업데이트 중 오류:', error);
-    }
-  };
-  // 게시물 클릭을 처리하는 함수
-  const onClickPosthandler = (post: Post) => {
-    setSelectedPost(post);
-    updateViewsCount(post.id); // 'views' 카운트를 업데이트하는 함수 호출
-  };
-
+export default function ItList() {
   SwiperCore.use([Navigation, Pagination]);
   const swiperRef = useRef<SwiperCore>();
   const {
@@ -68,7 +41,12 @@ export default function Popular() {
 
   return (
     <>
-      <h2 className="text-xl font-bold">주간 인기 Surv</h2>
+      <div className="flex justify-between">
+        <h2 className="text-xl font-bold">요즘 IT Surv</h2>
+        <Link href={`/survey-it`} className="text-lg font-semibold text-[#0051FF]">
+          더보기
+        </Link>
+      </div>
       <Swiper
         onSwiper={swiper => {
           swiperRef.current = swiper;
@@ -86,15 +64,12 @@ export default function Popular() {
       >
         {posts.map(post => {
           return (
-            <SwiperSlide id="popular-slide" key={post.id}>
-              <Link href={`/survey-it/${post.id}`} onClick={() => onClickPosthandler(post)}>
-                <div className="h-[180px] border-2 border-[#0051FF80] rounded-xl p-4 bg-white">
+            <SwiperSlide id="it-slide" key={post.id}>
+              <Link href={`/survey-it/${post.id}`}>
+                <div className=" h-[180px] border-2 border-[#C1C5CC] rounded-xl p-4 bg-white">
                   <div className="category-box flex justify-between items-center mb-4">
                     <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
                       {post.category}
-                    </div>
-                    <div className="bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs">
-                      🔥HOT
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
@@ -114,6 +89,12 @@ export default function Popular() {
                     </div>
                   </div>
                   <h3 className="text-base font-bold">{post.title}</h3>
+                  <div className="mt-4 border-t-1 border-[#eee]">
+                    <div className="user-info flex items-center gap-4 mt-4">
+                      <FaRegCircleUser />
+                      <p>작성자 닉네임</p>
+                    </div>
+                  </div>
                 </div>
               </Link>
             </SwiperSlide>
