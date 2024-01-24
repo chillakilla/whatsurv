@@ -110,7 +110,7 @@ export default function SurveyIt() {
                     <div className="flex justify-between items-center mt-[50px] w-full border-t-1 ">
                       <div className="user flex mt-4 gap-2">
                         <FaRegCircleUser />
-                        <p className="font-semibold">작성자 닉네임</p>
+                        <p className="font-semibold">{post?.nickname}</p>
                       </div>
                       <div className="viewer flex mt-4 gap-2 text-[#818490]">
                         <GrView />
