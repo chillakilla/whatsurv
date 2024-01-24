@@ -5,6 +5,7 @@ import {doc, getDoc} from 'firebase/firestore';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import Tab from './Tab';
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userPhotoURL, setUserPhotoURL] = useState<string | null>(null);
@@ -34,7 +35,7 @@ export default function Header() {
   };
 
   return (
-    <header className="select-none">
+    <header className="select-none bg-white">
       <section className="max-w-[1450px] flex justify-between items-center m-auto ">
         <div className="flex items-center justify-center ml-[30px]">
           <Link href="/">
@@ -80,6 +81,7 @@ export default function Header() {
           )}
         </div>
       </section>
+      <Tab />
     </header>
   );
 }
