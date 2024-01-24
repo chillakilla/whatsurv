@@ -223,6 +223,7 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
         deadlineDate: data?.deadlineDate instanceof Timestamp ? data.deadlineDate : data?.deadlineDate || null,
         user: {id: '', displayName: '', email: ''},
         nickname: data?.nickname || '',
+        userId: data?.userId || '',
       };
     });
 
@@ -234,10 +235,23 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
 };
 
 // firebase에 데이터 보내기
-export const saveDataToFirebase = async (title: string, contents: string[], images: File[], userNickname: string) => {
+export const saveDataToFirebase = async (
+  title: string,
+  contents: string[],
+  images: File[],
+  userNickname: string,
+  userId: string,
+) => {
   try {
     const liteSurveyPostsCollection = collection(db, 'litesurveyposts');
     const createdAt = serverTimestamp();
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) {
+      console.error('로그인이 필요한 유저입니다.');
+      return;
+    }
 
     // 이미지 업로드하고 다운로드 URL 얻기
     const imageUrls = await Promise.all(
@@ -256,12 +270,36 @@ export const saveDataToFirebase = async (title: string, contents: string[], imag
       createdAt,
       counts,
       nickname: userNickname,
+      userId: user.uid,
     });
 
     console.log('ID가 포함된 문서 작성 성공: ', docRef.id);
+
+    // TODO: 유저 콜렉션 > 단일 유저 문서 내부 > 서브콜렉션에 문서추가
+    const userPostsRef = collection(db, 'users', user.uid, 'userPosts');
+    await addDoc(userPostsRef, {
+      postId: docRef.id,
+      createdAt,
+    });
   } catch (error) {
     console.error('문서 추가 중 오류 발생: ', error);
     throw new Error('게시글을 추가하는 것에 실패했습니다.');
+  }
+};
+
+export const updateNicknameInLite = async (userId: string, newNickName: string) => {
+  try {
+    const q = query(collection(db, 'litesurveyposts'), where('userId', '==', userId));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach(async doc => {
+      const docRef = doc.ref;
+      await updateDoc(docRef, {nickname: newNickName});
+    });
+
+    console.log('변경된 닉네임이 문서에 반영됨');
+  } catch (error) {
+    console.error('닉네임 업데이트 중 오류', error);
   }
 };
 
