@@ -27,7 +27,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
     setImages(selectedPost.images);
   }, [selectedPost]);
 
-  const handleUpdate = async () => {
+  const onClickLiteSurveyUpdateHandler = async () => {
     if (title.trim() === '') {
       window.alert('제목을 입력하세요.');
       return;
@@ -101,9 +101,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
                 <img src={image} alt={`Image${index}`} className="w-[10rem] h-[10rem] object-cover" />
                 <button
                   onClick={() => removeImage(index)}
-                  className="ml-10 bg-white px-[1rem] rounded-xl
-        hover:bg-[#0051FF]
-        hover:text-white"
+                  className="ml-10 bg-white px-[1rem] rounded-xl hover:bg-[#0051FF] hover:text-white"
                 >
                   삭제
                 </button>
@@ -165,7 +163,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
 
           <div className="flex justify-end mt-4">
             <button
-              onClick={handleUpdate}
+              onClick={onClickLiteSurveyUpdateHandler}
               className="bg-[#4D85FF] text-white px-4 py-2 rounded-md mr-2 hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
             >
               수정
