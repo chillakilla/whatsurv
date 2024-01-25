@@ -148,7 +148,7 @@ export default function page() {
                                       수정
                                     </button>
                                     <button
-                                      className="menu-button text-red-500 hover:bg-gray-100"
+                                      className="menu-button text-[#EB271C] hover:bg-gray-100"
                                       onClick={() => onClickDeleteButton(litepost.id)}
                                     >
                                       삭제

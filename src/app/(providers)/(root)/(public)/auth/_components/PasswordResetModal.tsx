@@ -74,7 +74,7 @@ const PasswordResetModal = ({
                     value={resetEmail}
                     onChange={e => setResetEmail(e.target.value)}
                   />
-                  {emailCheckMessage && <p className="text-red-500 text-center">{emailCheckMessage}</p>}
+                  {emailCheckMessage && <p className="text-[#EB271C] text-center">{emailCheckMessage}</p>}
                 </>
               )}
             </ModalBody>
