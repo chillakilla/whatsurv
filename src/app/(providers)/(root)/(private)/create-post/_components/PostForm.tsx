@@ -6,6 +6,7 @@ import {BsPersonCircle} from 'react-icons/bs';
 import {MdArrowBackIos} from 'react-icons/md';
 import {ageGroup, majorCategories, researchLocation, researchType, sexType} from './categories';
 import {Question} from '@/app/api/typePost';
+import {getAuth} from 'firebase/auth';
 // next/router 가 아니고 navigation....하
 
 interface PostFormProps {
@@ -16,27 +17,21 @@ interface PostFormProps {
   onSubmit: (e: React.FormEvent) => void;
   onDateChange: (e: ChangeEvent<HTMLInputElement>) => void;
   previewImage: string | null;
-  onAddQuestion: () => void;
-  onRemoveQuestion: (index: number) => void;
-  onAddOption: (questionIndex: number) => void;
-  onRemoveOption: (questionIndex: number, optionIndex: number) => void;
-  onOptionChange: (questionIndex: number, optionIndex: number, value: string) => void;
+  setFormData: React.Dispatch<React.SetStateAction<Omit<FormData, 'updatedAt' | 'email'>>>;
 }
 
 export default function PostForm({
   formData,
+  setFormData,
   previewImage,
   onInputChange,
   onDateChange,
   onCategoryChange,
   onImgFileChange,
   onSubmit,
-  onAddQuestion,
-  onRemoveQuestion,
-  onAddOption,
-  onRemoveOption,
-  onOptionChange,
 }: PostFormProps) {
+  const auth = getAuth();
+  const user = auth.currentUser;
   const router = useRouter();
   const isFormValid =
     formData.title.trim() !== '' &&
@@ -72,6 +67,49 @@ export default function PostForm({
     }
   };
 
+  const addOption = (questionIndex: number) => {
+    setFormData(prevData => {
+      const updatedQuestions = [...prevData.questions];
+      updatedQuestions[questionIndex].options.push('');
+      return {
+        ...prevData,
+        questions: updatedQuestions,
+      };
+    });
+  };
+
+  const addQuestion = () => {
+    setFormData(prevData => {
+      const updatedQuestions = [...prevData.questions, {question: '', options: [''], selectedOption: ''}];
+      return {
+        ...prevData,
+        questions: updatedQuestions,
+      };
+    });
+  };
+
+  const removeOption = (questionIndex: number, optionIndex: number) => {
+    setFormData(prevData => {
+      const updatedQuestions = [...prevData.questions];
+      updatedQuestions[questionIndex].options.splice(optionIndex, 1);
+      return {
+        ...prevData,
+        questions: updatedQuestions,
+      };
+    });
+  };
+
+  const removeQuestion = (questionIndex: number) => {
+    setFormData(prevData => {
+      const updatedQuestions = [...prevData.questions];
+      updatedQuestions.splice(questionIndex, 1);
+      return {
+        ...prevData,
+        questions: updatedQuestions,
+      };
+    });
+  };
+
   return (
     <div>
       <div className="flex flex-col justify-center items-center">
@@ -99,7 +137,7 @@ export default function PostForm({
               <div className="flex justify-center items-center">
                 <BsPersonCircle />
                 <div className="ml-[0.625rem]">
-                  <p className="text-sm font-medium">{formData.nickname || 'unknown'}</p>
+                  <p className="text-sm font-medium">{user?.displayName}</p>
                 </div>
               </div>
             </div>
@@ -246,35 +284,42 @@ export default function PostForm({
             <div className="flex flex-col w-[64.625rem]">
               <h3>문항</h3>
               {formData.questions.map((question, questionIndex) => (
-                <div key={questionIndex} className="flex flex-col">
+                <div key={questionIndex} className="flex gap-2 items-center">
                   <input
                     type="text"
+                    placeholder={`질문 ${questionIndex + 1}`}
                     value={question.question}
-                    onChange={e => onInputChange(e)}
-                    placeholder={`Question ${questionIndex + 1}`}
+                    onChange={e =>
+                      onInputChange({
+                        target: {name: `questions.${questionIndex}.question`, value: e.target.value},
+                      } as React.ChangeEvent<HTMLInputElement>)
+                    }
                   />
                   {question.options.map((option, optionIndex) => (
-                    <div key={optionIndex} className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        name={`question-${questionIndex}`}
-                        checked={formData.questions[questionIndex].selectedOption === option}
-                        onChange={() => onOptionChange(questionIndex, optionIndex, option)}
-                      />
+                    <div key={optionIndex} className="flex gap-2 items-center">
                       <input
                         type="text"
+                        placeholder={`옵션 ${optionIndex + 1}`}
                         value={option}
-                        onChange={e => onOptionChange(questionIndex, optionIndex, e.target.value)}
-                        placeholder={`Option ${optionIndex + 1}`}
+                        onChange={e =>
+                          onInputChange({
+                            target: {
+                              name: `questions.${questionIndex}.options.${optionIndex}`,
+                              value: e.target.value,
+                            },
+                          } as React.ChangeEvent<HTMLInputElement>)
+                        }
                       />
-                      <button onClick={() => onRemoveOption(questionIndex, optionIndex)}>Remove Option</button>
+                      <button onClick={() => removeOption(questionIndex, optionIndex)}>Remove Option</button>
                     </div>
                   ))}
-                  <button onClick={() => onAddOption(questionIndex)}>Add Option</button>
-                  <button onClick={() => onRemoveQuestion(questionIndex)}>Remove Question</button>
+                  <div>
+                    <button onClick={() => addOption(questionIndex)}>Add Option</button>
+                    <button onClick={() => removeQuestion(questionIndex)}>Remove Question</button>
+                  </div>
                 </div>
               ))}
-              <button onClick={onAddQuestion}>Add Question</button>
+              <button onClick={addQuestion}>Add Question</button>
             </div>
             <div className="flex justify-end items-start self-stretch gap-6">
               <button
