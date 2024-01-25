@@ -84,7 +84,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
               key={index}
               src={image}
               alt={`Image ${index}`}
-              className="max-w-full h-auto max-h-64 object-cover mb-2"
+              className="max-w-64 h-auto max-h-64 object-cover mb-2"
             />
           ))}
         </div>
