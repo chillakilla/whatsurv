@@ -14,6 +14,7 @@ import {LuPencilLine} from 'react-icons/lu';
 import Banner from '../../(main)/_components/carousel/Banner';
 import LiteSurveyCreateModal from '../../(main)/_components/modal/CreateModal';
 import LiteSurveyModal from '../../(main)/_components/modal/SurveyModal';
+import UpdateModal from '../../(main)/_components/modal/UpdateModal';
 
 // 새로운 게시물 알려주기
 const isWithin24Hours = (createdAt: Date): boolean => {
@@ -26,8 +27,9 @@ const isWithin24Hours = (createdAt: Date): boolean => {
 export default function page() {
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isUpdateDeleteMenuOpen, setIsUpdateDeleteMenuOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [menuStates, setMenuStates] = useState<{[postId: string]: boolean}>({});
+  const [editingPost, setEditingPost] = useState<litePost | null>(null);
 
   const user = auth.currentUser;
   const userId = user?.uid;
@@ -94,9 +96,31 @@ export default function page() {
     }));
   };
 
-  //수정 버튼
   const onClickUpdateButton = (postId: string) => {
-    console.log('수정버튼 열림');
+    if (!liteSurveyData) {
+      return;
+    }
+    const postToEdit = liteSurveyData.find(litepost => litepost.id === postId);
+    setEditingPost(postToEdit || null);
+    setIsUpdateModalOpen(true);
+  };
+
+  const handleUpdateLiteSurveyPost = async (updatedData: {title: string; contents: string[]; images: string[]}) => {
+    try {
+      // 수정할 게시물의 ID를 가져옵니다.
+      const postId = editingPost?.id;
+
+      // 게시물 수정 함수 호출
+      if (postId) {
+        await handleUpdateLiteSurveyPost(updatedData);
+      }
+
+      // 모달 닫기 및 데이터 리프레시
+      setIsUpdateModalOpen(false);
+      await refetch();
+    } catch (error) {
+      console.error('LiteSurvey 게시물을 업데이트하는 중 에러 발생:', error);
+    }
   };
 
   //삭제 버튼
@@ -145,8 +169,7 @@ export default function page() {
                                 {userId === litepost.userId && (menuStates[litepost.id] ? '닫기' : '⁝')}
                               </button>
                               {menuStates[litepost.id] && (
-                                // 메뉴에 대한 스타일
-                                <div className="z-10 gap-2">
+                                <div className="gap-2">
                                   <button
                                     className="w-8 h-7 text-blue-800 hover:bg-gray-100"
                                     onClick={() => onClickUpdateButton(litepost.id)}
@@ -226,8 +249,15 @@ export default function page() {
               >
                 <LuPencilLine />
               </Button>
+              {isCreateModalOpen && <LiteSurveyCreateModal onCloseCreateModal={() => setIsCreateModalOpen(false)} />}
+              {editingPost && (
+                <UpdateModal
+                  selectedPost={editingPost}
+                  onClose={() => setEditingPost(null)}
+                  onUpdate={handleUpdateLiteSurveyPost}
+                />
+              )}
             </div>
-            {isCreateModalOpen && <LiteSurveyCreateModal onCloseCreateModal={() => setIsCreateModalOpen(false)} />}
           </div>
         </div>
       </div>

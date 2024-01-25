@@ -310,10 +310,32 @@ export const deleteliteSurveyPostById = async (postId: string) => {
     const postRef = doc(db, 'litesurveyposts', postId);
     await deleteDoc(postRef);
 
-    console.log(`Post with ID ${postId} deleted successfully`);
+    console.log(`게시물 ${postId} 삭제 완료`);
   } catch (error) {
-    console.error(`Error deleting post with ID ${postId}:`, error);
-    throw new Error('Failed to delete post.');
+    console.error(`게시물 삭제 중 오류 발생 ${postId}:`, error);
+    throw new Error('게시물 삭제 오류');
+  }
+};
+
+// litesurvey 게시물 수정
+export const updateLiteSurveyPost = async (
+  postId: string,
+  updatedLitePost: {
+    title: string;
+    contents: string[];
+    images: string[];
+    views?: number;
+    likes?: number;
+    userId?: string;
+    nickname?: string;
+  },
+): Promise<void> => {
+  try {
+    const postRef = doc(db, 'litesurveyposts', postId);
+    await updateDoc(postRef, updatedLitePost);
+  } catch (error) {
+    console.error('Error updating liteSurvey post: ', error);
+    throw new Error('litesurvey 게시글을 수정하는 것에 실패했습니다.');
   }
 };
 
