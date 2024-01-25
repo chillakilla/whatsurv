@@ -7,6 +7,7 @@ import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
 import {useRouter} from 'next/navigation';
 import {ChangeEvent, useEffect, useRef, useState} from 'react';
+import {FaCamera} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
 import {MoonLoader} from 'react-spinners';
 import Swal from 'sweetalert2';
@@ -180,17 +181,27 @@ export default function ProfilePage() {
       <h1 className="text-[#0051FF] text-3xl mb-[20px] mt-[30px] text-center">
         <span className="font-bold">{userProfile?.nickName}</span>님의 프로필
       </h1>
-      <div className="w-[200px] m-auto mt-[30px]" onClick={clickImageHandler} style={{cursor: 'pointer'}}>
+      <div className="w-[200px] m-auto mt-[30px]" style={{cursor: 'pointer'}}>
         {userProfile?.photoURL ? (
-          <div className="w-[200px] h-[200px]  rounded-full relative overflow-hidden ">
-            <img
-              src={userProfile.photoURL}
-              className="w-full h-full  absolute top-0 left-0  object-cover  "
-              alt="Profile"
-            />
-          </div>
+          <>
+            <div className="w-[200px] h-[200px] rounded-full relative overflow-hidden ">
+              <img
+                src={userProfile.photoURL}
+                className="w-full h-full  absolute top-0 left-0  object-cover  "
+                alt="Profile"
+              />
+            </div>
+            <p onClick={clickImageHandler}>
+              <FaCamera size={30} className="camera-icon mt-[20px] m-auto" /> {/* 카메라 아이콘 클릭 이벤트 추가 */}
+            </p>
+          </>
         ) : (
-          <FaRegCircleUser size={200} className="text-[#0051FF]" /> // 기본 아이콘 표시
+          <div className="relative">
+            <FaRegCircleUser size={200} className="text-[#0051FF]" />
+            <div onClick={clickImageHandler}>
+              <FaCamera size={30} className="camera-icon m-auto mt-[20px]" /> {/* 카메라 아이콘 클릭 이벤트 추가 */}
+            </div>
+          </div>
         )}
       </div>
       <input
