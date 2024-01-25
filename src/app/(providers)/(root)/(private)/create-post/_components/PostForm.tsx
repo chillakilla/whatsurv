@@ -4,7 +4,7 @@ import {useRouter} from 'next/navigation';
 import React, {ChangeEvent} from 'react';
 import {BsPersonCircle} from 'react-icons/bs';
 import {MdArrowBackIos} from 'react-icons/md';
-import {ageGroup, majorCategories, researchLocation, researchType, sexType} from './categories';
+import {ageGroup, majorCategories, researchLocation, researchTime, researchType, sexType} from './categories';
 import {Question} from '@/app/api/typePost';
 import {getAuth} from 'firebase/auth';
 // next/router 가 아니고 navigation....하
@@ -124,12 +124,85 @@ export default function PostForm({
             <form>
               {/* 타이틀 및 참여대상 연령 등 컨테이너 */}
               <div className="w-[74rem] h-[6rem] flex bg-gray-300">
-                <div className="w-[54rem] h-[6rem] bg-gray-600"></div>
-                <div className="w-[20rem] h-[6rem] bg-gray-100"></div>
+                <div className="w-[54rem] h-[6rem] flex items-center">
+                  <input
+                    className="w-[54rem] h-[6rem]"
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={onInputChange}
+                    maxLength={70}
+                    required
+                    placeholder="제목은 최대 70자까지 입력할 수 있습니다."
+                  />
+                  <p className="text-[#818490]">{formData.title.length}/70</p>
+                </div>
+                <div className="flex w-[20rem] h-[6rem] justify-center items-center gap-3 bg-gray-100 ">
+                  <div className="flex flex-col gap-3">
+                    <select
+                      className="p-[2px] border border-sky-500 rounded-lg"
+                      name="sexType"
+                      value={formData.sexType}
+                      onChange={onCategoryChange}
+                      required
+                    >
+                      {sexType.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      className="p-[2px] border border-sky-500 rounded-lg"
+                      name="ageGroup"
+                      value={formData.ageGroup}
+                      onChange={onCategoryChange}
+                      required
+                    >
+                      {ageGroup.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <select
+                      className="p-[2px] border border-sky-500 rounded-lg"
+                      name="researchLocation"
+                      value={formData.researchLocation}
+                      onChange={onCategoryChange}
+                      required
+                    >
+                      {researchLocation.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      className="p-[2px] border border-sky-500 rounded-lg"
+                      name="researchTime"
+                      value={formData.researchTime}
+                      onChange={onCategoryChange}
+                      required
+                    >
+                      {researchTime.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
               </div>
               {/* 설문조사 설명 컨테이너 */}
               <div className="w-[74rem] h-[10.6875rem] mt-[1.75rem] flex flex-col items-center justify-center bg-gray-200">
-                <input className="w-[56.5625rem] h-[4.25rem] bg-blue-300" />
+                <input
+                  type="text"
+                  className="w-[56.5625rem] h-[4.25rem] p-[1rem] bg-blue-300"
+                  placeholder="설문조사에 대한 설명을 작성해주세요."
+                />
               </div>
               {/* 설문조사 폼 양식 컨테이너 */}
               <div className="w-[74rem] h-[80.8125rem] mt-[2.31rem] bg-blue-200"></div>

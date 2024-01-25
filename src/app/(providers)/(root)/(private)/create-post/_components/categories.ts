@@ -8,6 +8,14 @@ export const majorCategories = [
   {value: '데이터', label: '데이터'},
 ];
 
+export const researchTime = [
+  {value: '소요시간', label: '소요시간'},
+  {value: '5분 이하', label: '5분 이하'},
+  {value: '10분 이하', label: '10분 이하'},
+  {value: '20분 이하', label: '20분 이하'},
+  {value: '30분 이상', label: '30분 이상'},
+];
+
 export const sexType = [
   {value: '성별', label: '성별'},
   {value: '전체', label: '전체'},
