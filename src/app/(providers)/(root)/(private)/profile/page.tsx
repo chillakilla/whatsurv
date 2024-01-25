@@ -2,6 +2,7 @@
 import {updateNicknameInDocs, updateNicknameInLite} from '@/app/api/firebaseApi';
 import {auth, db, storage} from '@/firebase';
 import {Button, Input, Select, SelectItem} from '@nextui-org/react';
+import {useQueryClient} from '@tanstack/react-query';
 import {onAuthStateChanged} from 'firebase/auth';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
@@ -78,7 +79,7 @@ export default function ProfilePage() {
   }, []);
 
   const router = useRouter();
-
+  const queryClient = useQueryClient();
   // 파일 입력 참조 생성
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -165,6 +166,15 @@ export default function ProfilePage() {
         photoURL: photoURL,
       };
     });
+    //! 원인찾기1. 헤더 쿼리 상태와 프로필 페이지 쿼리 무효화 되는지 확인하기
+    console.log('이미지 업로드 완료, 쿼리 무효화 시작');
+
+    if (auth.currentUser.uid) {
+      queryClient.invalidateQueries({
+        queryKey: ['userProfile', auth.currentUser.uid],
+      });
+    }
+    console.log('쿼리 무효화 완료');
   };
 
   const sexTypes: SexType[] = [
