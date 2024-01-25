@@ -1,6 +1,6 @@
 'use client';
 import {deletePost} from '@/app/api/firebaseApi';
-import {Card, CardBody, Tab, Tabs} from '@nextui-org/react';
+import {Button, Card, CardBody, Tab, Tabs} from '@nextui-org/react';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -63,8 +63,8 @@ export default function ProfilePost() {
         setUserPostLite(prevPosts => prevPosts.filter(post => post.id !== postId));
 
         Swal.fire({
-          title: 'Deleted!',
-          text: 'Your file has been deleted.',
+          title: '삭제되었습니다.',
+          confirmButtonText: '확인',
           icon: 'success',
         });
       } catch (error) {
@@ -90,13 +90,18 @@ export default function ProfilePost() {
           <Card className="bg-transparent border-0  rounded-none shadow-none">
             <CardBody>
               {posts.length > 0 ? (
-                <ul>
+                <ul
+                  className="grid grid-cols-2 md:grid-cols-4 gap-4 auto
+                "
+                >
                   {posts.map(post => (
-                    <li key={post.id} className="bg-white mb-[20px] px-[10px]  rounded-xl py-[20px] ">
+                    <li
+                      key={post.id}
+                      className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
+                    >
                       <Link href={`/survey-it/${post.id}`} className="text-xl">
-                        {post.title}
-                        <p className="text-base">
-                          마감일:
+                        <p className="text-sm">
+                          마감일 | {''}
                           {post.deadlineDate
                             ? post.deadlineDate.toLocaleDateString('ko-KR', {
                                 year: 'numeric',
@@ -105,30 +110,47 @@ export default function ProfilePost() {
                               })
                             : 'No deadline'}
                         </p>
+                        <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
                       </Link>
-                      <button onClick={() => clickDeleteITHandler(post.id)}>삭제</button>
+                      <hr />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        color="danger"
+                        className="my-[10px] float-right absolute bottom-[6.5px] right-[10px]"
+                        onClick={() => clickDeleteITHandler(post.id)}
+                      >
+                        삭제
+                      </Button>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p>작성한 글이 없습니다.</p>
+                <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
+                  작성한 글이 없습니다.
+                </p>
               )}
             </CardBody>
           </Card>
         </Tab>
         <Tab title="내가 작성한 참여했Surv">
-          <Card>
+          <Card className="bg-transparent border-0  rounded-none shadow-none">
             <CardBody>
               {userPostLite.length > 0 ? (
                 <ul>
                   {userPostLite.map(post => (
-                    <li key={post.id}>
+                    <li
+                      key={post.id}
+                      className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
+                    >
                       <Link href="/survey-lite">{post.title}</Link>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p>작성한 글이 없습니다.</p>
+                <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
+                  작성한 글이 없습니다.
+                </p>
               )}
             </CardBody>
           </Card>
