@@ -121,10 +121,19 @@ export default function PostForm({
         <div className="w-[80rem] h-[109.375rem] mt-[5.5rem] bg-white flex flex-col justify-center items-center">
           {/* 문서 작성 컨테이너 */}
           <div className="w-[74rem] h-[101.56rem] bg-gray-400">
-            {/* 타이틀 및 참여대상 연령 등 컨테이너 */}
-            <div className="w-[74rem] h-[6rem] bg-gray-300">
-              <div className="w-[54rem] h-[6rem] bg-gray-600"></div>
-            </div>
+            <form>
+              {/* 타이틀 및 참여대상 연령 등 컨테이너 */}
+              <div className="w-[74rem] h-[6rem] flex bg-gray-300">
+                <div className="w-[54rem] h-[6rem] bg-gray-600"></div>
+                <div className="w-[20rem] h-[6rem] bg-gray-100"></div>
+              </div>
+              {/* 설문조사 설명 컨테이너 */}
+              <div className="w-[74rem] h-[10.6875rem] mt-[1.75rem] flex flex-col items-center justify-center bg-gray-200">
+                <input className="w-[56.5625rem] h-[4.25rem] bg-blue-300" />
+              </div>
+              {/* 설문조사 폼 양식 컨테이너 */}
+              <div className="w-[74rem] h-[80.8125rem] mt-[2.31rem] bg-blue-200"></div>
+            </form>
           </div>
         </div>
       </div>
