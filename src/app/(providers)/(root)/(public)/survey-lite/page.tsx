@@ -143,6 +143,7 @@ export default function page() {
           confirmButtonText: '확인',
           icon: 'success',
         });
+        refetch();
       } catch (error) {
         console.log('게시물 삭제중 오류 발생', error);
       }

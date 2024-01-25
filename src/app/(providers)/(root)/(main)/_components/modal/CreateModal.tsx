@@ -1,7 +1,9 @@
 'use client';
 
-import {saveDataToFirebase} from '@/app/api/firebaseApi';
+import {getLiteSurveyPosts, saveDataToFirebase} from '@/app/api/firebaseApi';
+import {litePost} from '@/app/api/typePost';
 import {db} from '@/firebase';
+import {useQuery} from '@tanstack/react-query';
 import {getAuth} from 'firebase/auth';
 import {doc, getDoc} from 'firebase/firestore';
 import React, {useState} from 'react';
@@ -16,6 +18,16 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
   const [contents, setContents] = useState<string[]>(['']);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [defaultImage, setDefaultImage] = useState(true);
+
+  const {
+    data: liteSurveyData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery<litePost[]>({
+    queryKey: ['surveyData'],
+    queryFn: getLiteSurveyPosts,
+  });
 
   // 게시물 등록하기
   const onClickLiteSurveySubmitHandler = async () => {
@@ -54,6 +66,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
               title: '등록 완료',
               text: '게시물이 성공적으로 등록되었습니다.',
             });
+            refetch();
           } else {
             console.log('해당 사용자의 데이터가 없습니다.');
           }
