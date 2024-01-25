@@ -76,7 +76,8 @@ export default function Header() {
         </div>
         <div className=" flex justify-end gap-4 p-2 mr-[20px]">
           {isLoggedIn ? (
-            <>
+            <div className="flex items-center">
+              <p className="font-bold mr-[10px] text-[#0051FF]">{userProfile?.nickname}</p>
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>
                   <Avatar isBordered as="button" className="transition-transform" src={userProfile?.photoURL || ''} />
@@ -99,7 +100,7 @@ export default function Header() {
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-            </>
+            </div>
           ) : (
             <>
               <Link href="/join">
