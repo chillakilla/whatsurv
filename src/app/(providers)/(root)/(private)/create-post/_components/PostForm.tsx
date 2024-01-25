@@ -1,38 +1,26 @@
 import {FormData} from '@/app/api/typeFormData';
-import {Input, Spacer} from '@nextui-org/react';
 import {useRouter} from 'next/navigation';
-import React, {ChangeEvent} from 'react';
-import {BsPersonCircle} from 'react-icons/bs';
+import React, {ChangeEvent, useState} from 'react';
 import {MdArrowBackIos} from 'react-icons/md';
 import {ageGroup, majorCategories, researchLocation, researchTime, researchType, sexType} from './categories';
 import {Question} from '@/app/api/typePost';
 import {getAuth} from 'firebase/auth';
+import {Radio, RadioGroup, Input} from '@nextui-org/react';
 // next/router 가 아니고 navigation....하
 
 interface PostFormProps {
   formData: Omit<FormData, 'updatedAt' | 'email'> & {};
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onImgFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent) => void;
   onDateChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  previewImage: string | null;
-  setFormData: React.Dispatch<React.SetStateAction<Omit<FormData, 'updatedAt' | 'email'>>>;
 }
 
-export default function PostForm({
-  formData,
-  setFormData,
-  previewImage,
-  onInputChange,
-  onDateChange,
-  onCategoryChange,
-  onImgFileChange,
-  onSubmit,
-}: PostFormProps) {
+export default function PostForm({formData, onInputChange, onDateChange, onCategoryChange, onSubmit}: PostFormProps) {
   const auth = getAuth();
   const user = auth.currentUser;
   const router = useRouter();
+  const [surveyQuestions, setSurveyQuestions] = useState<Question[]>([{question: '', options: ['', '', '', '', '']}]);
   const isFormValid =
     formData.title.trim() !== '' &&
     formData.category !== '' &&
@@ -67,58 +55,47 @@ export default function PostForm({
     }
   };
 
-  const addOption = (e: React.MouseEvent<HTMLButtonElement>, questionIndex: number) => {
-    e.preventDefault();
-    setFormData(prevData => {
-      const updatedQuestions = [...prevData.questions];
-      updatedQuestions[questionIndex].options.push('');
-      return {
-        ...prevData,
-        questions: updatedQuestions,
-      };
-    });
-  };
-
   const addQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setFormData(prevData => {
-      const updatedQuestions = [...prevData.questions, {question: '', options: [''], selectedOption: ''}];
-      return {
-        ...prevData,
-        questions: updatedQuestions,
-      };
+    setSurveyQuestions(prevQuestions => [...prevQuestions, {question: '', options: ['', '', '', '', '']}]);
+  };
+
+  const deleteQuestion = (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
+    e.preventDefault();
+    setSurveyQuestions(prevQuestions => {
+      const newQuestions = [...prevQuestions];
+      newQuestions.splice(index, 1);
+      return newQuestions;
     });
   };
 
-  const removeOption = (e: React.MouseEvent<HTMLButtonElement>, questionIndex: number, optionIndex: number) => {
-    e.preventDefault();
-    setFormData(prevData => {
-      const updatedQuestions = [...prevData.questions];
-      updatedQuestions[questionIndex].options.splice(optionIndex, 1);
-      return {
-        ...prevData,
-        questions: updatedQuestions,
-      };
-    });
+  const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>, questionIndex: number, optionIndex: number) => {
+    const newQuestions = [...surveyQuestions];
+    newQuestions[questionIndex].options[optionIndex] = e.target.value;
+    setSurveyQuestions(newQuestions);
   };
 
-  const removeQuestion = (e: React.MouseEvent<HTMLButtonElement>, questionIndex: number) => {
-    e.preventDefault();
-    setFormData(prevData => {
-      const updatedQuestions = [...prevData.questions];
-      updatedQuestions.splice(questionIndex, 1);
-      return {
-        ...prevData,
-        questions: updatedQuestions,
-      };
-    });
+  const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const newQuestions = [...surveyQuestions];
+    newQuestions[index].question = e.target.value;
+    setSurveyQuestions(newQuestions);
   };
+
+  const optionLabels = ['많이 그렇다.', '조금 그렇다.', '보통이다', '조금 아니다', '많이 아니다'];
 
   return (
     <>
       <div className="flex flex-col items-center">
         {/* 흰생 배경 컨테이너 */}
         <div className="w-[80rem] h-[109.375rem] mt-[5.5rem] bg-white flex flex-col justify-center items-center">
+          <div className="w-[80rem]">
+            <button
+              onClick={backButtonHandler}
+              className="flex justify-center items-center w-[3rem] h-[3rem] border-none bg-sky-400 rounded-full ml-10"
+            >
+              <MdArrowBackIos />
+            </button>
+          </div>
           {/* 문서 작성 컨테이너 */}
           <div className="w-[74rem] h-[101.56rem]">
             <form>
@@ -241,158 +218,77 @@ export default function PostForm({
                 />
               </div>
               {/* 설문조사 폼 양식 컨테이너 */}
-              <div className="w-[74rem] h-[80.8125rem] mt-[2.31rem] bg-blue-200"></div>
+              <div className="w-[74rem] h-[72.8125rem] mt-[2.31rem] flex bg-blue-200 justify-center">
+                {/* TODO: 새로 추가된 문항과 그에 따른 옵션 */}
+                <div className="flex flex-col">
+                  <h3>문항</h3>
+                  {surveyQuestions.map((question, questionIndex) => (
+                    <div key={questionIndex}>
+                      <Input
+                        type="text"
+                        value={question.question}
+                        onChange={e => handleQuestionChange(e, questionIndex)}
+                        placeholder="Enter question"
+                      />
+                      {question.options.map((option, optionIndex) => (
+                        <div key={optionIndex}>
+                          <input
+                            type="radio"
+                            value={option}
+                            onChange={e => handleOptionChange(e, questionIndex, optionIndex)}
+                            placeholder={`Option ${optionIndex + 1}`}
+                          />
+                          <label>{optionLabels[optionIndex]}</label>
+                        </div>
+                      ))}
+                      <button onClick={e => deleteQuestion(e, questionIndex)}>Delete Question</button>
+                    </div>
+                  ))}
+                  <button onClick={addQuestion}>Add Question</button>
+                </div>
+              </div>
+              {/* 버튼 컨테이너 */}
+              <div className="flex justify-end items-start self-stretch gap-6">
+                <button
+                  className="
+            w-[15.625rem]
+            h-[3rem]
+            mt-[10px]
+            border-[1.4px]
+            bg-white
+            border-sky-500
+            rounded-[25rem]
+            hover:bg-[#0051FF]
+            hover:text-white
+            "
+                  onClick={e => {
+                    e.preventDefault();
+                    backButtonHandler();
+                  }}
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  className={`
+              w-[15.625rem]
+              h-[3rem]
+              mt-[10px]
+              border-[1.4px]
+              bg-[#0051FF]
+              rounded-[25rem]
+              text-white
+              ${!isFormValid ? 'cursor-not-allowed' : 'hover:bg-white hover:text-[#0051FF] hover:border-none'}
+              }`}
+                  disabled={!isFormValid}
+                >
+                  등록
+                </button>
+              </div>
             </form>
           </div>
         </div>
       </div>
     </>
-    // <div>
-    //   <button onClick={backButtonHandler} className="self-start">
-    //     <MdArrowBackIos />
-    //   </button>
-    //   <div className="w-[80rem] h-[109.375rem] bg-white">
-    //     <div className="mx-[5rem] mt-[12.8rem] mb-[2.88rem]">
-    //       <form onSubmit={onSubmit} className="mt-[0.5rem]">
-    //         {/* <div className="flex items-start self-stretch w-[64.625rem]">
-    //             <div className="flex justify-center items-center">
-    //               <BsPersonCircle />
-    //               <div className="ml-[0.625rem]">
-    //                 <p className="text-sm font-medium">{user?.displayName}</p>
-    //               </div>
-    //             </div>
-    //           </div> */}
-    //         <Spacer y={8} />
-    //         <div className="flex items-center justify-between gap-[0.625rem]">
-    //
-
-    //           <label htmlFor="deadlineDate">마감일: </label>
-    //         </div>
-    //         <Spacer y={6} />
-    //         <div className="flex flex-col">
-    //           <label>보상: </label>
-    //           <input
-    //             className="border-solid border-2  border-#ccc"
-    //             type="number"
-    //             name="rewards"
-    //             value={formData.rewards}
-    //             onChange={onInputChange}
-    //           />
-    //           <label>이미지 Url: </label>
-    //           <input
-    //             className="border-solid border-2 border-#ccc"
-    //             type="text"
-    //             name="imageUrl"
-    //             value={formData.imageUrl}
-    //             onChange={onInputChange}
-    //           />
-    //           <input
-    //             className="mt-[10px] border-solid border-2 border-#ccc"
-    //             type="file"
-    //             accept="image/*"
-    //             onChange={onImgFileChange}
-    //           />
-    //         </div>
-    //         <h3>이미지 미리보기</h3>
-    //         {previewImage && (
-    //           <div>
-    //             <img src={previewImage} alt="Image Preview" />
-    //           </div>
-    //         )}
-    //         <div className="flex flex-col w-[64.625rem] ">
-    //           {/* <ToastEditor
-    //             onChange={(content: string) => {
-    //               onInputChange({target: {name: 'content', value: content}} as React.ChangeEvent<
-    //                 HTMLInputElement | HTMLTextAreaElement
-    //               >);
-    //             }}
-    //           /> */}
-    //           <label>내용: </label>
-    //
-    //         </div>
-    //         {/* TODO: 새로 추가된 문항과 그에 따른 옵션 */}
-    //         <div className="flex flex-col w-[64.625rem]">
-    //           <h3>문항</h3>
-    //           <div>
-    //             {formData.questions.map((question, questionIndex) => (
-    //               <div key={questionIndex} className="flex flex-col gap-2 items-center">
-    //                 <input
-    //                   type="text"
-    //                   placeholder={`질문 ${questionIndex + 1}`}
-    //                   value={question.question}
-    //                   onChange={e =>
-    //                     onInputChange({
-    //                       target: {name: `questions.${questionIndex}.question`, value: e.target.value},
-    //                     } as React.ChangeEvent<HTMLInputElement>)
-    //                   }
-    //                 />
-    //                 {question.options.map((option, optionIndex) => (
-    //                   <div key={optionIndex} className="flex gap-2 items-center">
-    //                     <input
-    //                       type="text"
-    //                       placeholder={`옵션 ${optionIndex + 1}`}
-    //                       value={option}
-    //                       onChange={e =>
-    //                         onInputChange({
-    //                           target: {
-    //                             name: `questions.${questionIndex}.options.${optionIndex}`,
-    //                             value: e.target.value,
-    //                           },
-    //                         } as React.ChangeEvent<HTMLInputElement>)
-    //                       }
-    //                     />
-    //                     <button onClick={e => addOption(e, questionIndex)}>옵션 추가</button>
-    //                     <button onClick={e => removeOption(e, questionIndex, optionIndex)}>옵션 제거</button>
-    //                   </div>
-    //                 ))}
-    //                 <div className="flex flex-col">
-    //                   <button onClick={e => removeQuestion(e, questionIndex)}>문항 제거</button>
-    //                   <button onClick={e => addQuestion(e)}>문항 추가</button>
-    //                 </div>
-    //               </div>
-    //             ))}
-    //           </div>
-    //         </div>
-    //         <div className="flex justify-end items-start self-stretch gap-6">
-    //           <button
-    //             className="
-    //         w-[15.625rem]
-    //         h-[3rem]
-    //         mt-[10px]
-    //         border-[1.4px]
-    //         bg-white
-    //         border-sky-500
-    //         rounded-[25rem]
-    //         hover:bg-[#0051FF]
-    //         hover:text-white
-    //         "
-    //             onClick={e => {
-    //               e.preventDefault();
-    //               backButtonHandler();
-    //             }}
-    //           >
-    //             취소
-    //           </button>
-    //           <button
-    //             type="submit"
-    //             className={`
-    //           w-[15.625rem]
-    //           h-[3rem]
-    //           mt-[10px]
-    //           border-[1.4px]
-    //           bg-[#0051FF]
-    //           rounded-[25rem]
-    //           text-white
-    //           ${!isFormValid ? 'cursor-not-allowed' : 'hover:bg-white hover:text-[#0051FF] hover:border-none'}
-    //           }`}
-    //             disabled={!isFormValid}
-    //           >
-    //             등록
-    //           </button>
-    //         </div>
-    //       </form>
-    //     </div>
-    //   </div>
-    // </div>
   );
 }

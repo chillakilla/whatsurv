@@ -9,7 +9,6 @@ import {Editor} from '@toast-ui/react-editor';
 import {getAuth} from 'firebase/auth';
 import {FormData} from '@/app/api/typeFormData';
 import firebase from 'firebase/compat/app';
-import {db} from '@/firebase';
 import {Timestamp} from 'firebase/firestore';
 import 'firebase/compat/firestore';
 import {useRouter} from 'next/navigation';
@@ -35,7 +34,7 @@ export default function PostPage() {
     rewards: 0,
     email: user?.email,
     nickname: user?.displayName,
-    questions: [{question: '', options: [''], selectedOption: ''}],
+    surveyData: [{question: '', options: ['', '', '', '', '']}],
   });
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -87,10 +86,10 @@ export default function PostPage() {
         deadlineDate: selectedDeadline ? firebase.firestore.Timestamp.fromDate(selectedDeadline) : null,
         rewards: formData.rewards,
         createdAt: Timestamp.now(),
-        likes: 0,
+        likes: false,
         views: 0,
         updatedAt: new Date(),
-        questions: formData.questions,
+        surveyData: [],
       };
       await addPost(updatedFormData);
 
@@ -111,7 +110,7 @@ export default function PostPage() {
         deadlineDate: null,
         createdAt: Timestamp.now(),
         rewards: 0,
-        questions: [],
+        surveyData: [],
       });
       setIsRedirecting(true);
       alert('등록되었습니다.');
@@ -149,7 +148,7 @@ export default function PostPage() {
   };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const {name, value} = e.target as HTMLInputElement;
+    const {name, value} = e.target;
     setFormData(prevData => ({
       ...prevData,
       [name]: value,
@@ -163,6 +162,7 @@ export default function PostPage() {
       [name]: value,
     }));
   };
+
   return (
     <div>
       {/* isRedirecting = 로딩 스피너 추가 */}
@@ -174,12 +174,9 @@ export default function PostPage() {
       <div>
         <PostForm
           formData={formData}
-          setFormData={setFormData}
           onInputChange={onInputChange}
           onSubmit={SubmitHandler}
           onDateChange={onDateChange}
-          onImgFileChange={ImgFileChangeHandler}
-          previewImage={previewImage}
           onCategoryChange={onCategoryChange}
         />
       </div>

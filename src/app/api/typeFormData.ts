@@ -22,5 +22,5 @@ export type FormData = {
   createdAt: Timestamp;
   deadlineDate: firebase.firestore.Timestamp | null;
 
-  questions: Question[];
+  surveyData: Question[];
 };

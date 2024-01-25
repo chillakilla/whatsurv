@@ -3,7 +3,7 @@ import {Timestamp} from 'firebase/firestore';
 
 export type Post = {
   id: string;
-  likes: number;
+  likes: boolean;
   views: number;
   rewards: number;
 
@@ -25,13 +25,13 @@ export type Post = {
   updatedAt: Date;
   deadlineDate: firebase.firestore.Timestamp | null;
 
-  questions: Question[];
+  surveyData: Question[];
 };
 
 export type Question = {
   question: string;
   options: string[];
-  selectedOption: string;
+  selectedAnswer?: string | null;
 };
 
 export type litePost = {
