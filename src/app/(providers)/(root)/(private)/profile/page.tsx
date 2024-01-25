@@ -7,7 +7,7 @@ import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
 import {useRouter} from 'next/navigation';
 import {ChangeEvent, useEffect, useRef, useState} from 'react';
-import {PiUserRectangleFill} from 'react-icons/pi';
+import {FaRegCircleUser} from 'react-icons/fa6';
 import {MoonLoader} from 'react-spinners';
 import Swal from 'sweetalert2';
 interface UserProfileType {
@@ -190,7 +190,7 @@ export default function ProfilePage() {
             />
           </div>
         ) : (
-          <PiUserRectangleFill size={200} /> // 기본 아이콘 표시
+          <FaRegCircleUser size={200} className="text-[#0051FF]" /> // 기본 아이콘 표시
         )}
       </div>
       <input
