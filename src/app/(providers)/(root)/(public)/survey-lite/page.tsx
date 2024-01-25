@@ -191,24 +191,24 @@ export default function page() {
                               </button>
                             </div>
                           </div>
-                          <div className="flex justify-between">
-                            <div>
-                              <p className="text-xs text-[#666] mb-4">
-                                작성일 |{' '}
-                                {litepost.createdAt
-                                  ? litepost.createdAt.toLocaleString('ko-KR', {
-                                      year: 'numeric',
-                                      month: '2-digit',
-                                      day: '2-digit',
-                                    })
-                                  : '2099.12.31'}
-                              </p>
-                            </div>
-                            {/* <p className="text-xs text-[#666] mb-4">
+                          <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="text-xs text-[#666] mb-4">
+                                  작성일 |{' '}
+                                  {litepost.createdAt
+                                    ? litepost.createdAt.toLocaleString('ko-KR', {
+                                        year: 'numeric',
+                                        month: '2-digit',
+                                        day: '2-digit',
+                                      })
+                                    : '2099.12.31'}
+                                </p>
+                              </div>
+                              {/* <p className="text-xs text-[#666] mb-4">
                                 마감일 | {litepost.deadlineDate ? litepost.deadlineDate.toLocaleString() : '2099.12.31'}
                               </p> */}
-                          </div>
-                          <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
+                            </div>
                             <h3 className="text-lg font-bold">{litepost.title}</h3>
                           </a>
                         </div>
