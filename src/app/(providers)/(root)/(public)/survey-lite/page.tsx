@@ -11,6 +11,7 @@ import {FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
 import {GrView} from 'react-icons/gr';
 import {LuPencilLine} from 'react-icons/lu';
+import Swal from 'sweetalert2';
 import Banner from '../../(main)/_components/carousel/Banner';
 import LiteSurveyCreateModal from '../../(main)/_components/modal/CreateModal';
 import LiteSurveyModal from '../../(main)/_components/modal/SurveyModal';
@@ -125,10 +126,26 @@ export default function page() {
 
   //삭제 버튼
   const onClickDeleteButton = async (postId: string) => {
-    try {
-      await deleteliteSurveyPostById(postId);
-    } catch (error) {
-      console.log('게시물 삭제중 오류 발생', error);
+    const result = await Swal.fire({
+      title: '정말 삭제하시겠습니까?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+    });
+    if (result.isConfirmed) {
+      try {
+        await deleteliteSurveyPostById(postId);
+        Swal.fire({
+          title: '삭제되었습니다.',
+          confirmButtonText: '확인',
+          icon: 'success',
+        });
+      } catch (error) {
+        console.log('게시물 삭제중 오류 발생', error);
+      }
     }
   };
 

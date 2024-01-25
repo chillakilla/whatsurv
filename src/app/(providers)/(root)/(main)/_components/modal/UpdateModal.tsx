@@ -2,6 +2,7 @@
 
 import {updateLiteSurveyPost, uploadImageToStorage} from '@/app/api/firebaseApi';
 import React, {useEffect, useState} from 'react';
+import Swal from 'sweetalert2';
 
 interface UpdateModalProps {
   selectedPost: {
@@ -28,6 +29,11 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
   }, [selectedPost]);
 
   const onClickLiteSurveyUpdateHandler = async () => {
+    Swal.fire({
+      icon: 'success',
+      title: '수정 완료',
+      text: '게시물이 수정이 완료되었습니다.',
+    });
     if (title.trim() === '') {
       window.alert('제목을 입력하세요.');
       return;
