@@ -193,18 +193,6 @@ export const deletePost = async (postId: string): Promise<void> => {
   }
 };
 
-// litesurvey 게시물 삭제
-export const deleteliteSurveyPostById = async (postId: string) => {
-  try {
-    const postRef = doc(db, 'litesurveyposts', postId);
-    await deleteDoc(postRef);
-    console.log(`게시물 ${postId} 삭제 완료`);
-  } catch (error) {
-    console.error(`게시물 삭제 중 오류 발생 ${postId}:`, error);
-    throw new Error('게시물 삭제 오류');
-  }
-};
-
 // 업로드한 이미지 storage에 저장
 export const uploadImageToStorage = async (file: File): Promise<string> => {
   const storage = getStorage();
