@@ -1,5 +1,5 @@
 export const majorCategories = [
-  {value: '대분류', label: '대분류'},
+  {value: '직종', label: '직종'},
   {value: '전체', label: '전체'},
   {value: 'IT', label: 'IT'},
   {value: '프론트', label: '프론트'},
@@ -16,7 +16,7 @@ export const sexType = [
 ];
 
 export const ageGroup = [
-  {value: '연령대', label: '연령대'},
+  {value: '연령', label: '연령'},
   {value: '전체', label: '전체'},
   {value: '10대', label: '10대'},
   {value: '20대', label: '20대'},
@@ -27,7 +27,7 @@ export const ageGroup = [
 ];
 
 export const researchType = [
-  {value: '종류', label: '종류'},
+  {value: '설문 종류', label: '설문 종류'},
   {value: '전체', label: '전체'},
   {value: '온라인/모바일', label: '온라인/모바일'},
   {value: 'ARS', label: 'ARS'},
@@ -38,7 +38,7 @@ export const researchType = [
 ];
 
 export const researchLocation = [
-  {value: '장소', label: '장소'},
+  {value: '설문 장소', label: '설문 장소'},
   {value: '전체', label: '전체'},
   {value: '온라인', label: '온라인'},
   {value: '오프라인', label: '오프라인'},

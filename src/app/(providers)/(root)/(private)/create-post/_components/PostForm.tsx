@@ -67,7 +67,8 @@ export default function PostForm({
     }
   };
 
-  const addOption = (questionIndex: number) => {
+  const addOption = (e: React.MouseEvent<HTMLButtonElement>, questionIndex: number) => {
+    e.preventDefault();
     setFormData(prevData => {
       const updatedQuestions = [...prevData.questions];
       updatedQuestions[questionIndex].options.push('');
@@ -78,7 +79,8 @@ export default function PostForm({
     });
   };
 
-  const addQuestion = () => {
+  const addQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     setFormData(prevData => {
       const updatedQuestions = [...prevData.questions, {question: '', options: [''], selectedOption: ''}];
       return {
@@ -88,7 +90,8 @@ export default function PostForm({
     });
   };
 
-  const removeOption = (questionIndex: number, optionIndex: number) => {
+  const removeOption = (e: React.MouseEvent<HTMLButtonElement>, questionIndex: number, optionIndex: number) => {
+    e.preventDefault();
     setFormData(prevData => {
       const updatedQuestions = [...prevData.questions];
       updatedQuestions[questionIndex].options.splice(optionIndex, 1);
@@ -99,7 +102,8 @@ export default function PostForm({
     });
   };
 
-  const removeQuestion = (questionIndex: number) => {
+  const removeQuestion = (e: React.MouseEvent<HTMLButtonElement>, questionIndex: number) => {
+    e.preventDefault();
     setFormData(prevData => {
       const updatedQuestions = [...prevData.questions];
       updatedQuestions.splice(questionIndex, 1);
@@ -118,212 +122,215 @@ export default function PostForm({
             <MdArrowBackIos />
           </button>
           <Spacer y={6} />
-          <form onSubmit={onSubmit} className="mt-[0.5rem]">
-            <div className="w-[64.625rem] p-[0.625rem] flex items-center self-stretch border border-sky-500 rounded-xl gap-[0.5rem] bg-white">
-              <input
-                className="w-[59.8125rem] h-[1.625rem] text-base font-semibold"
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={onInputChange}
-                maxLength={70}
-                required
-                placeholder="제목은 최대 70자까지 입력할 수 있습니다."
-              />
-              <p className="text-[#818490]">{formData.title.length}/70</p>
-            </div>
-            <Spacer y={6} />
-            <div className="flex items-start self-stretch w-[64.625rem]">
-              <div className="flex justify-center items-center">
-                <BsPersonCircle />
-                <div className="ml-[0.625rem]">
-                  <p className="text-sm font-medium">{user?.displayName}</p>
+          <div className="bg-white">
+            <form onSubmit={onSubmit} className="mt-[0.5rem]">
+              <div className="w-[64.625rem] h-[5rem] p-[0.625rem] flex items-center border-b gap-[0.5rem]">
+                <input
+                  className="w-[59.8125rem] h-[1.625rem] text-base font-semibold"
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={onInputChange}
+                  maxLength={70}
+                  required
+                  placeholder="제목은 최대 70자까지 입력할 수 있습니다."
+                />
+                <p className="text-[#818490]">{formData.title.length}/70</p>
+                <div className="flex flex-col gap-[0.5rem]">
+                  <select
+                    className="p-[2px] border border-sky-500 rounded-lg"
+                    name="sexType"
+                    value={formData.sexType}
+                    onChange={onCategoryChange}
+                    required
+                  >
+                    {sexType.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    className="p-[2px] border border-sky-500 rounded-lg"
+                    name="ageGroup"
+                    value={formData.ageGroup}
+                    onChange={onCategoryChange}
+                    required
+                  >
+                    {ageGroup.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex flex-col">
+                  <select
+                    className="p-[2px] border border-sky-500 rounded-lg"
+                    name="researchLocation"
+                    value={formData.researchLocation}
+                    onChange={onCategoryChange}
+                    required
+                  >
+                    {researchLocation.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  <Input
+                    className="p-[3px] border border-sky-500 rounded-lg"
+                    type="text"
+                    label="소요시간"
+                    name="researchTime"
+                    value={formData.researchTime}
+                    onChange={onInputChange}
+                    required
+                    placeholder="설문에 소요되는 시간을 작성해주세요."
+                  />
                 </div>
               </div>
-            </div>
-            <Spacer y={8} />
-            <div className="flex items-center gap-[0.5rem]">
-              <label>업종 : </label>
-              <select
-                className="p-[2px] border border-sky-500 rounded-lg"
-                name="category"
-                value={formData.category}
-                onChange={onCategoryChange}
-                required
-              >
-                {majorCategories.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <label>성별 : </label>
-              <select
-                className="p-[2px] border border-sky-500 rounded-lg"
-                name="sexType"
-                value={formData.sexType}
-                onChange={onCategoryChange}
-                required
-              >
-                {sexType.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <label>연령대 : </label>
-              <select
-                className="p-[2px] border border-sky-500 rounded-lg"
-                name="ageGroup"
-                value={formData.ageGroup}
-                onChange={onCategoryChange}
-                required
-              >
-                {ageGroup.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <label>설문종류 : </label>
-              <select
-                className="p-[2px] border border-sky-500 rounded-lg"
-                name="researchType"
-                value={formData.researchType}
-                onChange={onCategoryChange}
-                required
-              >
-                {researchType.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <label>조사장소 : </label>
-              <select
-                className="p-[2px] border border-sky-500 rounded-lg"
-                name="researchLocation"
-                value={formData.researchLocation}
-                onChange={onCategoryChange}
-                required
-              >
-                {researchLocation.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <label htmlFor="deadlineDate">마감일: </label>
-              <input
-                className="p-[2px] border border-sky-500 rounded-lg"
-                type="date"
-                name="deadlineDate"
-                value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
-              />
-            </div>
-            <Spacer y={6} />
-            <div className="w-[64.625rem] flex flex-col">
-              <Input
-                className="p-[3px] border border-sky-500 rounded-lg"
-                type="text"
-                label="소요시간"
-                name="researchTime"
-                value={formData.researchTime}
-                onChange={onInputChange}
-                required
-                placeholder="설문에 소요되는 시간을 작성해주세요."
-              />
-              <label>보상: </label>
-              <input
-                className="border-solid border-2  border-#ccc"
-                type="number"
-                name="rewards"
-                value={formData.rewards}
-                onChange={onInputChange}
-              />
-              <label>이미지 Url: </label>
-              <input
-                className="border-solid border-2 border-#ccc"
-                type="text"
-                name="imageUrl"
-                value={formData.imageUrl}
-                onChange={onInputChange}
-              />
-              <input
-                className="mt-[10px] border-solid border-2 border-#ccc"
-                type="file"
-                accept="image/*"
-                onChange={onImgFileChange}
-              />
-            </div>
-            <h3>이미지 미리보기</h3>
-            {previewImage && (
-              <div>
-                <img src={previewImage} alt="Image Preview" />
+              <Spacer y={6} />
+              {/* <div className="flex items-start self-stretch w-[64.625rem]">
+                <div className="flex justify-center items-center">
+                  <BsPersonCircle />
+                  <div className="ml-[0.625rem]">
+                    <p className="text-sm font-medium">{user?.displayName}</p>
+                  </div>
+                </div>
+              </div> */}
+              <Spacer y={8} />
+              <div className="flex items-center justify-between gap-[0.625rem]">
+                <select
+                  className="p-[2px] border border-sky-500 rounded-lg"
+                  name="category"
+                  value={formData.category}
+                  onChange={onCategoryChange}
+                  required
+                >
+                  {majorCategories.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  className="p-[2px] border border-sky-500 rounded-lg"
+                  name="researchType"
+                  value={formData.researchType}
+                  onChange={onCategoryChange}
+                  required
+                >
+                  {researchType.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+
+                <label htmlFor="deadlineDate">마감일: </label>
+                <input
+                  className="p-[2px] border border-sky-500 rounded-lg"
+                  type="date"
+                  name="deadlineDate"
+                  value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
+                />
               </div>
-            )}
-            <div className="flex flex-col w-[64.625rem] ">
-              {/* <ToastEditor
+              <Spacer y={6} />
+              <div className="flex flex-col">
+                <label>보상: </label>
+                <input
+                  className="border-solid border-2  border-#ccc"
+                  type="number"
+                  name="rewards"
+                  value={formData.rewards}
+                  onChange={onInputChange}
+                />
+                <label>이미지 Url: </label>
+                <input
+                  className="border-solid border-2 border-#ccc"
+                  type="text"
+                  name="imageUrl"
+                  value={formData.imageUrl}
+                  onChange={onInputChange}
+                />
+                <input
+                  className="mt-[10px] border-solid border-2 border-#ccc"
+                  type="file"
+                  accept="image/*"
+                  onChange={onImgFileChange}
+                />
+              </div>
+              <h3>이미지 미리보기</h3>
+              {previewImage && (
+                <div>
+                  <img src={previewImage} alt="Image Preview" />
+                </div>
+              )}
+              <div className="flex flex-col w-[64.625rem] ">
+                {/* <ToastEditor
                 onChange={(content: string) => {
                   onInputChange({target: {name: 'content', value: content}} as React.ChangeEvent<
                     HTMLInputElement | HTMLTextAreaElement
                   >);
                 }}
               /> */}
-              <label>내용: </label>
-              <textarea
-                className="border border-sky-500 rounded-lg resize-none"
-                name="content"
-                value={formData.content}
-                onChange={onInputChange}
-                required
-              />
-            </div>
-            {/* TODO: 새로 추가된 문항과 그에 따른 옵션 */}
-            <div className="flex flex-col w-[64.625rem]">
-              <h3>문항</h3>
-              {formData.questions.map((question, questionIndex) => (
-                <div key={questionIndex} className="flex gap-2 items-center">
-                  <input
-                    type="text"
-                    placeholder={`질문 ${questionIndex + 1}`}
-                    value={question.question}
-                    onChange={e =>
-                      onInputChange({
-                        target: {name: `questions.${questionIndex}.question`, value: e.target.value},
-                      } as React.ChangeEvent<HTMLInputElement>)
-                    }
-                  />
-                  {question.options.map((option, optionIndex) => (
-                    <div key={optionIndex} className="flex gap-2 items-center">
+                <label>내용: </label>
+                <textarea
+                  className="border border-sky-500 rounded-lg resize-none"
+                  name="content"
+                  value={formData.content}
+                  onChange={onInputChange}
+                  required
+                />
+              </div>
+              {/* TODO: 새로 추가된 문항과 그에 따른 옵션 */}
+              <div className="flex flex-col w-[64.625rem]">
+                <h3>문항</h3>
+                <div>
+                  {formData.questions.map((question, questionIndex) => (
+                    <div key={questionIndex} className="flex flex-col gap-2 items-center">
                       <input
                         type="text"
-                        placeholder={`옵션 ${optionIndex + 1}`}
-                        value={option}
+                        placeholder={`질문 ${questionIndex + 1}`}
+                        value={question.question}
                         onChange={e =>
                           onInputChange({
-                            target: {
-                              name: `questions.${questionIndex}.options.${optionIndex}`,
-                              value: e.target.value,
-                            },
+                            target: {name: `questions.${questionIndex}.question`, value: e.target.value},
                           } as React.ChangeEvent<HTMLInputElement>)
                         }
                       />
-                      <button onClick={() => removeOption(questionIndex, optionIndex)}>Remove Option</button>
+                      {question.options.map((option, optionIndex) => (
+                        <div key={optionIndex} className="flex gap-2 items-center">
+                          <input
+                            type="text"
+                            placeholder={`옵션 ${optionIndex + 1}`}
+                            value={option}
+                            onChange={e =>
+                              onInputChange({
+                                target: {
+                                  name: `questions.${questionIndex}.options.${optionIndex}`,
+                                  value: e.target.value,
+                                },
+                              } as React.ChangeEvent<HTMLInputElement>)
+                            }
+                          />
+                          <button onClick={e => addOption(e, questionIndex)}>옵션 추가</button>
+                          <button onClick={e => removeOption(e, questionIndex, optionIndex)}>옵션 제거</button>
+                        </div>
+                      ))}
+                      <div className="flex flex-col">
+                        <button onClick={e => removeQuestion(e, questionIndex)}>문항 제거</button>
+                        <button onClick={e => addQuestion(e)}>문항 추가</button>
+                      </div>
                     </div>
                   ))}
-                  <div>
-                    <button onClick={() => addOption(questionIndex)}>Add Option</button>
-                    <button onClick={() => removeQuestion(questionIndex)}>Remove Question</button>
-                  </div>
                 </div>
-              ))}
-              <button onClick={addQuestion}>Add Question</button>
-            </div>
-            <div className="flex justify-end items-start self-stretch gap-6">
-              <button
-                className="
+              </div>
+              <div className="flex justify-end items-start self-stretch gap-6">
+                <button
+                  className="
             w-[15.625rem] 
             h-[3rem] 
             mt-[10px] 
@@ -334,16 +341,16 @@ export default function PostForm({
             hover:bg-[#0051FF]
             hover:text-white
             "
-                onClick={e => {
-                  e.preventDefault();
-                  backButtonHandler();
-                }}
-              >
-                취소
-              </button>
-              <button
-                type="submit"
-                className={`
+                  onClick={e => {
+                    e.preventDefault();
+                    backButtonHandler();
+                  }}
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  className={`
               w-[15.625rem] 
               h-[3rem] 
               mt-[10px] 
@@ -353,12 +360,13 @@ export default function PostForm({
               text-white
               ${!isFormValid ? 'cursor-not-allowed' : 'hover:bg-white hover:text-[#0051FF] hover:border-none'}
               }`}
-                disabled={!isFormValid}
-              >
-                등록
-              </button>
-            </div>
-          </form>
+                  disabled={!isFormValid}
+                >
+                  등록
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

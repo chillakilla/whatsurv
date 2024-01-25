@@ -163,7 +163,6 @@ export default function PostPage() {
       [name]: value,
     }));
   };
-
   return (
     <div>
       {/* isRedirecting = 로딩 스피너 추가 */}
