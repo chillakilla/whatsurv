@@ -35,11 +35,23 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
     const areContentsEmpty = contents.some(content => content.trim() === '');
     // 로그인 한 유저인지 확인
     if (isTitleEmpty && areContentsEmpty) {
-      window.alert('제목과 내용을 입력하세요.');
+      Swal.fire({
+        icon: 'warning',
+        title: '미입력',
+        text: '제목과 내용을 입력해 주세요.',
+      });
     } else if (isTitleEmpty) {
-      window.alert('제목을 입력하세요.');
+      Swal.fire({
+        icon: 'warning',
+        title: '미입력',
+        text: '제목을 입력해 주세요.',
+      });
     } else if (areContentsEmpty) {
-      window.alert('내용을 입력하세요.');
+      Swal.fire({
+        icon: 'warning',
+        title: '미입력',
+        text: '내용을 입력해 주세요.',
+      });
     } else {
       try {
         // 현재 로그인한 사용자 정보 가져오기

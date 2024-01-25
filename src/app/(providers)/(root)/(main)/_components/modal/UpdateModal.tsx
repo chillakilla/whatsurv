@@ -41,13 +41,29 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
   }, [selectedPost]);
 
   const onClickLiteSurveyUpdateHandler = async () => {
+    if (title.trim() === '' && contents.some(content => content.trim() === '')) {
+      Swal.fire({
+        icon: 'warning',
+        title: '미입력',
+        text: '제목과 내용을 입력해 주세요.',
+      });
+      return;
+    }
     if (title.trim() === '') {
-      window.alert('제목을 입력하세요.');
+      Swal.fire({
+        icon: 'warning',
+        title: '미입력',
+        text: '제목을 입력해 주세요.',
+      });
       return;
     }
 
     if (contents.some(content => content.trim() === '')) {
-      window.alert('내용을 입력하세요.');
+      Swal.fire({
+        icon: 'warning',
+        title: '미입력',
+        text: '내용을 입력해 주세요.',
+      });
       return;
     }
 
