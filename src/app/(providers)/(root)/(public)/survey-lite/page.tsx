@@ -240,6 +240,7 @@ export default function page() {
                 onCloseLiteSurveyModal={onCloseModalHandler}
               />
             )}
+
             <div className="flex justify-end sticky bottom-10">
               <Button
                 onClick={onClickCreateModalOpen}
@@ -249,15 +250,15 @@ export default function page() {
               >
                 <LuPencilLine />
               </Button>
-              {isCreateModalOpen && <LiteSurveyCreateModal onCloseCreateModal={() => setIsCreateModalOpen(false)} />}
-              {editingPost && (
-                <UpdateModal
-                  selectedPost={editingPost}
-                  onClose={() => setEditingPost(null)}
-                  onUpdate={handleUpdateLiteSurveyPost}
-                />
-              )}
             </div>
+            {isCreateModalOpen && <LiteSurveyCreateModal onCloseCreateModal={() => setIsCreateModalOpen(false)} />}
+            {editingPost && (
+              <UpdateModal
+                selectedPost={editingPost}
+                onClose={() => setEditingPost(null)}
+                onUpdate={handleUpdateLiteSurveyPost}
+              />
+            )}
           </div>
         </div>
       </div>

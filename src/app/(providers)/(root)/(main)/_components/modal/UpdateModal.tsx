@@ -1,6 +1,6 @@
 'use client';
 
-import {updateLiteSurveyPost} from '@/app/api/firebaseApi';
+import {updateLiteSurveyPost, uploadImageToStorage} from '@/app/api/firebaseApi';
 import React, {useEffect, useState} from 'react';
 
 interface UpdateModalProps {
@@ -18,6 +18,8 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
   const [title, setTitle] = useState<string>(selectedPost.title);
   const [contents, setContents] = useState<string[]>(selectedPost.contents);
   const [images, setImages] = useState<string[]>(selectedPost.images);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [defaultImage, setDefaultImage] = useState(true);
 
   useEffect(() => {
     setTitle(selectedPost.title);
@@ -25,7 +27,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
     setImages(selectedPost.images);
   }, [selectedPost]);
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (title.trim() === '') {
       window.alert('제목을 입력하세요.');
       return;
@@ -36,14 +38,48 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
       return;
     }
 
-    const updatedLitePost = {
-      title,
-      contents,
-      images,
-    };
+    try {
+      // 이미지 업로드하고 다운로드 URL 얻기
+      const uploadedImageUrls = await Promise.all(
+        selectedImages.map(async image => {
+          return await uploadImageToStorage(image);
+        }),
+      );
 
-    updateLiteSurveyPost(selectedPost.id, updatedLitePost);
-    onClose();
+      // 기존 이미지와 새로 업로드한 이미지 합치기
+      const updatedLitePost = {
+        title,
+        contents,
+        images: [...images, ...uploadedImageUrls],
+      };
+
+      // Firebase에 업데이트된 데이터 전송
+      await updateLiteSurveyPost(selectedPost.id, updatedLitePost);
+
+      // 모달 닫기
+      onClose();
+    } catch (error) {
+      console.error('이미지 업로드 중 오류:', error);
+      window.alert('이미지 업로드 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 이미지 추가하기
+  const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setSelectedImages(prevImages => [...prevImages, ...Array.from(files)]);
+      setDefaultImage(false);
+    }
+  };
+
+  // 이미지 삭제하기
+  const removeImage = (index: number) => {
+    setSelectedImages(prevImages => prevImages.filter((_, i) => i !== index));
+    setImages(prevImages => prevImages.filter((_, i) => i !== index));
+    if (selectedImages.length === 1) {
+      setDefaultImage(true);
+    }
   };
 
   return (
@@ -51,7 +87,51 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
       <div className="relative bg-white rounded-lg w-[39rem] p-8 flex flex-col">
         <div className="modal-content flex flex-col">
           <div className="text-3xl flex items-center justify-center text-blue-500 font-bold mb-5">게시물 수정</div>
+          <div className="mb-4 flex items-center">
+            {/* 이미지가 하나도 없으면서 기본 이미지가 설정되어 있을 때 */}
+            {images.length === 0 && defaultImage && (
+              <div className="mx-auto my-auto">
+                <img src="/image/default.jpg" alt="기본 이미지" className="w-[10rem] h-[11.5rem] object-cover pb-1" />
+              </div>
+            )}
 
+            {/* 선택된 게시물의 이미지 표시 */}
+            {images.map((image, index) => (
+              <div key={index} className="relative">
+                <img src={image} alt={`Image${index}`} className="w-[10rem] h-[10rem] object-cover" />
+                <button
+                  onClick={() => removeImage(index)}
+                  className="ml-10 bg-white px-[1rem] rounded-xl
+        hover:bg-[#0051FF]
+        hover:text-white"
+                >
+                  삭제
+                </button>
+              </div>
+            ))}
+
+            {/* 로컬에 추가된 이미지 표시 */}
+            {selectedImages.map((image, index) => (
+              <div key={index} className="relative">
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`SelectedImage${index}`}
+                  className="w-[10rem] h-[10rem] object-cover"
+                />
+                <button
+                  onClick={() => removeImage(index + images.length)}
+                  className="ml-10 bg-white px-[1rem] rounded-xl
+        hover:bg-[#0051FF]
+        hover:text-white"
+                >
+                  삭제
+                </button>
+              </div>
+            ))}
+          </div>
+          <label className="mb-4 flex items-center">
+            <input type="file" accept="image/*" onChange={onImageChange} className="p-2 ml-2 w-[24.0625rem]" />
+          </label>
           <label className="mb-4 pb-1 text-2xl border-b border-black">
             제 목 :&nbsp;
             <input
@@ -62,24 +142,6 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
               placeholder="제목을 입력해주세요"
             />
           </label>
-
-          <div className="mb-4 flex items-center">
-            {images.map((image, index) => (
-              <div key={index} className="mx-auto my-auto">
-                <input
-                  type="text"
-                  value={image}
-                  onChange={e => {
-                    const updatedImages = [...images];
-                    updatedImages[index] = e.target.value;
-                    setImages(updatedImages);
-                  }}
-                />
-              </div>
-            ))}
-            <button onClick={() => setImages(prev => [...prev, ''])}>이미지 추가</button>
-          </div>
-
           {contents.map((contentsEntry, index) => (
             <div key={index} className="mb-4 pb-1 text-l border-b border-blue-300">
               내 용 :&nbsp;
