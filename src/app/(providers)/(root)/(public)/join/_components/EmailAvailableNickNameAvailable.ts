@@ -19,14 +19,14 @@ export default function EmailAvailableNickNameAvailable({
     // 이메일이 비어 있는 경우 확인
     if (!email) {
       setEmailCheck('이메일을 입력해주세요');
-      setEmailValidationClass('text-red-500'); // 에러 색상 설정
+      setEmailValidationClass('text-[#EB271C]'); // 에러 색상 설정
       return; // 함수 종료
     }
 
     // 이메일 형식이 유효하지 않은 경우 확인
     if (!emailValidation.test(email)) {
       setEmailCheck('유효한 이메일 형식이 아닙니다');
-      setEmailValidationClass('text-red-500'); // 에러 색상 설정
+      setEmailValidationClass('text-[#EB271C]'); // 에러 색상 설정
       return; // 함수 종료
     }
     try {
@@ -41,7 +41,7 @@ export default function EmailAvailableNickNameAvailable({
         // 초록색 텍스트
       } else {
         setIsEmailAvailable(false);
-        setEmailValidationClass('text-red-500');
+        setEmailValidationClass('text-[#EB271C]');
         setEmailCheck('이미 사용 중인 이메일입니다');
         // 빨간색 텍스트
       }
@@ -54,7 +54,7 @@ export default function EmailAvailableNickNameAvailable({
   const clickNicknameCheckHandler = async (): Promise<void> => {
     if (!nickname) {
       setNicknameCheck('닉네임을 입력해주세요');
-      setNicknameValidationClass('text-red-500'); // 에러 색상 설정
+      setNicknameValidationClass('text-[#EB271C]'); // 에러 색상 설정
       return; // 함수 종료
     }
     try {
@@ -66,7 +66,7 @@ export default function EmailAvailableNickNameAvailable({
       } else {
         setIsNicknameAvailable(false);
         setNicknameCheck('이미 사용 중인 닉네임입니다');
-        setNicknameValidationClass('text-red-500');
+        setNicknameValidationClass('text-[#EB271C]');
       }
     } catch (error) {
       console.error('Error checking nickname availability: ', error);

@@ -126,7 +126,7 @@ export default function RenderStepJoin({
                 <span className="text-lg">약관에 동의합니다.</span>
               </label>
             </div>
-            {termsCheck && <p className="text-red-500 mt-[25px] text-center">{termsCheck}</p>}
+            {termsCheck && <p className="text-[#EB271C] mt-[25px] text-center">{termsCheck}</p>}
             <Button
               className="mt-[20px] w-full bg-[#0051FF] text-white"
               size="lg"
@@ -184,7 +184,7 @@ export default function RenderStepJoin({
               variant="bordered"
               onChange={e => setPassword(e.target.value)}
             />
-            {passwordCheck && <p className="text-red-500 mb-[20px] text-center mt-2">{passwordCheck}</p>}
+            {passwordCheck && <p className="text-[#EB271C] mb-[20px] text-center mt-2">{passwordCheck}</p>}
             <Input
               type="password"
               value={confirmPassword}
@@ -193,7 +193,7 @@ export default function RenderStepJoin({
               onChange={e => setConfirmPassword(e.target.value)}
               label="다시 한번 비밀번호를 입력해주세요"
             />
-            {confirmPasswordCheck && <p className="text-red-500 text-center mt-2">{confirmPasswordCheck}</p>}
+            {confirmPasswordCheck && <p className="text-[#EB271C] text-center mt-2">{confirmPasswordCheck}</p>}
             <Button
               className="mt-[20px]  w-full bg-[#0051FF] text-white"
               size="lg"
@@ -219,7 +219,7 @@ export default function RenderStepJoin({
               maxLength={6}
               onChange={e => setBirthDate(e.target.value)}
             />
-            {birthDateCheck && <p className="text-red-500 text-center mt-2">{birthDateCheck}</p>}
+            {birthDateCheck && <p className="text-[#EB271C] text-center mt-2">{birthDateCheck}</p>}
             <Button
               size="lg"
               onClick={() => {
