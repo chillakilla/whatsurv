@@ -2,6 +2,7 @@
 
 import {updateLiteSurveyPost, uploadImageToStorage} from '@/app/api/firebaseApi';
 import React, {useEffect, useState} from 'react';
+import Swal from 'sweetalert2';
 
 interface UpdateModalProps {
   selectedPost: {
@@ -28,6 +29,11 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
   }, [selectedPost]);
 
   const onClickLiteSurveyUpdateHandler = async () => {
+    Swal.fire({
+      icon: 'success',
+      title: '수정 완료',
+      text: '게시물이 수정이 완료되었습니다.',
+    });
     if (title.trim() === '') {
       window.alert('제목을 입력하세요.');
       return;
@@ -73,11 +79,17 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
     }
   };
 
-  // 이미지 삭제하기
   const removeImage = (index: number) => {
-    setSelectedImages(prevImages => prevImages.filter((_, i) => i !== index));
-    setImages(prevImages => prevImages.filter((_, i) => i !== index));
-    if (selectedImages.length === 1) {
+    if (index < images.length) {
+      // 기존 이미지를 삭제하는 경우
+      setImages(prevImages => prevImages.filter((_, i) => i !== index));
+    } else {
+      // 새롭게 추가된 이미지를 삭제하는 경우
+      setSelectedImages(prevImages => prevImages.filter((_, i) => i !== index - images.length));
+    }
+
+    if (selectedImages.length + images.length === 1) {
+      // 이미지가 하나만 남은 경우 (기존 + 새롭게 추가된 이미지 합산)
       setDefaultImage(true);
     }
   };
@@ -87,7 +99,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
       <div className="relative bg-white rounded-lg w-[39rem] p-8 flex flex-col">
         <div className="modal-content flex flex-col">
           <div className="text-3xl flex items-center justify-center text-blue-500 font-bold mb-5">게시물 수정</div>
-          <div className="mb-4 flex items-center">
+          <div className="mb-4 flex justify-center items-center">
             {/* 이미지가 하나도 없으면서 기본 이미지가 설정되어 있을 때 */}
             {images.length === 0 && defaultImage && (
               <div className="mx-auto my-auto">
@@ -97,7 +109,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
 
             {/* 선택된 게시물의 이미지 표시 */}
             {images.map((image, index) => (
-              <div key={index} className="relative">
+              <div key={index} className="mx-auto my-auto">
                 <img src={image} alt={`Image${index}`} className="w-[10rem] h-[10rem] object-cover" />
                 <button
                   onClick={() => removeImage(index)}
@@ -110,14 +122,14 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
 
             {/* 로컬에 추가된 이미지 표시 */}
             {selectedImages.map((image, index) => (
-              <div key={index} className="relative">
+              <div key={index} className="mx-auto my-auto">
                 <img
                   src={URL.createObjectURL(image)}
                   alt={`SelectedImage${index}`}
                   className="w-[10rem] h-[10rem] object-cover"
                 />
                 <button
-                  onClick={() => removeImage(index + images.length)}
+                  onClick={() => removeImage(index)}
                   className="ml-10 bg-white px-[1rem] rounded-xl
         hover:bg-[#0051FF]
         hover:text-white"
