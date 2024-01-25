@@ -1,5 +1,5 @@
 'use client';
-import {deletePost} from '@/app/api/firebaseApi';
+import {deletePost, deleteliteSurveyPostById} from '@/app/api/firebaseApi';
 import {Button, Card, CardBody, Tab, Tabs} from '@nextui-org/react';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
@@ -44,7 +44,35 @@ export default function ProfilePost() {
     return <div>로딩 중......</div>;
   }
 
-  // 게시글 삭제 핸들러
+  // Lite 게시글 삭제 핸들러
+  const clickDeleteLiteHandler = async (postId: string) => {
+    const result = await Swal.fire({
+      title: '정말 삭제하시겠습니까?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteliteSurveyPostById(postId);
+        setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+        setUserPostLite(prevPosts => prevPosts.filter(post => post.id !== postId));
+
+        Swal.fire({
+          title: '삭제되었습니다.',
+          confirmButtonText: '확인',
+          icon: 'success',
+        });
+      } catch (error) {
+        console.error('Failed to delete post: ', error);
+      }
+    }
+  };
+  // IT 게시글 삭제 핸들러
   const clickDeleteITHandler = async (postId: string) => {
     const result = await Swal.fire({
       title: '정말 삭제하시겠습니까?',
@@ -137,13 +165,28 @@ export default function ProfilePost() {
           <Card className="bg-transparent border-0  rounded-none shadow-none">
             <CardBody>
               {userPostLite.length > 0 ? (
-                <ul>
+                <ul
+                  className="grid grid-cols-2 md:grid-cols-4 gap-4 auto
+                "
+                >
                   {userPostLite.map(post => (
                     <li
                       key={post.id}
                       className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
                     >
-                      <Link href="/survey-lite">{post.title}</Link>
+                      <Link href="/survey-lite" className="text-xl">
+                        <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
+                      </Link>
+                      <hr />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        color="danger"
+                        className="my-[10px] float-right absolute bottom-[6.5px] right-[10px]"
+                        onClick={() => clickDeleteLiteHandler(post.id)}
+                      >
+                        삭제
+                      </Button>
                     </li>
                   ))}
                 </ul>
