@@ -52,6 +52,9 @@ export const getPosts = async (): Promise<Post[]> => {
         createdAt: data?.createdAt?.toDate() || new Date(),
         updatedAt: data?.updatedAt?.toDate() || new Date(),
         deadlineDate: data?.deadlineDate instanceof Timestamp ? data.deadlineDate : data?.deadlineDate || null,
+
+        // TODO: 바뀐 작성 페이지에 들어갈 문항과 문항에 대한 옵션
+        questions: data?.questions || [],
       };
     });
 
@@ -168,6 +171,27 @@ export const updateNicknameInDocs = async (userId: string, newNickName: string) 
     console.log('변경된 닉네임이 문서에 반영됨');
   } catch (error) {
     console.error('닉네임 업데이트 중 오류', error);
+  }
+};
+
+// 유저 데이터 get
+export const getUserData = async (userId?: string): Promise<UserData | null> => {
+  try {
+    const usersCollection = collection(db, 'users');
+
+    const userDoc = doc(usersCollection, userId);
+
+    const userSnapshot = await getDoc(userDoc);
+
+    if (userSnapshot.exists()) {
+      return userSnapshot.data() as UserData;
+    } else {
+      console.error('User document does not exist.');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    throw error;
   }
 };
 

@@ -1,5 +1,6 @@
 import firebase from 'firebase/compat/app';
 import {Timestamp} from 'firebase/firestore';
+import {Question} from './typePost';
 
 export type FormData = {
   rewards: number;
@@ -20,4 +21,6 @@ export type FormData = {
   nickname?: string | null;
   createdAt: Timestamp;
   deadlineDate: firebase.firestore.Timestamp | null;
+
+  questions: Question[];
 };

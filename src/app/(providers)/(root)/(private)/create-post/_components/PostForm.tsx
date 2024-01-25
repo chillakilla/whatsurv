@@ -5,10 +5,10 @@ import React, {ChangeEvent} from 'react';
 import {BsPersonCircle} from 'react-icons/bs';
 import {MdArrowBackIos} from 'react-icons/md';
 import {ageGroup, majorCategories, researchLocation, researchType, sexType} from './categories';
+import {Question} from '@/app/api/typePost';
 // next/router 가 아니고 navigation....하
 
 interface PostFormProps {
-  nickname: string | null | undefined;
   formData: Omit<FormData, 'updatedAt' | 'email'> & {};
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -16,17 +16,26 @@ interface PostFormProps {
   onSubmit: (e: React.FormEvent) => void;
   onDateChange: (e: ChangeEvent<HTMLInputElement>) => void;
   previewImage: string | null;
+  onAddQuestion: () => void;
+  onRemoveQuestion: (index: number) => void;
+  onAddOption: (questionIndex: number) => void;
+  onRemoveOption: (questionIndex: number, optionIndex: number) => void;
+  onOptionChange: (questionIndex: number, optionIndex: number, value: string) => void;
 }
 
 export default function PostForm({
-  nickname,
   formData,
+  previewImage,
   onInputChange,
   onDateChange,
   onCategoryChange,
   onImgFileChange,
   onSubmit,
-  previewImage,
+  onAddQuestion,
+  onRemoveQuestion,
+  onAddOption,
+  onRemoveOption,
+  onOptionChange,
 }: PostFormProps) {
   const router = useRouter();
   const isFormValid =
@@ -90,7 +99,7 @@ export default function PostForm({
               <div className="flex justify-center items-center">
                 <BsPersonCircle />
                 <div className="ml-[0.625rem]">
-                  <p className="text-sm font-medium">{formData.nickname}</p>
+                  <p className="text-sm font-medium">{formData.nickname || 'unknown'}</p>
                 </div>
               </div>
             </div>
@@ -232,6 +241,40 @@ export default function PostForm({
                 onChange={onInputChange}
                 required
               />
+            </div>
+            {/* TODO: 새로 추가된 문항과 그에 따른 옵션 */}
+            <div className="flex flex-col w-[64.625rem]">
+              <h3>문항</h3>
+              {formData.questions.map((question, questionIndex) => (
+                <div key={questionIndex} className="flex flex-col">
+                  <input
+                    type="text"
+                    value={question.question}
+                    onChange={e => onInputChange(e)}
+                    placeholder={`Question ${questionIndex + 1}`}
+                  />
+                  {question.options.map((option, optionIndex) => (
+                    <div key={optionIndex} className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name={`question-${questionIndex}`}
+                        checked={formData.questions[questionIndex].selectedOption === option}
+                        onChange={() => onOptionChange(questionIndex, optionIndex, option)}
+                      />
+                      <input
+                        type="text"
+                        value={option}
+                        onChange={e => onOptionChange(questionIndex, optionIndex, e.target.value)}
+                        placeholder={`Option ${optionIndex + 1}`}
+                      />
+                      <button onClick={() => onRemoveOption(questionIndex, optionIndex)}>Remove Option</button>
+                    </div>
+                  ))}
+                  <button onClick={() => onAddOption(questionIndex)}>Add Option</button>
+                  <button onClick={() => onRemoveQuestion(questionIndex)}>Remove Question</button>
+                </div>
+              ))}
+              <button onClick={onAddQuestion}>Add Question</button>
             </div>
             <div className="flex justify-end items-start self-stretch gap-6">
               <button

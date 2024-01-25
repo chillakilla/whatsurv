@@ -9,7 +9,8 @@ import {Editor} from '@toast-ui/react-editor';
 import {getAuth} from 'firebase/auth';
 import {FormData} from '@/app/api/typeFormData';
 import firebase from 'firebase/compat/app';
-import {Timestamp} from 'firebase/firestore';
+import {db} from '@/firebase';
+import {Timestamp, collection, getDoc, doc} from 'firebase/firestore';
 import 'firebase/compat/firestore';
 import {useRouter} from 'next/navigation';
 
@@ -18,6 +19,8 @@ export default function PostPage() {
   const auth = getAuth();
   const user = auth.currentUser;
   const router = useRouter();
+
+  console.log('User Profile:', user?.displayName);
 
   const [formData, setFormData] = useState<FormData>({
     id: '',
@@ -35,6 +38,7 @@ export default function PostPage() {
     rewards: 0,
     email: user?.email,
     nickname: user?.displayName,
+    questions: [{question: '', options: [''], selectedOption: ''}],
   });
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -89,6 +93,7 @@ export default function PostPage() {
         likes: 0,
         views: 0,
         updatedAt: new Date(),
+        questions: formData.questions,
       };
       await addPost(updatedFormData);
 
@@ -109,6 +114,7 @@ export default function PostPage() {
         deadlineDate: null,
         createdAt: Timestamp.now(),
         rewards: 0,
+        questions: [],
       });
       setIsRedirecting(true);
       alert('등록되었습니다.');
@@ -145,6 +151,61 @@ export default function PostPage() {
     }));
   };
 
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const {name, value} = e.target as HTMLInputElement;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const onCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const {name, value} = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const onAddQuestion = () => {
+    setFormData(prevData => ({
+      ...prevData,
+      questions: [...prevData.questions, {question: '', options: [], selectedOption: ''}],
+    }));
+  };
+
+  const onRemoveQuestion = (index: number) => {
+    setFormData(prevData => {
+      const updatedQuestions = [...prevData.questions];
+      updatedQuestions.splice(index, 1);
+      return {...prevData, questions: updatedQuestions};
+    });
+  };
+
+  const onAddOption = (questionIndex: number) => {
+    setFormData(prevData => {
+      const updatedQuestions = [...prevData.questions];
+      updatedQuestions[questionIndex].options.push('');
+      return {...prevData, questions: updatedQuestions};
+    });
+  };
+
+  const onRemoveOption = (questionIndex: number, optionIndex: number) => {
+    setFormData(prevData => {
+      const updatedQuestions = [...prevData.questions];
+      updatedQuestions[questionIndex].options.splice(optionIndex, 1);
+      return {...prevData, questions: updatedQuestions};
+    });
+  };
+
+  const onOptionChange = (questionIndex: number, optionIndex: number, value: string) => {
+    setFormData(prevData => {
+      const updatedQuestions = [...prevData.questions];
+      updatedQuestions[questionIndex].options[optionIndex] = value;
+      return {...prevData, questions: updatedQuestions};
+    });
+  };
+
   return (
     <div>
       {/* isRedirecting = 로딩 스피너 추가 */}
@@ -156,25 +217,17 @@ export default function PostPage() {
       <div>
         <PostForm
           formData={formData}
-          nickname={user?.displayName}
-          onInputChange={e => {
-            const {name, value} = e.target;
-            setFormData(prevData => ({
-              ...prevData,
-              [name]: value,
-            }));
-          }}
+          onInputChange={onInputChange}
           onSubmit={SubmitHandler}
           onDateChange={onDateChange}
           onImgFileChange={ImgFileChangeHandler}
           previewImage={previewImage}
-          onCategoryChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-            const {name, value} = e.target;
-            setFormData(prevData => ({
-              ...prevData,
-              [name]: value,
-            }));
-          }}
+          onCategoryChange={onCategoryChange}
+          onAddQuestion={onAddQuestion}
+          onRemoveQuestion={onRemoveQuestion}
+          onAddOption={onAddOption}
+          onRemoveOption={onRemoveOption}
+          onOptionChange={onOptionChange}
         />
       </div>
     </div>

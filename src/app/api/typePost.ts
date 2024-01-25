@@ -24,6 +24,14 @@ export type Post = {
   createdAt: Timestamp;
   updatedAt: Date;
   deadlineDate: firebase.firestore.Timestamp | null;
+
+  questions: Question[];
+};
+
+export type Question = {
+  question: string;
+  options: string[];
+  selectedOption: string;
 };
 
 export type litePost = {
