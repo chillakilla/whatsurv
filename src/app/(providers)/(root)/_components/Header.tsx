@@ -65,7 +65,7 @@ export default function Header() {
                     </Link>
                   </DropdownItem>
                   <DropdownItem textValue="로그아웃">
-                    <p onClick={clickLogoutHandler} className=" text-red-500 font-bold">
+                    <p onClick={clickLogoutHandler} className=" text-[#EB271C] font-bold">
                       로그아웃
                     </p>
                   </DropdownItem>
