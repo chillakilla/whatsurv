@@ -1,7 +1,8 @@
 'use client';
-import {auth, db} from '@/firebase';
+import {getUserProfile} from '@/app/api/getUserProfile';
+import {auth} from '@/firebase';
 import {Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger} from '@nextui-org/react';
-import {doc, getDoc} from 'firebase/firestore';
+import {useQuery} from '@tanstack/react-query';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -12,24 +13,51 @@ export default function Header() {
   const [userId, setUserId] = useState<string | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async user => {
-      setIsLoggedIn(!!user);
-      if (user) {
-        setUserId(user.uid);
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        const photoURL = userDoc.data()?.photoURL;
-        setUserPhotoURL(photoURL);
-      } else {
-        setUserPhotoURL(null);
-        setUserId(null);
-      }
+  // useEffect(() => {
+  //   const unsubscribe = auth.onAuthStateChanged(async user => {
+  //     setIsLoggedIn(!!user);
+  //     if (user) {
+  //       setUserId(user.uid);
+  //       const userDoc = await getDoc(doc(db, 'users', user.uid));
+  //       const photoURL = userDoc.data()?.photoURL;
+  //       setUserPhotoURL(photoURL);
+  //     } else {
+  //       setUserPhotoURL(null);
+  //       setUserId(null);
+  //     }
+  //
+  //     //console.log(user);
+  //   });
+  //
+  //   return () => unsubscribe();
+  // }, []);
 
-      console.log(user);
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      setIsLoggedIn(!!user);
+      setUserId(user?.uid || null);
     });
 
     return () => unsubscribe();
   }, []);
+
+  //! 원인찾기2. 쿼리가 활성화(enabled) 되는지 확인하기
+  useEffect(() => {
+    console.log('현재 userId:', userId);
+    console.log('쿼리 활성화 상태:', !!userId);
+  }, [userId]);
+
+  // 사용자 프로필 정보를 가져오는 쿼리
+  const {data: userProfile, status} = useQuery({
+    queryKey: ['userProfile', userId],
+    queryFn: () => getUserProfile(userId!),
+    enabled: !!userId,
+  });
+
+  //! 원인찾기1. 헤더 쿼리 상태와 프로필 페이지 쿼리 무효화 되는지 확인하기
+  useEffect(() => {
+    console.log('헤더 컴포넌트 쿼리 상태:', status);
+  }, [status]);
 
   const clickLogoutHandler = async () => {
     await auth.signOut();
@@ -51,7 +79,7 @@ export default function Header() {
             <>
               <Dropdown placement="bottom-end">
                 <DropdownTrigger>
-                  <Avatar isBordered as="button" className="transition-transform" src={userPhotoURL || ''} />
+                  <Avatar isBordered as="button" className="transition-transform" src={userProfile?.photoURL || ''} />
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Static Actions">
                   <DropdownItem textValue="내가 작성한 서베이">
