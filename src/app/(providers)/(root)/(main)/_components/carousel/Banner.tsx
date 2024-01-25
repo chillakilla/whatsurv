@@ -33,7 +33,7 @@ export default function Banner() {
         className="banner-swiper"
       >
         <SwiperSlide className="banner-slide">
-          <div className="flex flex-col justify-center items-center  bg-gradient-to-r from-[#D6FF00]  via-black to-[#0051FF]">
+          <div className="flex flex-col justify-center items-center bg-gradient-to-r from-[#D6FF00] via-black to-[#0051FF] ">
             <div className="relative z-1 flex flex-col justify-center items-center w-[500px] h-[400px] m-auto">
               <h1 className="leading-10 text-3xl mb-4 text-white">
                 UT와 리서치 모객이 어려우신가요? <br />
@@ -48,7 +48,7 @@ export default function Banner() {
           </div>
         </SwiperSlide>
         <SwiperSlide>
-          <img src="/image/img1.png" />
+          <img src="/image/img1.png" alt="banner-img" />
         </SwiperSlide>
         <SwiperSlide>Slide 3</SwiperSlide>
       </Swiper>
