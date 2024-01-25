@@ -1,13 +1,15 @@
 'use client';
-import {updateNicknameInDocs} from '@/app/api/firebaseApi';
+import {updateNicknameInDocs, updateNicknameInLite} from '@/app/api/firebaseApi';
 import {auth, db, storage} from '@/firebase';
 import {Button, Input, Select, SelectItem} from '@nextui-org/react';
+import {useQueryClient} from '@tanstack/react-query';
 import {onAuthStateChanged} from 'firebase/auth';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
 import {useRouter} from 'next/navigation';
 import {ChangeEvent, useEffect, useRef, useState} from 'react';
-import {PiUserRectangleFill} from 'react-icons/pi';
+import {FaCamera} from 'react-icons/fa';
+import {FaRegCircleUser} from 'react-icons/fa6';
 import {MoonLoader} from 'react-spinners';
 import Swal from 'sweetalert2';
 interface UserProfileType {
@@ -77,7 +79,7 @@ export default function ProfilePage() {
   }, []);
 
   const router = useRouter();
-
+  const queryClient = useQueryClient();
   // 파일 입력 참조 생성
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -111,6 +113,7 @@ export default function ProfilePage() {
       });
 
       await updateNicknameInDocs(auth.currentUser.uid, newNickName);
+      await updateNicknameInLite(auth.currentUser.uid, newNickName);
       setIsNickNameEditing(false);
     }
   };
@@ -163,6 +166,15 @@ export default function ProfilePage() {
         photoURL: photoURL,
       };
     });
+    //! 원인찾기1. 헤더 쿼리 상태와 프로필 페이지 쿼리 무효화 되는지 확인하기
+    console.log('이미지 업로드 완료, 쿼리 무효화 시작');
+
+    if (auth.currentUser.uid) {
+      queryClient.invalidateQueries({
+        queryKey: ['userProfile', auth.currentUser.uid],
+      });
+    }
+    console.log('쿼리 무효화 완료');
   };
 
   const sexTypes: SexType[] = [
@@ -175,21 +187,34 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="text-lg leading-10 w-[500px] m-auto mt-[80px] select-none">
-      <h1 className="text-[#0051FF] text-3xl mb-[20px] mt-[30px] text-center">
-        <span className="font-bold">{userProfile?.nickName}</span>님의 프로필
-      </h1>
-      <div className="w-[200px] m-auto mt-[30px]" onClick={clickImageHandler} style={{cursor: 'pointer'}}>
+    <div className="text-lg leading-10 w-[400px] m-auto mt-[80px] select-none">
+      <div className="w-[200px] m-auto mt-[30px]" style={{cursor: 'pointer'}}>
         {userProfile?.photoURL ? (
-          <div className="w-[200px] h-[200px]  rounded-full relative overflow-hidden ">
-            <img
-              src={userProfile.photoURL}
-              className="w-full h-full  absolute top-0 left-0  object-cover  "
-              alt="Profile"
-            />
+          <div className="relative">
+            <div className="w-[200px] h-[200px]  rounded-full overflow-hidden ">
+              <img
+                src={userProfile.photoURL}
+                className="w-full h-full  absolute border-white border-5 top-0 left-0  rounded-full object-cover  "
+                alt="Profile"
+              />
+            </div>
+            <p
+              onClick={clickImageHandler}
+              className="m-auto absolute rounded-full bg-white  p-[10px] left-[75px] bottom-[-15px]"
+            >
+              <FaCamera size={25} className="camera-icon  " />
+            </p>
           </div>
         ) : (
-          <PiUserRectangleFill size={200} /> // 기본 아이콘 표시
+          <div className="relative">
+            <FaRegCircleUser size={200} className="text-[#0051FF] rounded-full  bg-white border-white border-5" />
+            <p
+              onClick={clickImageHandler}
+              className="m-auto absolute rounded-full bg-white  p-[10px] left-[75px] bottom-[-15px]"
+            >
+              <FaCamera size={25} className="camera-icon " />
+            </p>
+          </div>
         )}
       </div>
       <input
@@ -199,43 +224,51 @@ export default function ProfilePage() {
         ref={fileInputRef}
         className="hidden"
       />
-
-      <p className="mb-[15px] mt-[40px]">
-        <span className="font-bold ">이메일</span> {userProfile.email}
-      </p>
+      <h1 className="text-[#0051FF] text-3xl  mt-[30px] text-center">
+        <span className="font-bold">{userProfile?.nickName}</span>님의 프로필
+      </h1>
+      <p className="mb-[15px] mt-[0px] text-center">{userProfile.email}</p>
+      <hr className="mb-[30px]" />
       {isNickNameEditing ? (
-        <div className="flex justify-start items-center mb-[20px]">
+        <div className="flex justify-center items-center mb-[20px]">
           <label className="font-bold">닉네임</label>
           <Input
             type="text"
             value={newNickName}
             aria-label="닉네임"
             variant="bordered"
-            className="text-lg w-[3/4] ml-[10px]    bg-[#fff] rounded-xl "
+            className="text-lg w-[205px] ml-[10px]    bg-[#fff] rounded-xl "
             labelPlacement="outside"
             onChange={e => setNewNickName(e.target.value)}
           />
           <Button onClick={clickNickNameSaveHandler} className="bg-[#0051FF] text-white ml-[10px]">
-            저장
+            닉네임 저장
           </Button>
         </div>
       ) : (
-        <div className="flex justify-start   items-center mb-[15px]">
-          <p className="font-bold ">닉네임 {userProfile?.nickName}</p>
-          <Button onClick={clickNickNameEditModeHandler} className="bg-[#0051FF] text-white ml-[10px]">
+        <div className="flex justify-center  items-center mb-[20px]">
+          <p className="font-bold">닉네임</p>
+          <p className="ml-[10px] w-[200px] rounded-xl text-sm px-[3px] py-[8px] border-2 border-default-200  pl-[12px] shadow-sm bg-white">
+            {userProfile?.nickName}
+          </p>
+          <Button
+            onClick={clickNickNameEditModeHandler}
+            variant="ghost"
+            className=" text-white ml-[10px] border-3 border-[#0051FF] font-bold text-[#0051FF] "
+          >
             닉네임 변경
           </Button>
         </div>
       )}
       {userProfile.birthDate === '' ? (
-        <div className="flex justify-start  items-center mb-[15px]">
+        <div className="flex justify-start items-center mb-[20px] ml-[17px]">
           <label className="mr-[10px] font-bold">생년월일</label>
           <Input
             variant="bordered"
             type="date"
             aria-label="생년월일"
             labelPlacement="outside-left"
-            className="w-[3/4]  bg-[#fff] rounded-xl "
+            className="w-[3/4] bg-[#fff] rounded-xl "
             value={newBirthDate}
             onChange={e => setNewBirthDate(e.target.value)}
           />
@@ -244,18 +277,23 @@ export default function ProfilePage() {
           </Button>
         </div>
       ) : (
-        <p className="font-bold mb-[10px]">생년월일: {userProfile.birthDate}</p>
+        <div className="font-bold flex items-center mb-[20px] justify-center ">
+          <p className="font-bold">생년월일</p>
+          <p className="ml-[10px] w-[290px] rounded-xl text-sm px-[3px] py-[8px] border-2 border-default-200  pl-[10px] shadow-sm bg-white">
+            {userProfile.birthDate}
+          </p>
+        </div>
       )}
       {/* 성별 선택 드롭다운 또는 텍스트 표시 */}
       {userProfile.sexType === '--미설정--' ? (
-        <div>
+        <div className="flex justify-center">
           <label className="mr-[10px] font-bold">성별</label>
           <Select
             items={sexTypes}
             aria-label="성별 선택"
             variant="bordered"
             placeholder="--성별을 선택해주세요--"
-            className="max-w-xs bg-[#fff] rounded-xl"
+            className="w-[232px] bg-[#fff] rounded-xl"
             value={sexType}
             labelPlacement="outside-left"
             onChange={clickSelectSexHandler}
@@ -267,7 +305,12 @@ export default function ProfilePage() {
           </Button>
         </div>
       ) : (
-        <p className="font-bold">성별: {userProfile.sexType}</p>
+        <div className="font-bold flex items-center justify-center ">
+          <p>성별</p>
+          <p className="ml-[10px] w-[325px] rounded-xl text-sm px-[3px] py-[8px] border-2 border-default-200  pl-[10px] shadow-sm bg-white">
+            {userProfile.sexType}
+          </p>
+        </div>
       )}
     </div>
   );

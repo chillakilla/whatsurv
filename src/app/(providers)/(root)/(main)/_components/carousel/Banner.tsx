@@ -1,9 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import {useRef} from 'react';
 import SwiperCore from 'swiper';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import Link from 'next/link';
 
 // Swiper styles
 import 'swiper/css';

@@ -37,15 +37,15 @@ export default function ValidateInput({
     if (step === 2) {
       if (!email) {
         setEmailCheck('이메일을 입력해주세요');
-        setEmailValidationClass('text-red-500');
+        setEmailValidationClass('text-[#EB271C]');
         isValid = false;
       } else if (!emailValidation.test(email)) {
         setEmailCheck('유효한 이메일 형식이 아닙니다');
-        setEmailValidationClass('text-red-500');
+        setEmailValidationClass('text-[#EB271C]');
         isValid = false;
       } else if (!isEmailAvailable) {
         setEmailCheck('이메일 중복 확인이 필요합니다');
-        setEmailValidationClass('text-red-500');
+        setEmailValidationClass('text-[#EB271C]');
         isValid = false;
       } else {
         setEmailCheck('');
@@ -90,11 +90,11 @@ export default function ValidateInput({
     if (step === 5) {
       if (!nickname) {
         setNicknameCheck('닉네임을 입력해주세요');
-        setNicknameValidationClass('text-red-500');
+        setNicknameValidationClass('text-[#EB271C]');
         isValid = false;
       } else if (!isNicknameAvailable) {
         setNicknameCheck('닉네임 중복 확인이 필요합니다');
-        setNicknameValidationClass('text-red-500');
+        setNicknameValidationClass('text-[#EB271C]');
         isValid = false;
       } else {
         setNicknameCheck('');

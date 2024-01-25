@@ -1,6 +1,6 @@
 'use client';
 
-import {getLiteSurveyPosts} from '@/app/api/firebaseApi';
+import {deleteliteSurveyPostById, getLiteSurveyPosts} from '@/app/api/firebaseApi';
 import {litePost} from '@/app/api/typePost';
 import {auth, db} from '@/firebase';
 import {Button} from '@nextui-org/react';
@@ -11,9 +11,11 @@ import {FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
 import {GrView} from 'react-icons/gr';
 import {LuPencilLine} from 'react-icons/lu';
+import Swal from 'sweetalert2';
 import Banner from '../../(main)/_components/carousel/Banner';
 import LiteSurveyCreateModal from '../../(main)/_components/modal/CreateModal';
 import LiteSurveyModal from '../../(main)/_components/modal/SurveyModal';
+import UpdateModal from '../../(main)/_components/modal/UpdateModal';
 
 // 새로운 게시물 알려주기
 const isWithin24Hours = (createdAt: Date): boolean => {
@@ -26,9 +28,12 @@ const isWithin24Hours = (createdAt: Date): boolean => {
 export default function page() {
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isUpdateDeleteMenuOpen, setIsUpdateDeleteMenuOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [menuStates, setMenuStates] = useState<{[postId: string]: boolean}>({});
+  const [editingPost, setEditingPost] = useState<litePost | null>(null);
 
   const user = auth.currentUser;
+  const userId = user?.uid;
 
   const updateViewsCount = async (postId: string) => {
     try {
@@ -84,19 +89,64 @@ export default function page() {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   };
 
-  //수정, 삭제 토글버튼
-  const onClickUpdateDeleteMenuToggle = () => {
-    setIsUpdateDeleteMenuOpen(prevState => !prevState);
+  // 수정, 삭제 토글버튼
+  const onClickUpdateDeleteMenuToggle = (postId: string) => {
+    setMenuStates(prevStates => ({
+      ...prevStates,
+      [postId]: !prevStates[postId],
+    }));
   };
 
-  //수정 버튼
   const onClickUpdateButton = (postId: string) => {
-    console.log('수정버튼 열림');
+    if (!liteSurveyData) {
+      return;
+    }
+    const postToEdit = liteSurveyData.find(litepost => litepost.id === postId);
+    setEditingPost(postToEdit || null);
+    setIsUpdateModalOpen(true);
+  };
+
+  const handleUpdateLiteSurveyPost = async (updatedData: {title: string; contents: string[]; images: string[]}) => {
+    try {
+      // 수정할 게시물의 ID를 가져옵니다.
+      const postId = editingPost?.id;
+
+      // 게시물 수정 함수 호출
+      if (postId) {
+        await handleUpdateLiteSurveyPost(updatedData);
+      }
+
+      // 모달 닫기 및 데이터 리프레시
+      setIsUpdateModalOpen(false);
+      await refetch();
+    } catch (error) {
+      console.error('LiteSurvey 게시물을 업데이트하는 중 에러 발생:', error);
+    }
   };
 
   //삭제 버튼
-  const onClickDeleteButton = (postId: string) => {
-    console.log('삭제버튼 열림');
+  const onClickDeleteButton = async (postId: string) => {
+    const result = await Swal.fire({
+      title: '정말 삭제하시겠습니까?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+    });
+    if (result.isConfirmed) {
+      try {
+        await deleteliteSurveyPostById(postId);
+        Swal.fire({
+          title: '삭제되었습니다.',
+          confirmButtonText: '확인',
+          icon: 'success',
+        });
+      } catch (error) {
+        console.log('게시물 삭제중 오류 발생', error);
+      }
+    }
   };
 
   return (
@@ -129,53 +179,53 @@ export default function page() {
                               >
                                 {isWithin24Hours(litepost.createdAt) ? 'New🔥' : ''}
                               </p>
+                              <button
+                                className="toggle-menu w-8 h-7"
+                                onClick={() => onClickUpdateDeleteMenuToggle(litepost.id)}
+                              >
+                                {userId === litepost.userId && (menuStates[litepost.id] ? '닫기' : '⁝')}
+                              </button>
+                              {menuStates[litepost.id] && (
+                                <div className="gap-2">
+                                  <button
+                                    className="w-8 h-7 text-blue-800 hover:bg-gray-100"
+                                    onClick={() => onClickUpdateButton(litepost.id)}
+                                  >
+                                    수정
+                                  </button>
+                                  <button
+                                    className="w-8 h-7 text-red-500 hover:bg-gray-100"
+                                    onClick={() => onClickDeleteButton(litepost.id)}
+                                  >
+                                    삭제
+                                  </button>
+                                </div>
+                              )}
                             </div>
                             <div className="flex">
                               <button className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF] bg-transparent">
                                 <FaRegHeart />
                               </button>
-                              <div className="relative">
-                                <button className="toggle-menu w-8 h-8" onClick={() => onClickUpdateDeleteMenuToggle()}>
-                                  {isUpdateDeleteMenuOpen ? '닫기' : '⁝'}
-                                </button>
-                                {isUpdateDeleteMenuOpen && (
-                                  // 메뉴에 대한 스타일
-                                  <div className="menu absolute top-full left-0 bg-white border border-gray-300 z-10">
-                                    <button
-                                      className="menu-button text-gray-800 hover:bg-gray-100"
-                                      onClick={() => onClickUpdateButton(litepost.id)}
-                                    >
-                                      수정
-                                    </button>
-                                    <button
-                                      className="menu-button text-red-500 hover:bg-gray-100"
-                                      onClick={() => onClickDeleteButton(litepost.id)}
-                                    >
-                                      삭제
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
                             </div>
-                          </div>
-                          <div className="flex justify-between">
-                            <div>
-                              <p className="text-xs text-[#666] mb-4">
-                                작성일 |{' '}
-                                {litepost.createdAt
-                                  ? litepost.createdAt.toLocaleString('ko-KR', {
-                                      year: 'numeric',
-                                      month: '2-digit',
-                                      day: '2-digit',
-                                    })
-                                  : '2099.12.31'}
-                              </p>
-                            </div>
-                            {/* <p className="text-xs text-[#666] mb-4">
-                                마감일 | {litepost.deadlineDate ? litepost.deadlineDate.toLocaleString() : '2099.12.31'}
-                              </p> */}
                           </div>
                           <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
+                            <div className="flex justify-between">
+                              <div>
+                                <p className="text-xs text-[#666] mb-4">
+                                  작성일 |{' '}
+                                  {litepost.createdAt
+                                    ? litepost.createdAt.toLocaleString('ko-KR', {
+                                        year: 'numeric',
+                                        month: '2-digit',
+                                        day: '2-digit',
+                                      })
+                                    : '2099.12.31'}
+                                </p>
+                              </div>
+                              {/* <p className="text-xs text-[#666] mb-4">
+                                마감일 | {litepost.deadlineDate ? litepost.deadlineDate.toLocaleString() : '2099.12.31'}
+                              </p> */}
+                            </div>
                             <h3 className="text-lg font-bold">{litepost.title}</h3>
                           </a>
                         </div>
@@ -207,6 +257,7 @@ export default function page() {
                 onCloseLiteSurveyModal={onCloseModalHandler}
               />
             )}
+
             <div className="flex justify-end sticky bottom-10">
               <Button
                 onClick={onClickCreateModalOpen}
@@ -218,6 +269,13 @@ export default function page() {
               </Button>
             </div>
             {isCreateModalOpen && <LiteSurveyCreateModal onCloseCreateModal={() => setIsCreateModalOpen(false)} />}
+            {editingPost && (
+              <UpdateModal
+                selectedPost={editingPost}
+                onClose={() => setEditingPost(null)}
+                onUpdate={handleUpdateLiteSurveyPost}
+              />
+            )}
           </div>
         </div>
       </div>

@@ -1,8 +1,8 @@
 'use client';
 import {NextUIProvider} from '@nextui-org/react';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
 import React from 'react';
-
 export const queryClient = new QueryClient();
 
 type Props = {
@@ -12,8 +12,9 @@ type Props = {
 const ProvidersLayout = ({children}: Props) => {
   const client = new QueryClient();
   return (
-    <QueryClientProvider client={client}>
+    <QueryClientProvider client={queryClient}>
       <NextUIProvider>{children}</NextUIProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };

@@ -179,7 +179,7 @@ export default function AuthPage() {
           className=" bg-[#fff] rounded-xl"
           onChange={e => setEmail(e.target.value)}
         />
-        {emailCheck && <p className="text-red-500">{emailCheck}</p>}{' '}
+        {emailCheck && <p className="text-[#EB271C]">{emailCheck}</p>}{' '}
         <Button
           onPress={onOpen}
           className=" Class
@@ -204,8 +204,8 @@ translate-x-[13px] float-right bg-transparent text-xs  z-40 text-[#0051FF]"
             {isShowPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
           </span>
         </div>
-        {passwordCheck && <p className="text-red-500">{passwordCheck}</p>}
-        {loginError && <p className="text-red-500">{loginError}</p>}
+        {passwordCheck && <p className="text-[#EB271C]">{passwordCheck}</p>}
+        {loginError && <p className="text-[#EB271C]">{loginError}</p>}
         <Button size="lg" type="submit" className="mt-[40px] w-full bg-[#0051FF] font-bold text-white">
           로그인
         </Button>

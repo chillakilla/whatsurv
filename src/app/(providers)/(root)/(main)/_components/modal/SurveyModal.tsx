@@ -4,6 +4,7 @@ import {litePost} from '@/app/api/typePost';
 import {db} from '@/firebase';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import React, {useState} from 'react';
+import Swal from 'sweetalert2';
 import ResultModal from './ResultModal';
 
 interface LiteSurveyModalProps {
@@ -54,6 +55,11 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
           litepost.counts = currentCounts;
 
           console.log('게시물 카운트가 성공적으로 업데이트되었습니다.');
+          Swal.fire({
+            icon: 'success',
+            title: '참여 완료',
+            text: '답변해 주셔서 감사합니다.',
+          });
         } else {
           console.error(`게시물 ID ${contentId}에 해당하는 문서가 존재하지 않습니다.`);
         }
@@ -84,7 +90,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
               key={index}
               src={image}
               alt={`Image ${index}`}
-              className="max-w-full h-auto max-h-64 object-cover mb-2"
+              className="max-w-64 h-auto max-h-64 object-cover mb-2"
             />
           ))}
         </div>
