@@ -5,6 +5,7 @@ import {db} from '@/firebase';
 import {getAuth} from 'firebase/auth';
 import {doc, getDoc} from 'firebase/firestore';
 import React, {useState} from 'react';
+import Swal from 'sweetalert2';
 
 interface LiteSurveyCreateModalProps {
   onCloseCreateModal: () => void;
@@ -17,7 +18,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
   const [defaultImage, setDefaultImage] = useState(true);
 
   // 게시물 등록하기
-  const onSubmitHandler = async () => {
+  const onClickLiteSurveySubmitHandler = async () => {
     const isTitleEmpty = title.trim() === '';
     const areContentsEmpty = contents.some(content => content.trim() === '');
     // 로그인 한 유저인지 확인
@@ -48,6 +49,11 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
             // 데이터 저장
             saveDataToFirebase(title, contents, selectedImages, userNickname, userId);
             onCloseCreateModal();
+            Swal.fire({
+              icon: 'success',
+              title: '등록 완료',
+              text: '게시물이 성공적으로 등록되었습니다.',
+            });
           } else {
             console.log('해당 사용자의 데이터가 없습니다.');
           }
@@ -165,7 +171,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
           </button>
           <div className="flex justify-end mt-4">
             <button
-              onClick={onSubmitHandler}
+              onClick={onClickLiteSurveySubmitHandler}
               className="bg-[#4D85FF] text-white px-4 py-2 rounded-md mr-2 hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
             >
               등록
