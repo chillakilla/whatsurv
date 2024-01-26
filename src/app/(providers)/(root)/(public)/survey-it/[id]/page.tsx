@@ -1,8 +1,10 @@
 'use client';
 import {getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
+import {db} from '@/firebase';
 import {Radio, RadioGroup} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
+import {addDoc, collection} from 'firebase/firestore';
 import {useParams, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import Swal from 'sweetalert2';
@@ -13,17 +15,16 @@ const SurveyItDetailPage: React.FC = () => {
   const router = useRouter();
   // 질문 input 값의 상태를 관리하는 state
   const [answers, setAnswers] = useState<string[]>(['', '', '', '', '', '', '', '']);
-  const [progress, setProgress] = useState<number>(0);
+  const [completedQuestions, setCompletedQuestions] = useState<number>(0);
 
-  // SurveyItDetailPage 컴포넌트에서 질문에 답변이 입력될 때마다 호출되는 함수
+  // 질문에 답변이 입력될 때마다 호출되는 함수
   const handleAnswerChange = (index: number, answer: string) => {
     setAnswers(prevAnswers => {
       const newAnswers = [...prevAnswers];
       newAnswers[index] = answer;
-      // 질문의 답변이 변경될 때마다 프로그레스를 업데이트합니다.
+      // 답변이 완료된 질문의 수 업데이트
       const filledAnswersCount = newAnswers.filter(answer => answer.trim() !== '').length;
-      const newProgress = (filledAnswersCount / newAnswers.length) * 100;
-      setProgress(newProgress);
+      setCompletedQuestions(filledAnswersCount);
       return newAnswers;
     });
   };
@@ -72,25 +73,51 @@ const SurveyItDetailPage: React.FC = () => {
   const submithandler = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    Swal.fire({
-      title: '제출하시겠습니까?',
-      text: '작성하신 내용은 이후에 수정할 수 없습니다.',
-      icon: 'warning',
+    try {
+      // Firebase submitedposts에 데이터 저장
+      await addDoc(collection(db, 'submitedposts'), {
+        postId: id,
+        email: post?.email,
+        nickname: post?.nickname,
+        category: post?.category,
+        sexType: post?.sexType,
+        ageGroup: post?.ageGroup,
+        title: post?.title,
+        content: post?.content,
+        researchLocation: post?.researchLocation,
+        researchTime: post?.researchTime,
+        researchType: post?.researchType,
+        answers: answers,
+      });
 
-      showCancelButton: true,
-      confirmButtonColor: '#0051FF',
-      cancelButtonColor: '#d33',
-      confirmButtonText: '확인',
-      cancelButtonText: '취소',
+      Swal.fire({
+        title: '제출하시겠습니까?',
+        text: '작성하신 내용은 이후에 수정할 수 없습니다.',
+        icon: 'warning',
 
-      reverseButtons: true,
-    }).then(async result => {
-      if (result.isConfirmed) {
-        Swal.fire('감사합니다. 다음에 또 이용해주세요!');
-        router.replace('/');
-      }
-    });
+        showCancelButton: true,
+        confirmButtonColor: '#0051FF',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+
+        reverseButtons: true,
+      }).then(async result => {
+        if (result.isConfirmed) {
+          Swal.fire('감사합니다. 다음에 또 이용해주세요!');
+          router.replace('/');
+        }
+      });
+    } catch (error) {
+      console.error('Error adding document: ', error);
+      // 사용자에게 오류 메시지 표시 또는 오류 처리
+      Swal.fire('오류가 발생했습니다. 다시 시도해주세요.');
+    }
   };
+
+  const totalQuestions = post?.surveyData.length ?? 0;
+
+  const progress = totalQuestions > 0 ? (completedQuestions / totalQuestions) * 100 : 0;
 
   return (
     <div className="container h-[1200px] w-[55rem] m-auto mt-10 border-1 border-[#C1C5CC] bg-white p-4">
@@ -167,7 +194,6 @@ const SurveyItDetailPage: React.FC = () => {
             <input type="text" className="bg-[#eee]" />
           </div>
         </div> */}
-
         <div>
           {post?.surveyData.map((question, questionIndex) => (
             <div key={questionIndex} className="flex flex-col p-4 gap-2">
@@ -177,6 +203,7 @@ const SurveyItDetailPage: React.FC = () => {
                 className="flex flex-wrap gap-3 justify-center items-center border-2 border-gray-300"
                 label="하나만 선택해주세요."
                 orientation="horizontal"
+                // 세로로 정렬 orientation="vertical"
               >
                 {question.options.map((option, optionIndex) => (
                   <Radio
