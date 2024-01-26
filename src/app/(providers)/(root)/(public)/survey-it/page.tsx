@@ -17,6 +17,8 @@ import {db} from '@/firebase';
 import {Post} from '@/app/api/typePost';
 import {FaHeart} from 'react-icons/fa';
 import {useRouter} from 'next/navigation';
+import {auth} from '@/firebase';
+import FloatingBtn from '../../(main)/_components/FloatingBtn';
 
 const isWithin24Hours = (createdAt: Date | firebase.firestore.Timestamp): boolean => {
   const currentTime = new Date();
@@ -36,6 +38,7 @@ export default function SurveyIt() {
   const [likedPosts, setLikedPosts] = useState<{[postId: string]: boolean}>({});
 
   const router = useRouter();
+  const user = auth.currentUser;
 
   const updateViewsCount = async (postId: string) => {
     try {
@@ -71,8 +74,14 @@ export default function SurveyIt() {
         }
       });
     } else {
-      setSelectedPost(post);
-      updateViewsCount(post.id); // 'views' 카운트를 업데이트하는 함수 호출
+      if (!user) {
+        Swal.fire('로그인 회원만 이용 가능합니다.', '', 'warning');
+        router.replace('/auth');
+      } else {
+        setSelectedPost(post);
+        updateViewsCount(post.id);
+      }
+      // 'views' 카운트를 업데이트하는 함수 호출
     }
   };
 
@@ -144,6 +153,13 @@ export default function SurveyIt() {
                   >
                     {post.views >= 15 ? 'HOT🔥' : ''}
                   </div>
+                  <div
+                    className={`bg-[#0051ffb3] text-black w-14 p-1 text-center rounded-full font-md text-xs text-white ${
+                      isWithin24Hours(post.createdAt) ? 'block' : 'hidden'
+                    }`}
+                  >
+                    {isWithin24Hours(post.createdAt) ? 'NEW🔥' : ''}
+                  </div>
                 </div>
                 <button
                   className="like-button w-[20px] h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent"
@@ -153,7 +169,7 @@ export default function SurveyIt() {
                 </button>
               </div>
               <Link href={`/survey-it/${post.id}`}>
-                <h3 className="font-semibold text-lg text-ellipsis overflow-hidden ">{post.title}</h3>
+                <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1">{post.title}</h3>
                 <div className="survey-method flex flex-col gap-2 bg-slate-100 h-[70px] p-2  ">
                   <div className="flex text-sm justify-start grid grid-cols-2 ">
                     <p>
@@ -203,6 +219,7 @@ export default function SurveyIt() {
           ))}
         </div>
       </div>
+      <FloatingBtn />
     </div>
   );
 }

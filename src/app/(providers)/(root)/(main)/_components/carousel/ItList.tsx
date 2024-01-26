@@ -108,7 +108,7 @@ export default function ItList() {
                       <FaRegHeart />
                     </button>
                   </div>
-                  <h3 className="font-semibold text-lg text-ellipsis overflow-hidden ">{post.title}</h3>
+                  <h3 className="font-semibold text-lg text-ellipsis overflow-hidden h-[56px]">{post.title}</h3>
                   <div className="survey-method flex flex-col gap-2 bg-slate-100 h-[70px] p-2  ">
                     <div className="flex text-sm justify-start grid grid-cols-2 ">
                       <p>
