@@ -4,6 +4,7 @@ import {Button, Card, CardBody, Tab, Tabs} from '@nextui-org/react';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import {MoonLoader} from 'react-spinners';
 import Swal from 'sweetalert2';
 import {getUserPostLite, getUserPostsIT} from '../_components/getUserPost';
 interface PostIT {
@@ -41,7 +42,12 @@ export default function ProfilePost() {
   }, [userId]);
 
   if (isLoading) {
-    return <div>로딩 중......</div>;
+    return (
+      <div className="flex justify-center flex-wrap items-center overflow-y-hidden mt-[300px]">
+        <MoonLoader color="#0051FF" size={100} />
+        <p className="text-[#0051FF] w-full text-center mt-[30px]">잠시만 기다려 주세요..</p>
+      </div>
+    );
   }
 
   // Lite 게시글 삭제 핸들러
@@ -102,7 +108,7 @@ export default function ProfilePost() {
   };
 
   return (
-    <div className="max-w-[1400px] m-auto mt-[20px] ">
+    <div className="max-w-[1400px] m-auto mt-[20px] select-none ">
       <Tabs
         aria-label="서베이 Tab"
         size="lg"
