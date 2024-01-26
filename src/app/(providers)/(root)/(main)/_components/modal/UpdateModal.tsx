@@ -89,6 +89,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
         icon: 'success',
         title: '수정 완료',
         text: '게시물이 수정이 완료되었습니다.',
+        confirmButtonColor: '#0051FF',
       });
       // 모달 닫기
       onClose();

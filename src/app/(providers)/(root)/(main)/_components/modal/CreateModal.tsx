@@ -39,18 +39,21 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
         icon: 'warning',
         title: '미입력',
         text: '제목과 내용을 입력해 주세요.',
+        confirmButtonColor: '#0051FF',
       });
     } else if (isTitleEmpty) {
       Swal.fire({
         icon: 'warning',
         title: '미입력',
         text: '제목을 입력해 주세요.',
+        confirmButtonColor: '#0051FF',
       });
     } else if (areContentsEmpty) {
       Swal.fire({
         icon: 'warning',
         title: '미입력',
         text: '내용을 입력해 주세요.',
+        confirmButtonColor: '#0051FF',
       });
     } else {
       try {
@@ -65,10 +68,8 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
 
           if (userDoc.exists()) {
             const userData = userDoc.data();
-            console.log('userData', userData);
             const userNickname = userData.nickname;
             const userId = userData.uid;
-            console.log('유저아이디', userId);
 
             // 데이터 저장
             saveDataToFirebase(title, contents, selectedImages, userNickname, userId);
@@ -77,6 +78,7 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
               icon: 'success',
               title: '등록 완료',
               text: '게시물이 성공적으로 등록되었습니다.',
+              confirmButtonColor: '#0051FF',
             });
             refetch();
           } else {

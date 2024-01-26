@@ -67,7 +67,11 @@ export default function page() {
   // 게시물 작성 모달창 열기
   const onClickCreateModalOpen = () => {
     if (!user) {
-      window.alert('로그인이 필요합니다.');
+      Swal.fire({
+        title: '로그인이 필요합니다.',
+        confirmButtonColor: '#0051FF',
+        icon: 'error',
+      });
     } else {
       setIsCreateModalOpen(true);
     }
@@ -142,6 +146,7 @@ export default function page() {
           title: '삭제되었습니다.',
           confirmButtonText: '확인',
           icon: 'success',
+          confirmButtonColor: '#0051FF',
         });
         refetch();
       } catch (error) {

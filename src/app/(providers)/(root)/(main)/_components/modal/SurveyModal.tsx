@@ -81,13 +81,18 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
             icon: 'success',
             title: '참여 완료',
             text: '답변해 주셔서 감사합니다.',
+            confirmButtonColor: '#0051FF',
           });
         } else {
           console.error(`게시물 ID ${contentId}에 해당하는 문서가 존재하지 않습니다.`);
         }
       } else {
         // 선택된 content가 없을 때 알람 표시
-        window.alert('답변을 선택해주세요.');
+        Swal.fire({
+          title: '답변을 선택해 주세요.',
+          confirmButtonColor: '#0051FF',
+          icon: 'warning',
+        });
       }
     } catch (error) {
       console.error('게시물 카운트 업데이트 중 오류:', error);
