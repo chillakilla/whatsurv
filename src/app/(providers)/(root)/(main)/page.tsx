@@ -2,7 +2,7 @@
 import FloatingBtn from './_components/FloatingBtn';
 import Banner from './_components/carousel/Banner';
 import ItList from './_components/carousel/ItList';
-import FeedBack from './_components/post/feedback';
+import FeedBack from './_components/post/FeedBack';
 import Popular from './_components/carousel/Popular';
 import SearchBar from './searchForm/SearchBar';
 
