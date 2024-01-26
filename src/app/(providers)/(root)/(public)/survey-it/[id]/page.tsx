@@ -1,18 +1,32 @@
 'use client';
 import {getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
+import {Radio, RadioGroup} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {useParams, useRouter} from 'next/navigation';
-import React from 'react';
-import ProgressBar from '../../../(main)/_components/progress/ProgressBar';
+import React, {useState} from 'react';
 import Swal from 'sweetalert2';
-import {db} from '@/firebase';
-import {collection} from 'firebase/firestore';
-import {RadioGroup, Radio} from '@nextui-org/react';
+import ProgressBar from '../../../(main)/_components/progress/ProgressBar';
 
 const SurveyItDetailPage: React.FC = () => {
   const {id} = useParams();
   const router = useRouter();
+  // 질문 input 값의 상태를 관리하는 state
+  const [answers, setAnswers] = useState<string[]>(['', '', '', '', '', '', '', '']);
+  const [progress, setProgress] = useState<number>(0);
+
+  // SurveyItDetailPage 컴포넌트에서 질문에 답변이 입력될 때마다 호출되는 함수
+  const handleAnswerChange = (index: number, answer: string) => {
+    setAnswers(prevAnswers => {
+      const newAnswers = [...prevAnswers];
+      newAnswers[index] = answer;
+      // 질문의 답변이 변경될 때마다 프로그레스를 업데이트합니다.
+      const filledAnswersCount = newAnswers.filter(answer => answer.trim() !== '').length;
+      const newProgress = (filledAnswersCount / newAnswers.length) * 100;
+      setProgress(newProgress);
+      return newAnswers;
+    });
+  };
 
   const {
     data: post,
@@ -81,7 +95,7 @@ const SurveyItDetailPage: React.FC = () => {
   return (
     <div className="container min-h-[1200px] w-[55rem] m-auto mt-10 border-1 border-[#C1C5CC] bg-white p-4">
       <div className="pl-4">
-        <p className="text-xs text-[#888]">등록일 | {createdAtDate.toLocaleString()}</p>
+        {/* <p className="text-xs text-[#888]">등록일 | {createdAtDate.toLocaleString()}</p> */}
       </div>
       <div className="title-area flex justify-between items-center border-b-1 border-[#eee]  h-24">
         <h1 className="text-2xl font-bold w-2/3 h-24 flex items-center p-4">{post?.title}</h1>
@@ -111,26 +125,35 @@ const SurveyItDetailPage: React.FC = () => {
       </div>
       <div className="survey-explain h-24 p-2 border-1 border-[#eee] mt-4">{post?.content}</div>
       <div className="progress-bar flex justify-center w-full h-[35px] mt-6 ">
-        <ProgressBar />
+        <ProgressBar progress={progress} />
       </div>
       <form
         className="flex flex-col justify-between p-2 min-h-[850px] mt-4 border-1 border-[#eee]"
         onSubmit={submitHandler}
       >
         <div className="survey-data">
-          {post?.surveyData.map(item => {
-            return (
-              <div key={item.question} className="p-4">
-                <RadioGroup label={item.question}>
-                  {item.options?.map(optionItem => (
-                    <Radio key={optionItem} value={optionItem}>
-                      {optionItem}
-                    </Radio>
-                  ))}
-                </RadioGroup>
-              </div>
-            );
-          })}
+          {post?.surveyData.map((question, questionIndex) => (
+            <div key={questionIndex} className="flex flex-col p-4 gap-2 ">
+              <p>{`질문${questionIndex + 1}. ${question.question}`}</p>
+              <RadioGroup
+                className="flex gap-3 p-2 border-2 border-gray-300"
+                label="하나만 선택해주세요."
+                orientation="horizontal"
+              >
+                {question.options.map((option, optionIndex) => (
+                  <Radio
+                    key={optionIndex}
+                    name={`question_${questionIndex}_option`}
+                    value={option}
+                    checked={answers[questionIndex] === option}
+                    onChange={() => handleAnswerChange(questionIndex, option)}
+                  >
+                    {option}
+                  </Radio>
+                ))}
+              </RadioGroup>
+            </div>
+          ))}
         </div>
 
         <div className="flex ml-auto p-4 w-56 justify-end gap-4">
