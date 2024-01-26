@@ -29,6 +29,7 @@ const SurveyItDetailPage: React.FC = () => {
   if (isError) {
     return <div>Error fetching post data</div>;
   }
+  console.log(post);
 
   const createdAtDate = post?.createdAt.toDate() as Date;
   const deadlineDate = post?.deadlineDate?.toDate() as Date;
@@ -54,7 +55,7 @@ const SurveyItDetailPage: React.FC = () => {
     });
   };
 
-  const submithandler = async (e: React.FormEvent) => {
+  const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
 
     Swal.fire({
@@ -116,42 +117,10 @@ const SurveyItDetailPage: React.FC = () => {
       </div>
       <form
         className="flex flex-col justify-between p-2 h-[850px] mt-4 border-1 border-[#eee]"
-        onSubmit={submithandler}
+        onSubmit={submitHandler}
       >
-        <div>
-          <div className="flex flex-col p-4 gap-2">
-            <label>질문1</label>
-            <input type="text" className="bg-[#eee]" />
-          </div>
-          <div className=" flex flex-col  p-4 gap-2">
-            <label>질문2</label>
-            <input type="text" className="bg-[#eee]" />
-          </div>
-          <div className="flex flex-col  p-4 gap-2">
-            <label>질문3</label>
-            <input type="text" className="bg-[#eee]" />
-          </div>
-          <div className="flex flex-col p-4 gap-2">
-            <label>질문4</label>
-            <input type="text" className="bg-[#eee]" />
-          </div>
-          <div className="flex flex-col  p-4 gap-2">
-            <label>질문5</label>
-            <input type="text" className="bg-[#eee]" />
-          </div>
-          <div className="flex flex-col  p-4 gap-2">
-            <label>질문6</label>
-            <input type="text" className="bg-[#eee]" />
-          </div>
-          <div className="flex flex-col  p-4 gap-2">
-            <label>질문7</label>
-            <input type="text" className="bg-[#eee]" />
-          </div>
-          <div className="flex flex-col  p-4 gap-2">
-            <label>질문8</label>
-            <input type="text" className="bg-[#eee]" />
-          </div>
-        </div>
+        <div className="survey-data"></div>
+
         <div className="flex ml-auto p-4 w-56 justify-end gap-4">
           <button className="w-[80px] h-8 bg-[#eee]" onClick={cancelHandler}>
             취소
