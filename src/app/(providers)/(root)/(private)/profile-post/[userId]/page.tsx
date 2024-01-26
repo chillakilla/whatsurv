@@ -108,7 +108,7 @@ export default function ProfilePost() {
   };
 
   return (
-    <div className="max-w-[1400px] m-auto mt-[20px] ">
+    <div className="max-w-[1400px] m-auto mt-[20px] select-none ">
       <Tabs
         aria-label="서베이 Tab"
         size="lg"

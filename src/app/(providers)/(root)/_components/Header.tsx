@@ -41,23 +41,12 @@ export default function Header() {
     return () => unsubscribe();
   }, []);
 
-  //! 원인찾기2. 쿼리가 활성화(enabled) 되는지 확인하기
-  useEffect(() => {
-    console.log('현재 userId:', userId);
-    console.log('쿼리 활성화 상태:', !!userId);
-  }, [userId]);
-
   // 사용자 프로필 정보를 가져오는 쿼리
   const {data: userProfile, status} = useQuery({
     queryKey: ['userProfile', userId],
     queryFn: () => getUserProfile(userId!),
     enabled: !!userId,
   });
-
-  //! 원인찾기1. 헤더 쿼리 상태와 프로필 페이지 쿼리 무효화 되는지 확인하기
-  useEffect(() => {
-    console.log('헤더 컴포넌트 쿼리 상태:', status);
-  }, [status]);
 
   const clickLogoutHandler = async () => {
     await auth.signOut();
