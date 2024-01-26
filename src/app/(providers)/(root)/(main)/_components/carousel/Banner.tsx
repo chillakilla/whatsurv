@@ -22,10 +22,9 @@ export default function Banner() {
         onSwiper={swiper => {
           swiperRef.current = swiper;
         }}
-        slidesPerGroup={1}
         slidesPerView={1}
         spaceBetween={10}
-        loop={false}
+        loop={true}
         pagination={{
           clickable: true,
         }}
