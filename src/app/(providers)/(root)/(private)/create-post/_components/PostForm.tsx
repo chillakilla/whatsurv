@@ -1,9 +1,9 @@
 import {FormData} from '@/app/api/typeFormData';
-import {Button, Input, Radio, RadioGroup, Select, SelectItem} from '@nextui-org/react';
+import {Button, Input, Radio, RadioGroup, Select, SelectItem, Textarea} from '@nextui-org/react';
 import {getAuth} from 'firebase/auth';
 import {useRouter} from 'next/navigation';
 import React, {ChangeEvent, useState} from 'react';
-import {MdArrowBackIos} from 'react-icons/md';
+import {FaArrowLeft} from 'react-icons/fa6';
 import {ageGroup, majorCategories, researchLocation, researchTime, researchType, sexType} from './categories';
 // next/router 가 아니고 navigation....하
 
@@ -85,21 +85,22 @@ export default function PostForm({
     <>
       <div className="flex flex-col items-center">
         {/* 흰생 배경 컨테이너 */}
-        <div className="w-[80rem] h-[109.375rem] mt-[5.5rem] bg-white flex flex-col justify-center items-center">
+        <div className="w-[80rem] mt-[5.5rem] rounded-md bg-white flex flex-col justify-center items-center">
           <div className="w-[80rem]">
-            <button className="flex justify-center items-center w-[3rem] h-[3rem] border-none bg-sky-400 rounded-full ml-10">
-              <MdArrowBackIos />
+            <button className="text-3xl p-[10px] bg-blue-100 rounded-full mt-[20px] ml-[20px]">
+              <FaArrowLeft />
             </button>
           </div>
           {/* 문서 작성 컨테이너 */}
-          <div className="w-[74rem] h-[101.56rem]">
+          <div className="w-[74rem] px-[20px] pt-[20px] pb-[40px] mb-[10px]">
             <form onSubmit={onSubmit}>
               {/* 타이틀 및 참여대상 연령 등 컨테이너 */}
-              <div className="flex items-center">
+              <div className="flex items-center relative">
                 <Input
-                  className=" p-2 "
+                  className=" p-2 !text-2xl"
                   type="text"
                   color="primary"
+                  size="lg"
                   name="title"
                   variant="underlined"
                   value={formData.title}
@@ -108,7 +109,7 @@ export default function PostForm({
                   required
                   placeholder="제목은 최대 70자까지 입력할 수 있습니다."
                 />
-                <p className="text-[#818490] p-2">{formData.title.length}/70</p>
+                <p className="text-[#818490] absolute bottom-[10px] right-0 p-2">{formData.title.length}/70</p>
               </div>
               <div>
                 <div className="flex w-[74rem] h-[6rem] justify-center items-center gap-3">
@@ -211,10 +212,12 @@ export default function PostForm({
                 </div>
               </div>
               {/* 설문조사 설명 컨테이너 */}
-              <div className="w-[74rem] h-[10.6875rem] mt-[1.75rem] flex flex-col items-center justify-center border-1 border-gray-300">
-                <textarea
-                  className="w-[56.5625rem] h-[7.25rem] p-[1rem] rounded-lg resize-none"
+              <div className="mb-[40px] mt-[20px]">
+                <Textarea
+                  className=" rounded-lg resize-none"
                   name="content"
+                  size="lg"
+                  variant="faded"
                   value={formData.content}
                   onChange={onInputChange}
                   required
@@ -222,49 +225,50 @@ export default function PostForm({
                 />
               </div>
               {/* 설문조사 폼 양식 컨테이너 */}
-              <div className="w-[74rem] h-[68.8125rem] mt-[2.31rem] flex flex-col items-center bg-blue-100">
+              <div className="mt-[10px] py-[30px] px-[30px] rounded-lg  bg-blue-100">
                 {/* TODO: 새로 추가된 문항과 그에 따른 옵션 */}
-                <div className="w-[54rem] overflow-y-auto">
-                  <h3>문항</h3>
+                <div className="  m-auto">
                   {formData.surveyData.map((question, questionIndex) => (
-                    <div key={questionIndex}>
-                      <Input
-                        label="질문을 입력해주세요."
-                        value={question.question}
-                        onChange={e => questionChangeHandler(e, questionIndex)}
-                      />
-                      <div>
-                        <RadioGroup
-                          className="flex flex-wrap gap-3 justify-center items-center border-2 border-gray-300"
-                          label="하나만 선택해주세요."
-                          orientation="horizontal"
-                        >
-                          {question.options.map((option, optionIndex) => (
-                            <Radio
-                              key={optionIndex}
-                              name={`question_${questionIndex}_option_${optionIndex}`}
-                              value={option}
-                              checked={question.selectedOption === option}
-                              onChange={e => optionChangeHandler(e, questionIndex, optionIndex)}
-                            >
-                              {option}
-                            </Radio>
-                          ))}
-                        </RadioGroup>
+                    <>
+                      <div key={questionIndex} className=" m-auto max-w-5xl mt-[30px] mb-[50px]">
+                        <Input
+                          placeholder="질문을 입력해주세요"
+                          size="lg"
+                          className="mb-[20px] mt-[20px]"
+                          value={question.question}
+                          onChange={e => questionChangeHandler(e, questionIndex)}
+                        />
+                        <div className="mb-[30px] mt-[30px]]">
+                          <RadioGroup className="" label="하나만 선택해주세요." orientation="horizontal">
+                            {question.options.map((option, optionIndex) => (
+                              <Radio
+                                key={optionIndex}
+                                name={`question_${questionIndex}_option_${optionIndex}`}
+                                value={option}
+                                checked={question.selectedOption === option}
+                                onChange={e => optionChangeHandler(e, questionIndex, optionIndex)}
+                              >
+                                {option}
+                              </Radio>
+                            ))}
+                          </RadioGroup>
+                        </div>
                       </div>
-                    </div>
+                      <hr className="!bg-[#0051FF] h-[2px]" />
+                    </>
                   ))}
-                  <div className="flex justify-center gap-5">
+                  <div className="mt-[30px] flex justify-end">
                     <Button
                       type="button"
-                      className="w-[10rem] h-[2.5rem] mt-[10px] bg-white rounded-[25rem] text-red-500"
+                      className=" w-[125px] text-red-500 mr-[10px]"
                       onClick={() => removeLastQuestion()}
                     >
                       마지막 질문 삭제
                     </Button>
                     <Button
                       type="button"
-                      className="w-[10rem] h-[2.5rem] mt-[10px] bg-blue-500 text-white rounded-[25rem]"
+                      color="primary"
+                      className="text-white  w-[125px] "
                       onClick={addQuestionHandler}
                     >
                       질문 추가
@@ -272,42 +276,42 @@ export default function PostForm({
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end items-center mt-3">
-                <p>마감일:&nbsp;</p>
-                <input
-                  className="p-[2px] border border-sky-500 rounded-lg"
+              <div className="my-[30px] float-right">
+                <Input
+                  className="p-[2px]  rounded-lg"
                   type="date"
+                  label="마감일"
+                  size="lg"
+                  labelPlacement="outside-left"
                   name="deadlineDate"
                   value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
                 />
               </div>
               {/* 버튼 컨테이너 */}
-              <div className="flex justify-end items-start self-stretch gap-6">
+              <div className=" w-full flex justify-end">
                 <Button
+                  color="danger"
+                  variant="bordered"
+                  size="lg"
                   className="
-            w-[15.625rem]
-            h-[3rem]
-            mt-[10px]
-            border-[1.4px]
-            bg-white
-            border-sky-500
-            rounded-[25rem]
-            hover:bg-[#0051FF]
+      
+ 
+            hover:bg-red-500
             hover:text-white
+            mr-[20px]
+         w-[200px]
             "
                 >
                   취소
                 </Button>
                 <Button
                   type="submit"
+                  size="lg"
                   className="
-                  w-[15.625rem]
-                  h-[3rem]
-                  mt-[10px]
-                  border-[1.4px]
+           
                   bg-[#0051FF]
-                  rounded-[25rem]
+           w-[200px]
                   text-white
                   "
                 >
