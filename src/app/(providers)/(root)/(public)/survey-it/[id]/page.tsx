@@ -120,9 +120,9 @@ const SurveyItDetailPage: React.FC = () => {
   const progress = totalQuestions > 0 ? (completedQuestions / totalQuestions) * 100 : 0;
 
   return (
-    <div className="container h-[1200px] w-[55rem] m-auto mt-10 border-1 border-[#C1C5CC] bg-white p-4">
+    <div className="container overflow-y-auto h-screen max-h-[1200px] w-[55rem] m-auto mt-10 border-1 border-[#C1C5CC] bg-white p-4">
       <div className="pl-4">
-        {/* <p className="text-xs text-[#888]">등록일 | {createdAtDate.toLocaleString()}</p> */}
+        <p className="text-xs text-[#888]">등록일 | {createdAtDate.toLocaleString()}</p>
       </div>
       <div className="title-area flex justify-between items-center border-b-1 border-[#eee]  h-24">
         <h1 className="text-2xl font-bold w-2/3 h-24 flex items-center p-4">{post?.title}</h1>
