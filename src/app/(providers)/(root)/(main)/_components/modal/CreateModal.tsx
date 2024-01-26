@@ -29,6 +29,42 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
     queryFn: getLiteSurveyPosts,
   });
 
+  // 이미지 추가하기
+  const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setSelectedImages(prevImages => [...prevImages, ...Array.from(files)]);
+      setDefaultImage(false); // 기본 이미지 감추기
+    }
+  };
+
+  // 이미지 삭제하기
+  const removeImage = (index: number) => {
+    setSelectedImages(prevImages => prevImages.filter((_, i) => i !== index));
+    if (setSelectedImages.length === 1) {
+      return setDefaultImage(true);
+    }
+  };
+
+  // 내용 입력하기
+  const addContent = () => {
+    setContents(prevContents => [...prevContents, '']);
+  };
+
+  // 내용 추가하기
+  const updateContent = (index: number, value: string) => {
+    setContents(prevContents => {
+      const updatedContents = [...prevContents];
+      updatedContents[index] = value;
+      return updatedContents;
+    });
+  };
+
+  // 내용 삭제하기
+  const removeContent = (index: number) => {
+    setContents(prevContents => prevContents.filter((_, i) => i !== index));
+  };
+
   // 게시물 등록하기
   const onClickLiteSurveySubmitHandler = async () => {
     const isTitleEmpty = title.trim() === '';
@@ -92,42 +128,6 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
         throw new Error('사용자 정보를 가져오는 중 오류가 발생했습니다.');
       }
     }
-  };
-
-  // 이미지 추가하기
-  const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      setSelectedImages(prevImages => [...prevImages, ...Array.from(files)]);
-      setDefaultImage(false); // 기본 이미지 감추기
-    }
-  };
-
-  // 이미지 삭제하기
-  const removeImage = (index: number) => {
-    setSelectedImages(prevImages => prevImages.filter((_, i) => i !== index));
-    if (setSelectedImages.length === 1) {
-      return setDefaultImage(true);
-    }
-  };
-
-  // 내용 입력하기
-  const addContent = () => {
-    setContents(prevContents => [...prevContents, '']);
-  };
-
-  // 내용 추가하기
-  const updateContent = (index: number, value: string) => {
-    setContents(prevContents => {
-      const updatedContents = [...prevContents];
-      updatedContents[index] = value;
-      return updatedContents;
-    });
-  };
-
-  // 내용 삭제하기
-  const removeContent = (index: number) => {
-    setContents(prevContents => prevContents.filter((_, i) => i !== index));
   };
 
   return (
