@@ -18,7 +18,7 @@ export type Post = {
 
   userId: string | undefined;
   email: string | null;
-  nickname?: string;
+  nickname: string | null;
   createdAt: Timestamp;
   updatedAt: Timestamp;
   deadlineDate: firebase.firestore.Timestamp | null;
