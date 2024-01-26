@@ -92,24 +92,23 @@ export default function PostForm({
             </button>
           </div>
           {/* 문서 작성 컨테이너 */}
-          <div className="w-[74rem] h-[101.56rem] bg-purple-200">
+          <div className="w-[74rem] h-[101.56rem]">
             <form onSubmit={onSubmit}>
               {/* 타이틀 및 참여대상 연령 등 컨테이너 */}
-              <div className="flex bg-yellow-300">
-                <div className=" flex justify-center items-center bg-green-500 ">
-                  <Input
-                    className=" p-2 bg-blue-200"
-                    type="text"
-                    name="title"
-                    variant="underlined"
-                    value={formData.title}
-                    onChange={onInputChange}
-                    maxLength={70}
-                    required
-                    placeholder="제목은 최대 70자까지 입력할 수 있습니다."
-                  />
-                  <p className="text-[#818490] p-2">{formData.title.length}/70</p>
-                </div>
+              <div className="flex items-center">
+                <Input
+                  className=" p-2 "
+                  type="text"
+                  color="primary"
+                  name="title"
+                  variant="underlined"
+                  value={formData.title}
+                  onChange={onInputChange}
+                  maxLength={70}
+                  required
+                  placeholder="제목은 최대 70자까지 입력할 수 있습니다."
+                />
+                <p className="text-[#818490] p-2">{formData.title.length}/70</p>
               </div>
               <div>
                 <div className="flex w-[74rem] h-[6rem] justify-center items-center gap-3">
