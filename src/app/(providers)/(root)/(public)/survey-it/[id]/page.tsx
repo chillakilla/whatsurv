@@ -1,6 +1,7 @@
 'use client';
 import {getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
+import {Radio, RadioGroup} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {useParams, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
@@ -132,7 +133,7 @@ const SurveyItDetailPage: React.FC = () => {
         className="flex flex-col justify-between p-2 h-[850px] mt-4 border-1 border-[#eee]"
         onSubmit={submithandler}
       >
-        <div>
+        {/* <div>
           <div className="flex flex-col p-4 gap-2">
             <label>질문1</label>
             <input type="text" className="bg-[#eee]" />
@@ -165,6 +166,32 @@ const SurveyItDetailPage: React.FC = () => {
             <label>질문8</label>
             <input type="text" className="bg-[#eee]" />
           </div>
+        </div> */}
+
+        <div>
+          {post?.surveyData.map((question, questionIndex) => (
+            <div key={questionIndex} className="flex flex-col p-4 gap-2">
+              <p>{`질문${questionIndex + 1}`}</p>
+              <div>{question.question}</div>
+              <RadioGroup
+                className="flex flex-wrap gap-3 justify-center items-center border-2 border-gray-300"
+                label="하나만 선택해주세요."
+                orientation="horizontal"
+              >
+                {question.options.map((option, optionIndex) => (
+                  <Radio
+                    key={optionIndex}
+                    name={`question_${questionIndex}_option`}
+                    value={option}
+                    checked={answers[questionIndex] === option}
+                    onChange={() => handleAnswerChange(questionIndex, option)}
+                  >
+                    {option}
+                  </Radio>
+                ))}
+              </RadioGroup>
+            </div>
+          ))}
         </div>
         <div className="flex ml-auto p-4 w-56 justify-end gap-4">
           <button className="w-[80px] h-8 bg-[#eee]" onClick={cancelHandler}>
