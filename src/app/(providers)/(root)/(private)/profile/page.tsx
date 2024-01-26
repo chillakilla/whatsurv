@@ -174,12 +174,15 @@ export default function ProfilePage() {
         photoURL: photoURL,
       };
     });
+    //! 원인찾기1. 헤더 쿼리 상태와 프로필 페이지 쿼리 무효화 되는지 확인하기
+    console.log('이미지 업로드 완료, 쿼리 무효화 시작');
 
     if (auth.currentUser.uid) {
       queryClient.invalidateQueries({
         queryKey: ['userProfile', auth.currentUser.uid],
       });
     }
+    console.log('쿼리 무효화 완료');
   };
 
   const sexTypes: SexType[] = [
@@ -242,7 +245,6 @@ export default function ProfilePage() {
             value={newNickName}
             aria-label="닉네임"
             variant="bordered"
-            maxLength={10}
             className="text-lg w-[205px] ml-[10px]    bg-[#fff] rounded-xl "
             labelPlacement="outside"
             onChange={e => setNewNickName(e.target.value)}
