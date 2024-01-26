@@ -8,6 +8,7 @@ import ProgressBar from '../../../(main)/_components/progress/ProgressBar';
 import Swal from 'sweetalert2';
 import {db} from '@/firebase';
 import {collection} from 'firebase/firestore';
+import {RadioGroup, Radio} from '@nextui-org/react';
 
 const SurveyItDetailPage: React.FC = () => {
   const {id} = useParams();
@@ -29,7 +30,6 @@ const SurveyItDetailPage: React.FC = () => {
   if (isError) {
     return <div>Error fetching post data</div>;
   }
-  console.log(post);
 
   const createdAtDate = post?.createdAt.toDate() as Date;
   const deadlineDate = post?.deadlineDate?.toDate() as Date;
@@ -79,20 +79,18 @@ const SurveyItDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="container h-[1200px] w-[55rem] m-auto mt-10 border-1 border-[#C1C5CC] bg-white p-4">
+    <div className="container min-h-[1200px] w-[55rem] m-auto mt-10 border-1 border-[#C1C5CC] bg-white p-4">
       <div className="pl-4">
         <p className="text-xs text-[#888]">등록일 | {createdAtDate.toLocaleString()}</p>
       </div>
       <div className="title-area flex justify-between items-center border-b-1 border-[#eee]  h-24">
         <h1 className="text-2xl font-bold w-2/3 h-24 flex items-center p-4">{post?.title}</h1>
         <div className="survey-method  h-24 bg-slate-100 text-sm items-center grid grid-cols-2 p-2">
-          <p className="w-36">
+          <p className="w-36 text-md">
             분야 &nbsp;{' '}
             <span className="text-[#0051FF]">{post !== null && post !== undefined ? `${post.category}` : '-'}</span>
           </p>
-          <p className="w-36">
-            카테고리 &nbsp; <span className="text-[#0051FF]">프론트엔드</span>
-          </p>
+          <br />
           <p className="w-36">
             참여 대상 &nbsp;{' '}
             <span className="text-[#0051FF]">{post !== null && post !== undefined ? post.sexType : '전체'}</span>
@@ -116,10 +114,24 @@ const SurveyItDetailPage: React.FC = () => {
         <ProgressBar />
       </div>
       <form
-        className="flex flex-col justify-between p-2 h-[850px] mt-4 border-1 border-[#eee]"
+        className="flex flex-col justify-between p-2 min-h-[850px] mt-4 border-1 border-[#eee]"
         onSubmit={submitHandler}
       >
-        <div className="survey-data"></div>
+        <div className="survey-data">
+          {post?.surveyData.map(item => {
+            return (
+              <div key={item.question} className="p-4">
+                <RadioGroup label={item.question}>
+                  {item.options?.map(optionItem => (
+                    <Radio key={optionItem} value={optionItem}>
+                      {optionItem}
+                    </Radio>
+                  ))}
+                </RadioGroup>
+              </div>
+            );
+          })}
+        </div>
 
         <div className="flex ml-auto p-4 w-56 justify-end gap-4">
           <button className="w-[80px] h-8 bg-[#eee]" onClick={cancelHandler}>

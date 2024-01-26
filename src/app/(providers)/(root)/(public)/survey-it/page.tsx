@@ -18,6 +18,7 @@ import {Post} from '@/app/api/typePost';
 import {FaHeart} from 'react-icons/fa';
 import {useRouter} from 'next/navigation';
 import {auth} from '@/firebase';
+import FloatingBtn from '../../(main)/_components/FloatingBtn';
 
 const isWithin24Hours = (createdAt: Date | firebase.firestore.Timestamp): boolean => {
   const currentTime = new Date();
@@ -218,6 +219,7 @@ export default function SurveyIt() {
           ))}
         </div>
       </div>
+      <FloatingBtn />
     </div>
   );
 }
