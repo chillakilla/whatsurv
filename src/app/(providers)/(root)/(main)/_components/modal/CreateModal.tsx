@@ -1,7 +1,9 @@
 'use client';
 
-import {saveDataToFirebase} from '@/app/api/firebaseApi';
+import {getLiteSurveyPosts, saveDataToFirebase} from '@/app/api/firebaseApi';
+import {litePost} from '@/app/api/typePost';
 import {db} from '@/firebase';
+import {useQuery} from '@tanstack/react-query';
 import {getAuth} from 'firebase/auth';
 import {doc, getDoc} from 'firebase/firestore';
 import React, {useState} from 'react';
@@ -17,17 +19,42 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [defaultImage, setDefaultImage] = useState(true);
 
+  const {
+    data: liteSurveyData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery<litePost[]>({
+    queryKey: ['surveyData'],
+    queryFn: getLiteSurveyPosts,
+  });
+
   // 게시물 등록하기
   const onClickLiteSurveySubmitHandler = async () => {
     const isTitleEmpty = title.trim() === '';
     const areContentsEmpty = contents.some(content => content.trim() === '');
     // 로그인 한 유저인지 확인
     if (isTitleEmpty && areContentsEmpty) {
-      window.alert('제목과 내용을 입력하세요.');
+      Swal.fire({
+        icon: 'warning',
+        title: '미입력',
+        text: '제목과 내용을 입력해 주세요.',
+        confirmButtonColor: '#0051FF',
+      });
     } else if (isTitleEmpty) {
-      window.alert('제목을 입력하세요.');
+      Swal.fire({
+        icon: 'warning',
+        title: '미입력',
+        text: '제목을 입력해 주세요.',
+        confirmButtonColor: '#0051FF',
+      });
     } else if (areContentsEmpty) {
-      window.alert('내용을 입력하세요.');
+      Swal.fire({
+        icon: 'warning',
+        title: '미입력',
+        text: '내용을 입력해 주세요.',
+        confirmButtonColor: '#0051FF',
+      });
     } else {
       try {
         // 현재 로그인한 사용자 정보 가져오기
@@ -41,10 +68,8 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
 
           if (userDoc.exists()) {
             const userData = userDoc.data();
-            console.log('userData', userData);
             const userNickname = userData.nickname;
             const userId = userData.uid;
-            console.log('유저아이디', userId);
 
             // 데이터 저장
             saveDataToFirebase(title, contents, selectedImages, userNickname, userId);
@@ -53,7 +78,9 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
               icon: 'success',
               title: '등록 완료',
               text: '게시물이 성공적으로 등록되었습니다.',
+              confirmButtonColor: '#0051FF',
             });
+            refetch();
           } else {
             console.log('해당 사용자의 데이터가 없습니다.');
           }
