@@ -70,7 +70,7 @@ const SurveyItDetailPage: React.FC = () => {
     });
   };
 
-  const submithandler = async (e: React.FormEvent) => {
+  const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
@@ -127,13 +127,11 @@ const SurveyItDetailPage: React.FC = () => {
       <div className="title-area flex justify-between items-center border-b-1 border-[#eee]  h-24">
         <h1 className="text-2xl font-bold w-2/3 h-24 flex items-center p-4">{post?.title}</h1>
         <div className="survey-method  h-24 bg-slate-100 text-sm items-center grid grid-cols-2 p-2">
-          <p className="w-36">
+          <p className="w-36 text-md">
             분야 &nbsp;{' '}
             <span className="text-[#0051FF]">{post !== null && post !== undefined ? `${post.category}` : '-'}</span>
           </p>
-          <p className="w-36">
-            카테고리 &nbsp; <span className="text-[#0051FF]">프론트엔드</span>
-          </p>
+          <br />
           <p className="w-36">
             참여 대상 &nbsp;{' '}
             <span className="text-[#0051FF]">{post !== null && post !== undefined ? post.sexType : '전체'}</span>
@@ -157,8 +155,8 @@ const SurveyItDetailPage: React.FC = () => {
         <ProgressBar progress={progress} />
       </div>
       <form
-        className="flex flex-col justify-between p-2 h-[850px] mt-4 border-1 border-[#eee]"
-        onSubmit={submithandler}
+        className="flex flex-col justify-between p-2 min-h-[850px] mt-4 border-1 border-[#eee]"
+        onSubmit={submitHandler}
       >
         {/* <div>
           <div className="flex flex-col p-4 gap-2">
@@ -194,13 +192,13 @@ const SurveyItDetailPage: React.FC = () => {
             <input type="text" className="bg-[#eee]" />
           </div>
         </div> */}
+
         <div>
           {post?.surveyData.map((question, questionIndex) => (
-            <div key={questionIndex} className="flex flex-col p-4 gap-2">
-              <p>{`질문${questionIndex + 1}`}</p>
-              <div>{question.question}</div>
+            <div key={questionIndex} className="flex flex-col p-4 gap-2 ">
+              <p>{`질문${questionIndex + 1}. ${question.question}`}</p>
               <RadioGroup
-                className="flex flex-wrap gap-3 justify-center items-center border-2 border-gray-300"
+                className="flex gap-3 p-2 border-2 border-gray-300"
                 label="하나만 선택해주세요."
                 orientation="horizontal"
                 // 세로로 정렬 orientation="vertical"
@@ -220,6 +218,7 @@ const SurveyItDetailPage: React.FC = () => {
             </div>
           ))}
         </div>
+
         <div className="flex ml-auto p-4 w-56 justify-end gap-4">
           <button className="w-[80px] h-8 bg-[#eee]" onClick={cancelHandler}>
             취소
