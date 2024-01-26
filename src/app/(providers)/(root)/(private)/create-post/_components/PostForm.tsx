@@ -1,11 +1,12 @@
 import {FormData} from '@/app/api/typeFormData';
 import {useRouter} from 'next/navigation';
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, useState, useEffect} from 'react';
 import {MdArrowBackIos} from 'react-icons/md';
 import {ageGroup, majorCategories, researchLocation, researchTime, researchType, sexType} from './categories';
 import {Question} from '@/app/api/typePost';
 import {getAuth} from 'firebase/auth';
 import {Input, Radio, RadioGroup, Button} from '@nextui-org/react';
+import Swal from 'sweetalert2';
 
 // next/router 가 아니고 navigation....하
 
@@ -16,6 +17,7 @@ interface PostFormProps {
   onDateChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+  isFormChanged: boolean;
 }
 
 export default function PostForm({
@@ -25,6 +27,7 @@ export default function PostForm({
   onDateChange,
   onCategoryChange,
   onSubmit,
+  isFormChanged,
 }: PostFormProps) {
   const auth = getAuth();
   const user = auth.currentUser;
@@ -83,13 +86,37 @@ export default function PostForm({
     }
   };
 
+  const goBackButtonHandler = async () => {
+    if (isFormChanged) {
+      const result = await Swal.fire({
+        title: '확실합니까?',
+        text: '변경된 내용이 저장되지 않을 겁니다. 뒤로 가시겠습니까?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '네',
+        cancelButtonText: '취소',
+      });
+
+      if (result.isConfirmed) {
+        router.back();
+      }
+    } else {
+      router.back();
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col items-center">
         {/* 흰생 배경 컨테이너 */}
         <div className="w-[80rem] h-[109.375rem] mt-[5.5rem] bg-white flex flex-col justify-center items-center">
           <div className="w-[80rem]">
-            <button className="flex justify-center items-center w-[3rem] h-[3rem] border-none bg-sky-400 rounded-full ml-10">
+            <button
+              className="flex justify-center items-center w-[3rem] h-[3rem] border-none bg-sky-400 rounded-full ml-10"
+              onClick={goBackButtonHandler}
+            >
               <MdArrowBackIos />
             </button>
           </div>

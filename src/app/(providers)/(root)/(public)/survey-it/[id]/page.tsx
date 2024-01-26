@@ -1,5 +1,5 @@
 'use client';
-import {getPostById} from '@/app/api/firebaseApi';
+import {getPostById, deletePostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {Radio, RadioGroup} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
@@ -7,10 +7,14 @@ import {useParams, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import Swal from 'sweetalert2';
 import ProgressBar from '../../../(main)/_components/progress/ProgressBar';
+import {getAuth} from 'firebase/auth';
 
 const SurveyItDetailPage: React.FC = () => {
   const {id} = useParams();
   const router = useRouter();
+  const auth = getAuth();
+  const postId = Array.isArray(id) ? id[0] : id;
+  const currentUser = auth.currentUser?.uid;
   // 질문 input 값의 상태를 관리하는 state
   const [answers, setAnswers] = useState<string[]>(['', '', '', '', '', '', '', '']);
   const [progress, setProgress] = useState<number>(0);
@@ -88,6 +92,34 @@ const SurveyItDetailPage: React.FC = () => {
       if (result.isConfirmed) {
         Swal.fire('감사합니다. 다음에 또 이용해주세요!');
         router.replace('/');
+      }
+    });
+  };
+
+  const editPostHandler = () => {
+    router.push(`/edit-post/${postId}`);
+  };
+
+  const deletePostHandler = async () => {
+    Swal.fire({
+      title: '삭제하시겠습니까?',
+      text: '작성한 내용은 복구할 수 없습니다. 그래도 삭제하시겠습니까?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: '삭제',
+      cancelButtonText: '취소',
+    }).then(async result => {
+      if (result.isConfirmed) {
+        try {
+          await deletePostById(postId);
+          Swal.fire('게시글이 성공적으로 삭제되었습니다.', '', 'success');
+          router.replace('/');
+        } catch (error) {
+          console.error('게시글 삭제 중 에러가 발생했습니다.', error);
+          Swal.fire('게시글 삭제 중 에러가 발생했습니다.', '게시글 삭제 중 에러가 발생했습니다.', 'error');
+        }
       }
     });
   };
@@ -202,6 +234,20 @@ const SurveyItDetailPage: React.FC = () => {
           </button>
         </div>
       </form>
+      <div>
+        {post?.userId === currentUser && (
+          <div className="">
+            {/* Render your edit and delete buttons here */}
+            <button className="w-[80px] h-8 bg-[#eee]" onClick={editPostHandler}>
+              수정
+            </button>
+
+            <button className="w-[80px] h-8 bg-[#0051FF] text-white" onClick={deletePostHandler}>
+              삭제
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
