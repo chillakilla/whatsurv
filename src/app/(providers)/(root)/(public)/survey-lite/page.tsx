@@ -7,8 +7,7 @@ import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import {useState} from 'react';
-import {FaRegHeart} from 'react-icons/fa';
-import {FaRegCircleUser} from 'react-icons/fa6';
+import {FaRegCircleUser, FaRegHeart} from 'react-icons/fa6';
 import {GrView} from 'react-icons/gr';
 import {LuPencilLine} from 'react-icons/lu';
 import Swal from 'sweetalert2';
@@ -67,7 +66,11 @@ export default function page() {
   // 게시물 작성 모달창 열기
   const onClickCreateModalOpen = () => {
     if (!user) {
-      window.alert('로그인이 필요합니다.');
+      Swal.fire({
+        title: '로그인이 필요합니다.',
+        confirmButtonColor: '#0051FF',
+        icon: 'error',
+      });
     } else {
       setIsCreateModalOpen(true);
     }
@@ -142,7 +145,9 @@ export default function page() {
           title: '삭제되었습니다.',
           confirmButtonText: '확인',
           icon: 'success',
+          confirmButtonColor: '#0051FF',
         });
+        refetch();
       } catch (error) {
         console.log('게시물 삭제중 오류 발생', error);
       }
@@ -155,7 +160,7 @@ export default function page() {
         <Banner />
         <div className="my-20">
           <div>
-            <h1 className="text-2xl font-bold mb-4">Lite한 설문조사</h1>
+            <h1 className="text-2xl font-bold mb-4">참여해 Surv?</h1>
             {isLoading && <div>로딩 중...</div>}
             {isError && <div>로딩 중에 오류가 발생했습니다.</div>}
           </div>
@@ -169,9 +174,9 @@ export default function page() {
                         <div className="top-content h-[5.625rem]">
                           <div className="flex justify-between items-center mb-4">
                             <div className="flex gap-2">
-                              <p className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
+                              {/* <p className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
                                 Lite
-                              </p>
+                              </p> */}
                               <p
                                 className={`bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs ${
                                   isWithin24Hours(litepost.createdAt) ? '' : 'hidden'
@@ -183,7 +188,7 @@ export default function page() {
                                 className="toggle-menu w-8 h-7"
                                 onClick={() => onClickUpdateDeleteMenuToggle(litepost.id)}
                               >
-                                {userId === litepost.userId && (menuStates[litepost.id] ? '닫기' : '⁝')}
+                                {userId === litepost.userId && (menuStates[litepost.id] ? 'X' : '⁝')}
                               </button>
                               {menuStates[litepost.id] && (
                                 <div className="gap-2">
@@ -202,11 +207,9 @@ export default function page() {
                                 </div>
                               )}
                             </div>
-                            <div className="flex">
-                              <button className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF] bg-transparent">
-                                <FaRegHeart />
-                              </button>
-                            </div>
+                            <button className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF] bg-transparent">
+                              <FaRegHeart />
+                            </button>
                           </div>
                           <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
                             <div className="flex justify-between">

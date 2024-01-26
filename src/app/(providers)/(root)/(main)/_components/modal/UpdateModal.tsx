@@ -1,6 +1,8 @@
 'use client';
 
-import {updateLiteSurveyPost, uploadImageToStorage} from '@/app/api/firebaseApi';
+import {getLiteSurveyPosts, updateLiteSurveyPost, uploadImageToStorage} from '@/app/api/firebaseApi';
+import {litePost} from '@/app/api/typePost';
+import {useQuery} from '@tanstack/react-query';
 import React, {useEffect, useState} from 'react';
 import Swal from 'sweetalert2';
 
@@ -22,6 +24,16 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [defaultImage, setDefaultImage] = useState(true);
 
+  const {
+    data: liteSurveyData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery<litePost[]>({
+    queryKey: ['surveyData'],
+    queryFn: getLiteSurveyPosts,
+  });
+
   useEffect(() => {
     setTitle(selectedPost.title);
     setContents(selectedPost.contents);
@@ -29,18 +41,29 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
   }, [selectedPost]);
 
   const onClickLiteSurveyUpdateHandler = async () => {
-    Swal.fire({
-      icon: 'success',
-      title: '수정 완료',
-      text: '게시물 수정이 완료되었습니다.',
-    });
+    if (title.trim() === '' && contents.some(content => content.trim() === '')) {
+      Swal.fire({
+        icon: 'warning',
+        title: '미입력',
+        text: '제목과 내용을 입력해 주세요.',
+      });
+      return;
+    }
     if (title.trim() === '') {
-      window.alert('제목을 입력하세요.');
+      Swal.fire({
+        icon: 'warning',
+        title: '미입력',
+        text: '제목을 입력해 주세요.',
+      });
       return;
     }
 
     if (contents.some(content => content.trim() === '')) {
-      window.alert('내용을 입력하세요.');
+      Swal.fire({
+        icon: 'warning',
+        title: '미입력',
+        text: '내용을 입력해 주세요.',
+      });
       return;
     }
 
@@ -62,8 +85,15 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
       // Firebase에 업데이트된 데이터 전송
       await updateLiteSurveyPost(selectedPost.id, updatedLitePost);
 
+      Swal.fire({
+        icon: 'success',
+        title: '수정 완료',
+        text: '게시물이 수정이 완료되었습니다.',
+        confirmButtonColor: '#0051FF',
+      });
       // 모달 닫기
       onClose();
+      refetch();
     } catch (error) {
       console.error('이미지 업로드 중 오류:', error);
       window.alert('이미지 업로드 중 오류가 발생했습니다.');
