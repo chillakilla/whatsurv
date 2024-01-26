@@ -49,6 +49,10 @@ header {
   flex: 1;
 }
 
+.swiper-wrapper {
+  position: relative;
+}
+
 .banner-swiper {
   width: 100%;
   height: 400px;
@@ -64,31 +68,41 @@ header {
 
 .banner-slide {
   font-size: 16px;
-  /* Center slide text vertically */
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 #popular-slide {
-  width: 302px;
   border-radius: 20px;
-  height: 180px;
+  height: 300px;
+  padding-bottom: 30px;
+}
+#it-slide {
+  border-radius: 20px;
+  height: 300px;
 }
 
-.swiper-button-prev::after {
-  display: none;
+.banner-swiper > .swiper-button-prev::after {
+  color: white;
 }
-.swiper-button-next::after {
-  display: none;
+.banner-swiper > .swiper-button-next::after {
+  color: white;
 }
-.swiper-button-prev {
-  left: -100px;
+.popular-swiper > .swiper-button-prev::after {
+  position: absolute;
+  left: 0px;
+}
+
+.popular-swiper > .swiper-button-next::after {
   top: 0;
   position: absolute;
 }
 
-.swiper-button-next {
+.swiper-pagination-bullet {
+  background: white;
+  display: inline-block;
+  opacity: 0.7;
 }
 
 .like-button > svg {

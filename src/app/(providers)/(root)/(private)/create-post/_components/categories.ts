@@ -27,7 +27,7 @@ export const ageGroup = [
 export const researchType = [
   {value: '종류', label: '종류'},
   {value: '전체', label: '전체'},
-  {value: '온라인/모바일', label: '온라인/모바일'},
+  {value: '온라인', label: '온라인'},
   {value: 'ARS', label: 'ARS'},
   {value: '유치', label: '제품 유치 조사'},
   {value: '좌담회', label: '좌담회'},
