@@ -17,7 +17,7 @@ export type FormData = Omit<Post, 'likes' | 'views' | 'userId' | 'updatedAt' | '
   researchTime: string;
 
   email: string | null;
-  nickname: string;
+  nickname: string | null;
   createdAt: Timestamp;
   deadlineDate: firebase.firestore.Timestamp | null;
 

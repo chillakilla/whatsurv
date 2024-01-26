@@ -5,6 +5,9 @@ import {useRouter} from 'next/navigation';
 import React, {ChangeEvent, useState} from 'react';
 import {FaArrowLeft} from 'react-icons/fa6';
 import {ageGroup, majorCategories, researchLocation, researchTime, researchType, sexType} from './categories';
+import {Question} from '@/app/api/typePost';
+import Swal from 'sweetalert2';
+
 // next/router 가 아니고 navigation....하
 
 interface PostFormProps {
@@ -14,6 +17,7 @@ interface PostFormProps {
   onDateChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+  isFormChanged: boolean;
 }
 
 export default function PostForm({
@@ -23,6 +27,7 @@ export default function PostForm({
   onDateChange,
   onCategoryChange,
   onSubmit,
+  isFormChanged,
 }: PostFormProps) {
   const auth = getAuth();
   const user = auth.currentUser;
@@ -81,6 +86,27 @@ export default function PostForm({
     }
   };
 
+  const goBackButtonHandler = async () => {
+    if (isFormChanged) {
+      const result = await Swal.fire({
+        title: '확실합니까?',
+        text: '변경된 내용이 저장되지 않을 겁니다. 뒤로 가시겠습니까?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '네',
+        cancelButtonText: '취소',
+      });
+
+      if (result.isConfirmed) {
+        router.back();
+      }
+    } else {
+      router.back();
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col items-center">
@@ -88,7 +114,7 @@ export default function PostForm({
         <div className="w-[80rem] mt-[5.5rem] rounded-md bg-white flex flex-col justify-center items-center">
           <div className="w-[80rem]">
             <button className="text-3xl p-[10px] bg-blue-100 rounded-full mt-[20px] ml-[20px]">
-              <FaArrowLeft />
+              <FaArrowLeft onClick={goBackButtonHandler} />
             </button>
           </div>
           {/* 문서 작성 컨테이너 */}
