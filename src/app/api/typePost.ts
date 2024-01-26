@@ -46,3 +46,7 @@ export type litePost = {
   nickname: string;
   userId: string | undefined;
 };
+
+export type feedBack = {
+  feedback: string;
+};
