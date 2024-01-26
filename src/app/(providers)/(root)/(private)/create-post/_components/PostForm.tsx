@@ -192,15 +192,6 @@ export default function PostForm({
                       </option>
                     ))}
                   </select>
-                  {/* <input
-                    className="p-[2px] border border-sky-500 rounded-lg"
-                    type="date"
-                    name="deadlineDate"
-                    value={
-                      formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''
-                    }
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
-                  /> */}
                 </div>
               </div>
               {/* 설문조사 설명 컨테이너 */}
@@ -215,7 +206,7 @@ export default function PostForm({
                 />
               </div>
               {/* 설문조사 폼 양식 컨테이너 */}
-              <div className="w-[74rem] h-[72.8125rem] mt-[2.31rem] flex flex-col items-center bg-blue-100">
+              <div className="w-[74rem] h-[68.8125rem] mt-[2.31rem] flex flex-col items-center bg-blue-100">
                 {/* TODO: 새로 추가된 문항과 그에 따른 옵션 */}
                 <div className="w-[54rem] overflow-y-auto">
                   <h3>문항</h3>
@@ -264,6 +255,16 @@ export default function PostForm({
                     </Button>
                   </div>
                 </div>
+              </div>
+              <div className="flex justify-end items-center mt-3">
+                <p>마감일:&nbsp;</p>
+                <input
+                  className="p-[2px] border border-sky-500 rounded-lg"
+                  type="date"
+                  name="deadlineDate"
+                  value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
+                />
               </div>
               {/* 버튼 컨테이너 */}
               <div className="flex justify-end items-start self-stretch gap-6">
