@@ -11,9 +11,12 @@ import {IoPeopleSharp} from 'react-icons/io5';
 import SortingPost from '../../(main)/_components/post/SortingPost';
 import {FaCalendarAlt} from 'react-icons/fa';
 import {useState} from 'react';
+import Swal from 'sweetalert2';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import {db} from '@/firebase';
 import {Post} from '@/app/api/typePost';
+import {FaHeart} from 'react-icons/fa';
+import {useRouter} from 'next/navigation';
 
 const isWithin24Hours = (createdAt: Date | firebase.firestore.Timestamp): boolean => {
   const currentTime = new Date();
@@ -30,6 +33,9 @@ export default function SurveyIt() {
   const [categories, setCategories] = useState<string[]>(['전체', '프론트엔드', '백엔드', '머신러닝/AI', '데이터']);
   const [selectCategory, setSelectCategory] = useState<string>('전체');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [likedPosts, setLikedPosts] = useState<{[postId: string]: boolean}>({});
+
+  const router = useRouter();
 
   const updateViewsCount = async (postId: string) => {
     try {
@@ -50,12 +56,38 @@ export default function SurveyIt() {
   };
   // 게시물 클릭을 처리하는 함수
   const clickPostHandler = (post: Post) => {
-    setSelectedPost(post);
-    updateViewsCount(post.id); // 'views' 카운트를 업데이트하는 함수 호출
+    if (post.deadlineDate && post.deadlineDate.toDate() < new Date()) {
+      Swal.fire({
+        title: '해당 설문은 종료되었습니다.',
+        text: '',
+        icon: 'warning',
+
+        showCancelButton: false,
+        cancelButtonColor: '#d33',
+        cancelButtonText: '닫기',
+      }).then(async result => {
+        if (result.isDismissed) {
+          router.replace('/survey-it');
+        }
+      });
+    } else {
+      setSelectedPost(post);
+      updateViewsCount(post.id); // 'views' 카운트를 업데이트하는 함수 호출
+    }
   };
 
+  // 카테고리 선택 함수
   const clickCategoryHandler = (category: string) => {
     setSelectCategory(category);
+  };
+
+  // 게시물 찜 업데이트 함수
+  const clickLikedButtonHandler = (postId: string) => {
+    setLikedPosts(prev => {
+      const updatedLikedPosts = {...prev};
+      updatedLikedPosts[postId] = !updatedLikedPosts[postId];
+      return updatedLikedPosts;
+    });
   };
 
   const {
@@ -83,8 +115,6 @@ export default function SurveyIt() {
     return <div>불러올 수 있는 게시글이 없습니다.</div>;
   }
 
-  const hasPosts = posts.some(post => post.category === 'IT');
-
   return (
     <div className="flex-col items-center justify-center w-[88.5rem] m-auto mt-20">
       <SortingPost categories={categories} selectCategory={selectCategory} onCategorySelect={clickCategoryHandler} />
@@ -96,74 +126,81 @@ export default function SurveyIt() {
           </div>
         </div>
         <div className="post-container grid grid-cols-4 gap-4">
-          {hasPosts ? (
-            posts
-              .filter(post => post.category === 'IT')
-              .map(post => (
-                <Link href={`/survey-it/${post.id}`} key={post.id}>
-                  <div
-                    className="h-64 border-2 border-[#e1e1e1] flex flex-col justify-between rounded-xl p-4 bg-white"
-                    onClick={() => clickPostHandler(post)}
-                  >
-                    <div className="category-box flex justify-between items-center mb-4">
-                      <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
-                        {post.category}
-                      </div>
-                      <button className="like-button w-[20px] h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent">
-                        <FaRegHeart />
-                      </button>
-                    </div>
-                    <h3 className="font-semibold text-lg text-ellipsis overflow-hidden ">{post.title}</h3>
-                    <div className="survey-method flex flex-col gap-2 bg-slate-100 h-[70px] p-2  ">
-                      <div className="flex text-sm justify-start grid grid-cols-2 ">
-                        <p>
-                          <span className="text-[#666]">소요 시간</span> &nbsp; {post.researchTime}
-                        </p>
-                        <p>
-                          <span className="text-[#666]">설문 방식</span> &nbsp; {post.researchType}
-                        </p>
-                      </div>
-                      <div className="survey-method flex text-sm justify-start grid grid-cols-2">
-                        <p>
-                          <span className="text-[#666]">참여 연령</span> &nbsp; {post.ageGroup}
-                        </p>
-                        <p>
-                          <span className="text-[#666]">참여 대상</span> &nbsp; {post.sexType}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="border-t-1 border-[#eee] flex justify-between items-center p-2">
-                      <div className="flex items-center w-full mt-4 justify-between">
-                        <p className="flex items-center gap-2 text-sm text-[#666]">
-                          <FaCalendarAlt />{' '}
-                          <span className="text-[#0051FF]">
-                            {post.createdAt.toLocaleString('ko-KR', {
-                              year: 'numeric',
-                              month: '2-digit',
-                              day: '2-digit',
-                            })}{' '}
-                            ~ &nbsp;
-                            {post.deadlineDate
-                              ? post.deadlineDate.toDate
-                                ? post.deadlineDate
-                                    .toDate()
-                                    .toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})
-                                : '2099.12.31'
-                              : '2099.12.31'}
-                          </span>
-                        </p>
-                        <div className="viewer flex  gap-2 text-[#818490]">
-                          <IoPeopleSharp />
-                          {post.views}
-                        </div>
-                      </div>
-                    </div>
+          {posts.map(post => (
+            <div
+              className={`h-64 border-2 border-[#e1e1e1] flex flex-col justify-between rounded-xl p-4 bg-white `}
+              onClick={() => clickPostHandler(post)}
+              key={post.id}
+            >
+              <div className="category-box flex justify-between items-center mb-4">
+                <div className="flex gap-2">
+                  <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
+                    {post.category}
                   </div>
-                </Link>
-              ))
-          ) : (
-            <div>등록된 게시글이 없습니다.</div>
-          )}
+                  <div
+                    className={`bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs ${
+                      post.views >= 15 ? 'block' : 'hidden'
+                    }`}
+                  >
+                    {post.views >= 15 ? 'HOT🔥' : ''}
+                  </div>
+                </div>
+                <button
+                  className="like-button w-[20px] h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent"
+                  onClick={() => clickLikedButtonHandler(post.id)}
+                >
+                  {likedPosts[post.id] ? <FaHeart /> : <FaRegHeart />}
+                </button>
+              </div>
+              <Link href={`/survey-it/${post.id}`}>
+                <h3 className="font-semibold text-lg text-ellipsis overflow-hidden ">{post.title}</h3>
+                <div className="survey-method flex flex-col gap-2 bg-slate-100 h-[70px] p-2  ">
+                  <div className="flex text-sm justify-start grid grid-cols-2 ">
+                    <p>
+                      <span className="text-[#666]">소요 시간</span> &nbsp; {post.researchTime}
+                    </p>
+                    <p>
+                      <span className="text-[#666]">설문 방식</span> &nbsp; {post.researchType}
+                    </p>
+                  </div>
+                  <div className="survey-method flex text-sm justify-start grid grid-cols-2">
+                    <p>
+                      <span className="text-[#666]">참여 연령</span> &nbsp; {post.ageGroup}
+                    </p>
+                    <p>
+                      <span className="text-[#666]">참여 대상</span> &nbsp; {post.sexType}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+              <div className="border-t-1 border-[#eee] flex justify-between items-center p-2">
+                <div className="flex items-center w-full mt-4 justify-between">
+                  <p className="flex items-center gap-2 text-sm text-[#666]">
+                    <FaCalendarAlt />{' '}
+                    <span className="text-[#0051FF]">
+                      {post.createdAt.toLocaleString('ko-KR', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                      })}{' '}
+                      ~ &nbsp;
+                      {post.deadlineDate
+                        ? post.deadlineDate.toDate
+                          ? post.deadlineDate
+                              .toDate()
+                              .toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})
+                          : '2099.12.31'
+                        : '2099.12.31'}
+                    </span>
+                  </p>
+                  <div className="viewer flex  gap-2 text-[#818490]">
+                    <IoPeopleSharp />
+                    {post.views}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

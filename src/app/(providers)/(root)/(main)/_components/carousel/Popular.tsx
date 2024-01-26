@@ -66,7 +66,7 @@ export default function Popular() {
   if (!posts) {
     return <div>불러올 수 있는 게시글이 없습니다.</div>;
   }
-  console.log(posts);
+
   return (
     <>
       <h2 className="text-xl font-bold">

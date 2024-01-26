@@ -22,9 +22,10 @@ export default function Banner() {
         onSwiper={swiper => {
           swiperRef.current = swiper;
         }}
+        slidesPerGroup={1}
         slidesPerView={1}
         spaceBetween={10}
-        loop={true}
+        loop={false}
         pagination={{
           clickable: true,
         }}
@@ -41,6 +42,21 @@ export default function Banner() {
               </h1>
               <Link href="/auth">
                 <button className="w-24 h-[35px] bg-[#0051FF] text-white rounded-lg hover:bg-white hover:text-black">
+                  초대 수락
+                </button>
+              </Link>
+            </div>
+          </div>
+        </SwiperSlide>
+        <SwiperSlide>
+          <div className="flex flex-col justify-center items-center bg-gradient-to-r from-[#0051FF] via-black to-[#00a2ff] ">
+            <div className="relative z-1 flex flex-col justify-center items-center w-[500px] h-[400px] m-auto">
+              <h1 className="leading-10 text-3xl mb-4 text-white">
+                피드백 수집할 땐? <br />
+                WhatSurv
+              </h1>
+              <Link href="/auth">
+                <button className="w-24 h-[35px] bg-[#0051FF] text-white rounded-lg hover:bg-white hover:text-black">
                   참여하기
                 </button>
               </Link>
@@ -48,9 +64,17 @@ export default function Banner() {
           </div>
         </SwiperSlide>
         <SwiperSlide>
-          <img src="/image/img1.png" alt="banner-img" />
+          <div className="flex flex-col justify-center items-center bg-gradient-to-r from-[#00a2ff] via-black to-[#D6FF00] ">
+            <div className="relative z-1 flex flex-col justify-center items-center w-[550px] h-[400px] m-auto">
+              <h1 className=" text-3xl mb-4 text-white">WhatSurv에서 설문도 만들고 참여해보세요!</h1>
+              <Link href="/survey-lite">
+                <button className="w-24 h-[35px] bg-[#0051FF] text-white rounded-lg hover:bg-white hover:text-black">
+                  참여하기
+                </button>
+              </Link>
+            </div>
+          </div>
         </SwiperSlide>
-        <SwiperSlide>Slide 3</SwiperSlide>
       </Swiper>
     </>
   );
