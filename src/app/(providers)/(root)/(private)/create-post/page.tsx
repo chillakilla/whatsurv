@@ -38,6 +38,7 @@ export default function PostPage() {
   const [isError, setIsError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFormChanged, setIsFormChanged] = useState(false);
 
   useEffect(() => {
     const latestRoute = localStorage.getItem('latestRoute');
@@ -65,6 +66,8 @@ export default function PostPage() {
       ...prevData,
       [name]: value,
     }));
+
+    setIsFormChanged(true);
   };
 
   const onCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -104,6 +107,7 @@ export default function PostPage() {
       });
 
       setIsRedirecting(true);
+      setIsFormChanged(false);
       router.push('/');
     } catch (error) {
       console.error('Error adding post:', error);
@@ -129,6 +133,7 @@ export default function PostPage() {
           onDateChange={onDateChange}
           onCategoryChange={onCategoryChange}
           onSubmit={onSubmit}
+          isFormChanged={isFormChanged}
         />
       </div>
     </div>

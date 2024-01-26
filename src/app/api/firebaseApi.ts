@@ -217,6 +217,18 @@ export const deletePost = async (postId: string): Promise<void> => {
   }
 };
 
+// postId 에 맞는 게시글 삭제하기
+export const deletePostById = async (postId: string): Promise<void> => {
+  try {
+    const postRef = doc(db, 'posts', postId);
+    await deleteDoc(postRef);
+    console.log(`Post with ID ${postId} deleted successfully`);
+  } catch (error) {
+    console.error(`Error deleting post with ID ${postId}:`, error);
+    throw new Error('Failed to delete post.');
+  }
+};
+
 // 업로드한 이미지 storage에 저장
 export const uploadImageToStorage = async (file: File): Promise<string> => {
   const storage = getStorage();
