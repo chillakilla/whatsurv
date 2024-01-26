@@ -1,12 +1,10 @@
 import {FormData} from '@/app/api/typeFormData';
+import {Button, Input, Radio, RadioGroup, Select, SelectItem} from '@nextui-org/react';
+import {getAuth} from 'firebase/auth';
 import {useRouter} from 'next/navigation';
 import React, {ChangeEvent, useState} from 'react';
 import {MdArrowBackIos} from 'react-icons/md';
 import {ageGroup, majorCategories, researchLocation, researchTime, researchType, sexType} from './categories';
-import {Question} from '@/app/api/typePost';
-import {getAuth} from 'firebase/auth';
-import {Input, Radio, RadioGroup, Button} from '@nextui-org/react';
-
 // next/router 가 아니고 navigation....하
 
 interface PostFormProps {
@@ -94,15 +92,16 @@ export default function PostForm({
             </button>
           </div>
           {/* 문서 작성 컨테이너 */}
-          <div className="w-[74rem] h-[101.56rem]">
+          <div className="w-[74rem] h-[101.56rem] bg-purple-200">
             <form onSubmit={onSubmit}>
               {/* 타이틀 및 참여대상 연령 등 컨테이너 */}
-              <div className="w-[74rem] h-[6rem] flex ">
-                <div className="w-[74rem] h-[6rem] flex justify-center items-center  border-black border-b-2">
-                  <input
-                    className="w-[54rem] h-[5rem] p-2"
+              <div className="flex bg-yellow-300">
+                <div className=" flex justify-center items-center bg-green-500 ">
+                  <Input
+                    className=" p-2 bg-blue-200"
                     type="text"
                     name="title"
+                    variant="underlined"
                     value={formData.title}
                     onChange={onInputChange}
                     maxLength={70}
@@ -114,84 +113,102 @@ export default function PostForm({
               </div>
               <div>
                 <div className="flex w-[74rem] h-[6rem] justify-center items-center gap-3">
-                  <select
-                    className="p-[2px] border border-sky-500 rounded-lg"
+                  <Select
+                    className="p-[2px] rounded-lg w-[150px]"
                     name="sexType"
+                    label="성별"
+                    size="sm"
+                    color="primary"
                     value={formData.sexType}
                     onChange={onCategoryChange}
                     required
                   >
                     {sexType.map(option => (
-                      <option key={option.value} value={option.value}>
+                      <SelectItem key={option.value} value={option.value}>
                         {option.label}
-                      </option>
+                      </SelectItem>
                     ))}
-                  </select>
-                  <select
-                    className="p-[2px] border border-sky-500 rounded-lg"
+                  </Select>
+                  <Select
+                    className="p-[2px]  rounded-lg w-[150px]"
                     name="ageGroup"
+                    color="primary"
+                    label="연령"
+                    size="sm"
                     value={formData.ageGroup}
                     onChange={onCategoryChange}
                     required
                   >
                     {ageGroup.map(option => (
-                      <option key={option.value} value={option.value}>
+                      <SelectItem key={option.value} value={option.value}>
                         {option.label}
-                      </option>
+                      </SelectItem>
                     ))}
-                  </select>
-                  <select
-                    className="p-[2px] border border-sky-500 rounded-lg"
+                  </Select>
+                  <Select
+                    className="p-[2px]  rounded-lg w-[150px]"
                     name="category"
+                    label="직종"
+                    size="sm"
+                    color="primary"
                     value={formData.category}
                     onChange={onCategoryChange}
                     required
                   >
                     {majorCategories.map(option => (
-                      <option key={option.value} value={option.value}>
+                      <SelectItem key={option.value} value={option.value}>
                         {option.label}
-                      </option>
+                      </SelectItem>
                     ))}
-                  </select>
-                  <select
-                    className="p-[2px] border border-sky-500 rounded-lg"
+                  </Select>
+                  <Select
+                    className="p-[2px]  rounded-lg w-[150px]"
                     name="researchType"
                     value={formData.researchType}
                     onChange={onCategoryChange}
+                    label="설문 종류"
+                    size="sm"
+                    color="primary"
                     required
                   >
                     {researchType.map(option => (
-                      <option key={option.value} value={option.value}>
+                      <SelectItem key={option.value} value={option.value}>
                         {option.label}
-                      </option>
+                      </SelectItem>
                     ))}
-                  </select>
-                  <select
-                    className="p-[2px] border border-sky-500 rounded-lg"
+                  </Select>
+                  <Select
+                    className="p-[2px]  rounded-lg w-[150px]"
                     name="researchLocation"
+                    label="설문 장소"
+                    size="sm"
+                    color="primary"
                     value={formData.researchLocation}
                     onChange={onCategoryChange}
                     required
                   >
                     {researchLocation.map(option => (
-                      <option key={option.value} value={option.value}>
+                      <SelectItem key={option.value} value={option.value}>
                         {option.label}
-                      </option>
+                      </SelectItem>
                     ))}
-                  </select>
-                  <select
-                    className="p-[2px] border border-sky-500 rounded-lg"
+                  </Select>
+                  <Select
+                    className="p-[2px]  rounded-lg w-[150px]"
                     name="researchTime"
+                    label="소요 시간"
+                    size="sm"
+                    color="primary"
                     value={formData.researchTime}
                     onChange={onCategoryChange}
                     required
                   >
                     {researchTime.map(option => (
-                      <option key={option.value} value={option.value}>
+                      <SelectItem key={option.value} value={option.value}>
                         {option.label}
-                      </option>
+                      </SelectItem>
                     ))}
-                  </select>
+                  </Select>
                 </div>
               </div>
               {/* 설문조사 설명 컨테이너 */}
