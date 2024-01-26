@@ -1,23 +1,17 @@
 'use client';
-
 import {getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
-
-import {useParams} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import React from 'react';
-import {FaRegHeart} from 'react-icons/fa';
-import {FaRegCircleUser} from 'react-icons/fa6';
-
-const DetailInfoBox = ({label, value}: {label: string; value: string | number}) => (
-  <div className="type-box flex gap-2 justify-center items-center">
-    <p className="text-sm font-semibold">{label}</p>
-    <p className="border-1 border-[#C1C5CC] bg-white w-32 h-[35px] rounded-xl text-sm p-2 text-center">{value}</p>
-  </div>
-);
+import ProgressBar from '../../../(main)/_components/progress/ProgressBar';
+import Swal from 'sweetalert2';
+import {db} from '@/firebase';
+import {collection} from 'firebase/firestore';
 
 const SurveyItDetailPage: React.FC = () => {
   const {id} = useParams();
+  const router = useRouter();
 
   const {
     data: post,
@@ -39,29 +33,134 @@ const SurveyItDetailPage: React.FC = () => {
   const createdAtDate = post?.createdAt.toDate() as Date;
   const deadlineDate = post?.deadlineDate?.toDate() as Date;
 
+  const cancelHandler = () => {
+    Swal.fire({
+      title: '취소하시겠습니까?',
+      text: '작성한 내용은 저장되지 않습니다. 그래도 취소하시겠습니까?',
+      icon: 'warning',
+
+      showCancelButton: true,
+      confirmButtonColor: '#0051FF',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+
+      reverseButtons: true,
+    }).then(result => {
+      if (result.isConfirmed) {
+        Swal.fire('감사합니다. 다음에 또 이용해주세요!');
+        router.replace('/');
+      }
+    });
+  };
+
+  const submithandler = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    Swal.fire({
+      title: '제출하시겠습니까?',
+      text: '작성하신 내용은 이후에 수정할 수 없습니다.',
+      icon: 'warning',
+
+      showCancelButton: true,
+      confirmButtonColor: '#0051FF',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+
+      reverseButtons: true,
+    }).then(async result => {
+      if (result.isConfirmed) {
+        Swal.fire('감사합니다. 다음에 또 이용해주세요!');
+        router.replace('/');
+      }
+    });
+  };
+
   return (
-    <div className="container h-[940px] w-[80rem] m-auto mt-10 border-1 border-[#C1C5CC] bg-white p-4">
-      <div className="title-area flex items-center bg-[#eee] h-20">
-        <h1 className="text-xl font-bold ">{post?.title}</h1>
+    <div className="container h-[1200px] w-[55rem] m-auto mt-10 border-1 border-[#C1C5CC] bg-white p-4">
+      <div className="pl-4">
+        <p className="text-xs text-[#888]">등록일 | {createdAtDate.toLocaleString()}</p>
       </div>
-      <div className="progress-bar w-full h-52 bg-gray-200 grid grid-cols-4 items-center p-4 mt-4"></div>
-      <div className="flex justify-between items-center p-2 h-[40px] mt-4 border-b-1 border-[#eee]">
-        <div className="user flex  gap-2">
-          <FaRegCircleUser />
-          <p className="font-semibold">{post?.nickname}</p>
+      <div className="title-area flex justify-between items-center border-b-1 border-[#eee]  h-24">
+        <h1 className="text-2xl font-bold w-2/3 h-24 flex items-center p-4">{post?.title}</h1>
+        <div className="survey-method  h-24 bg-slate-100 text-sm items-center grid grid-cols-2 p-2">
+          <p className="w-36">
+            분야 &nbsp;{' '}
+            <span className="text-[#0051FF]">{post !== null && post !== undefined ? `${post.category}` : '-'}</span>
+          </p>
+          <p className="w-36">
+            카테고리 &nbsp; <span className="text-[#0051FF]">프론트엔드</span>
+          </p>
+          <p className="w-36">
+            참여 대상 &nbsp;{' '}
+            <span className="text-[#0051FF]">{post !== null && post !== undefined ? post.sexType : '전체'}</span>
+          </p>
+          <p className="w-36">
+            참여 연령 &nbsp;{' '}
+            <span className="text-[#0051FF]">{post !== null && post !== undefined ? post.ageGroup : '전체'}</span>
+          </p>
+          <p className="w-36">
+            소요 시간 &nbsp;{' '}
+            <span className="text-[#0051FF]">{post !== null && post !== undefined ? `${post.researchTime}` : '-'}</span>
+          </p>
+          <p className="w-36">
+            설문 방식 &nbsp;{' '}
+            <span className="text-[#0051FF]"> {post !== null && post !== undefined ? post.researchType : '-'}</span>
+          </p>
         </div>
+      </div>
+      <div className="survey-explain h-24 p-2 border-1 border-[#eee] mt-4">{post?.content}</div>
+      <div className="progress-bar flex justify-center w-full h-[35px] mt-6 ">
+        <ProgressBar />
+      </div>
+      <form
+        className="flex flex-col justify-between p-2 h-[850px] mt-4 border-1 border-[#eee]"
+        onSubmit={submithandler}
+      >
         <div>
-          <p className="text-xs text-[#888]">작성일 | {createdAtDate.toLocaleString()}</p>
+          <div className="flex flex-col p-4 gap-2">
+            <label>질문1</label>
+            <input type="text" className="bg-[#eee]" />
+          </div>
+          <div className=" flex flex-col  p-4 gap-2">
+            <label>질문2</label>
+            <input type="text" className="bg-[#eee]" />
+          </div>
+          <div className="flex flex-col  p-4 gap-2">
+            <label>질문3</label>
+            <input type="text" className="bg-[#eee]" />
+          </div>
+          <div className="flex flex-col p-4 gap-2">
+            <label>질문4</label>
+            <input type="text" className="bg-[#eee]" />
+          </div>
+          <div className="flex flex-col  p-4 gap-2">
+            <label>질문5</label>
+            <input type="text" className="bg-[#eee]" />
+          </div>
+          <div className="flex flex-col  p-4 gap-2">
+            <label>질문6</label>
+            <input type="text" className="bg-[#eee]" />
+          </div>
+          <div className="flex flex-col  p-4 gap-2">
+            <label>질문7</label>
+            <input type="text" className="bg-[#eee]" />
+          </div>
+          <div className="flex flex-col  p-4 gap-2">
+            <label>질문8</label>
+            <input type="text" className="bg-[#eee]" />
+          </div>
         </div>
-      </div>
-      <div className="content-box  mt-4 flex gap-8 h-[500px]">
-        <div className="img-box w-[420px] h-full border-1 border-[#eee] flex items-center justify-center">
-          <img src={post?.imageUrl} alt="Post Image" />
+        <div className="flex ml-auto p-4 w-56 justify-end gap-4">
+          <button className="w-[80px] h-8 bg-[#eee]" onClick={cancelHandler}>
+            취소
+          </button>
+          <button className="w-[80px] h-8 bg-[#0051FF] text-white" type="submit">
+            제출
+          </button>
         </div>
-        <div className="w-3/4 border-1 border-[#ddd] pl-4">
-          <p className="h-[400px] mt-4">{post?.content}</p>
-        </div>
-      </div>
+      </form>
     </div>
   );
 };

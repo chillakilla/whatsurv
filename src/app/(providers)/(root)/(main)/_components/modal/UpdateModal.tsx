@@ -32,7 +32,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({selectedPost, onClose, onUpdat
     Swal.fire({
       icon: 'success',
       title: '수정 완료',
-      text: '게시물이 수정이 완료되었습니다.',
+      text: '게시물 수정이 완료되었습니다.',
     });
     if (title.trim() === '') {
       window.alert('제목을 입력하세요.');

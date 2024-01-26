@@ -10,7 +10,6 @@ type Props = {
 };
 
 const ProvidersLayout = ({children}: Props) => {
-  const client = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
       <NextUIProvider>{children}</NextUIProvider>
