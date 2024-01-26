@@ -16,14 +16,6 @@ import LiteSurveyCreateModal from '../../(main)/_components/modal/CreateModal';
 import LiteSurveyModal from '../../(main)/_components/modal/SurveyModal';
 import UpdateModal from '../../(main)/_components/modal/UpdateModal';
 
-// 새로운 게시물 알려주기
-const isWithin24Hours = (createdAt: Date): boolean => {
-  const currentTime = new Date();
-  const timeDifference = currentTime.getTime() - createdAt.getTime();
-  const hoursDifference = timeDifference / (1000 * 60 * 60);
-  return hoursDifference <= 24;
-};
-
 export default function page() {
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -33,6 +25,17 @@ export default function page() {
 
   const user = auth.currentUser;
   const userId = user?.uid;
+
+  // FirebaseApi에서 liteSurveyData 가져오기
+  const {
+    data: liteSurveyData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery<litePost[]>({
+    queryKey: ['surveyData'],
+    queryFn: getLiteSurveyPosts,
+  });
 
   const updateViewsCount = async (postId: string) => {
     try {
@@ -75,17 +78,6 @@ export default function page() {
       setIsCreateModalOpen(true);
     }
   };
-
-  // FirebaseApi에서 liteSurveyData 가져오기
-  const {
-    data: liteSurveyData,
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery<litePost[]>({
-    queryKey: ['surveyData'],
-    queryFn: getLiteSurveyPosts,
-  });
 
   // 게시물 정렬하기
   const sortByCreatedAt = (a: litePost, b: litePost) => {
@@ -152,6 +144,14 @@ export default function page() {
         console.log('게시물 삭제중 오류 발생', error);
       }
     }
+  };
+
+  // 새로운 게시물 알려주기
+  const isWithin24Hours = (createdAt: Date): boolean => {
+    const currentTime = new Date();
+    const timeDifference = currentTime.getTime() - createdAt.getTime();
+    const hoursDifference = timeDifference / (1000 * 60 * 60);
+    return hoursDifference <= 24;
   };
 
   return (
