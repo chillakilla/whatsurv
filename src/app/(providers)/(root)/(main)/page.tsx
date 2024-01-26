@@ -2,7 +2,7 @@
 import FloatingBtn from './_components/FloatingBtn';
 import Banner from './_components/carousel/Banner';
 import ItList from './_components/carousel/ItList';
-import LiteList from './_components/carousel/LiteList';
+import FeedBack from './_components/post/feedback';
 import Popular from './_components/carousel/Popular';
 import SearchBar from './searchForm/SearchBar';
 
@@ -14,7 +14,7 @@ export default function MainPage() {
         <SearchBar />
         <Popular />
         <ItList />
-        <LiteList />
+        <FeedBack />
         <FloatingBtn />
       </div>
     </div>
