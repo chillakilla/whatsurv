@@ -18,112 +18,28 @@ export default function PostPage() {
   const auth = getAuth();
   const user = auth.currentUser;
   const router = useRouter();
-
   const [formData, setFormData] = useState<FormData>({
     id: '',
     title: '',
     content: '',
-    imageUrl: '',
     category: '',
     ageGroup: '',
     sexType: '',
     researchType: '',
     researchTime: '',
     researchLocation: '',
+    likes: false,
     deadlineDate: null as firebase.firestore.Timestamp | null,
     createdAt: Timestamp.now(),
-    rewards: 0,
-    email: user?.email,
     nickname: user?.displayName,
+    surveyData: [{question: '', options: ['매우 그렇다', '그렇다', '보통이다', '아니다', '매우 아니다']}],
   });
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedDeadline, setSelectedDeadline] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
-
-  const ImgFileChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const imgFile = e.target.files?.[0] || null;
-    if (imgFile) {
-      setSelectedFile(imgFile);
-
-      const reader = new FileReader();
-      reader.onload = e => {
-        const imageDataUrl = e.target?.result as string;
-        setPreviewImage(imageDataUrl);
-      };
-      reader.readAsDataURL(imgFile);
-    }
-  };
-
-  const SubmitHandler = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('SubmitHandler called');
-
-    try {
-      let imageUrl = formData.imageUrl;
-
-      if (selectedFile) {
-        imageUrl = await uploadImageToStorage(selectedFile);
-      }
-
-      const updatedFormData: Post = {
-        id: formData.id,
-        title: formData.title,
-        content: formData.content,
-        imageUrl: imageUrl,
-        category: formData.category,
-        sexType: formData.sexType,
-        ageGroup: formData.ageGroup,
-        researchType: formData.researchType,
-        researchTime: formData.researchTime,
-        researchLocation: formData.researchLocation,
-        userId: user?.uid,
-        email: user?.email ?? null,
-        nickname: user?.displayName || undefined,
-        deadlineDate: selectedDeadline ? firebase.firestore.Timestamp.fromDate(selectedDeadline) : null,
-        rewards: formData.rewards,
-        createdAt: Timestamp.now(),
-        likes: 0,
-        views: 0,
-        updatedAt: new Date(),
-      };
-      await addPost(updatedFormData);
-
-      setSelectedFile(null);
-      setPreviewImage(null);
-
-      setFormData({
-        id: '',
-        title: '',
-        content: '',
-        imageUrl: '',
-        category: '',
-        ageGroup: '',
-        sexType: '',
-        researchType: '',
-        researchTime: '',
-        researchLocation: '',
-        deadlineDate: null,
-        createdAt: Timestamp.now(),
-        rewards: 0,
-      });
-      setIsRedirecting(true);
-      alert('등록되었습니다.');
-      // 등록 성공 시, 메인으로 이동.
-      router.push('/');
-      const currentUserRoute = window.location.pathname;
-      localStorage.setItem('latestRoute', currentUserRoute);
-    } catch (error) {
-      console.error('에러', error);
-      setIsError('게시글을 등록하는 중에 오류가 발생했습니다.');
-    } finally {
-      setIsRedirecting(false);
-      setIsLoading(false);
-    }
-  };
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const latestRoute = localStorage.getItem('latestRoute');
@@ -145,6 +61,60 @@ export default function PostPage() {
     }));
   };
 
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const {name, value} = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const onCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const {name, value} = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const updatedFormData = {
+        ...formData,
+      };
+      console.log('formData before saving:', formData); // Log the formData for debugging
+      await addPost(updatedFormData);
+
+      setFormData({
+        id: '',
+        title: '',
+        content: '',
+        category: '',
+        ageGroup: '',
+        sexType: '',
+        researchType: '',
+        researchTime: '',
+        researchLocation: '',
+        deadlineDate: null as firebase.firestore.Timestamp | null,
+        createdAt: Timestamp.now(),
+        likes: false,
+        nickname: user?.displayName,
+        surveyData: [{question: '', options: ['', '', '', '', '']}],
+      });
+
+      setIsRedirecting(true);
+      router.push('/');
+    } catch (error) {
+      console.error('Error adding post:', error);
+      setIsError('Failed to add post. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div>
       {/* isRedirecting = 로딩 스피너 추가 */}
@@ -156,25 +126,11 @@ export default function PostPage() {
       <div>
         <PostForm
           formData={formData}
-          nickname={user?.displayName}
-          onInputChange={e => {
-            const {name, value} = e.target;
-            setFormData(prevData => ({
-              ...prevData,
-              [name]: value,
-            }));
-          }}
-          onSubmit={SubmitHandler}
+          setFormData={setFormData}
+          onInputChange={onInputChange}
           onDateChange={onDateChange}
-          onImgFileChange={ImgFileChangeHandler}
-          previewImage={previewImage}
-          onCategoryChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-            const {name, value} = e.target;
-            setFormData(prevData => ({
-              ...prevData,
-              [name]: value,
-            }));
-          }}
+          onCategoryChange={onCategoryChange}
+          onSubmit={onSubmit}
         />
       </div>
     </div>
