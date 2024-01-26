@@ -42,7 +42,9 @@ body {
 header {
   background-color: #f9f9f9;
 }
-
+input {
+  font-size: inherit;
+}
 .main-wrapper {
   min-height: calc(100vh - 64px);
   padding-bottom: 64px;
