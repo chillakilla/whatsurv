@@ -11,6 +11,7 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  setDoc,
   getDocs,
   orderBy,
   query,
@@ -54,7 +55,7 @@ export const getPosts = async (): Promise<Post[]> => {
         deadlineDate: data?.deadlineDate instanceof Timestamp ? data.deadlineDate : data?.deadlineDate || null,
 
         // TODO: 바뀐 작성 페이지에 들어갈 문항과 문항에 대한 옵션
-        questions: data?.questions || [],
+        surveyData: data?.questions || [],
       };
     });
 

@@ -5,83 +5,83 @@ import {MdArrowBackIos} from 'react-icons/md';
 import {ageGroup, majorCategories, researchLocation, researchTime, researchType, sexType} from './categories';
 import {Question} from '@/app/api/typePost';
 import {getAuth} from 'firebase/auth';
-import {Radio, RadioGroup, Input} from '@nextui-org/react';
+import {Input, Radio, RadioGroup, Button} from '@nextui-org/react';
+
 // next/router 가 아니고 navigation....하
 
 interface PostFormProps {
-  formData: Omit<FormData, 'updatedAt' | 'email'> & {};
+  formData: FormData;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onSubmit: (e: React.FormEvent) => void;
   onDateChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: React.FormEventHandler<HTMLFormElement>;
+  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
 }
 
-export default function PostForm({formData, onInputChange, onDateChange, onCategoryChange, onSubmit}: PostFormProps) {
+export default function PostForm({
+  formData,
+  setFormData,
+  onInputChange,
+  onDateChange,
+  onCategoryChange,
+  onSubmit,
+}: PostFormProps) {
   const auth = getAuth();
   const user = auth.currentUser;
   const router = useRouter();
-  const [surveyQuestions, setSurveyQuestions] = useState<Question[]>([{question: '', options: ['', '', '', '', '']}]);
-  const isFormValid =
-    formData.title.trim() !== '' &&
-    formData.category !== '' &&
-    formData.sexType !== '' &&
-    formData.ageGroup !== '' &&
-    formData.researchType !== '' &&
-    formData.researchLocation !== '' &&
-    formData.researchTime !== '' &&
-    formData.deadlineDate !== null;
+  const [questionCount, setQuestionCount] = useState(1);
 
-  const backButtonHandler = () => {
-    const isContentModified =
-      formData.title.trim() !== '' ||
-      // content 부분 테스트 할 것이 있어 주석
-      // formData.content.trim() !== '' ||
-      formData.category !== '' ||
-      formData.sexType !== '' ||
-      formData.ageGroup !== '' ||
-      formData.researchType !== '' ||
-      formData.researchLocation !== '' ||
-      formData.researchTime !== '' ||
-      formData.deadlineDate !== null;
+  const questionChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, questionIndex: number) => {
+    const newFormData = {...formData};
+    newFormData.surveyData[questionIndex] = {
+      ...newFormData.surveyData[questionIndex],
+      question: e.target.value,
+      selectedOption: null,
+    };
+    setFormData(newFormData);
+  };
 
-    if (isContentModified) {
-      const userConfirmed = window.confirm('정말 뒤로 가시겠습니까? 작성된 내용은 저장되지 않습니다.');
+  const optionChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, questionIndex: number, optionIndex: number) => {
+    console.log('Handling option change:', e.target.value, questionIndex, optionIndex);
+    const newFormData = {...formData};
+    newFormData.surveyData[questionIndex] = {
+      ...newFormData.surveyData[questionIndex],
+      selectedOption: e.target.value,
+    };
+    setFormData(newFormData);
+  };
 
-      if (userConfirmed) {
-        router.back();
-      }
+  const MAX_QUESTIONS = 10;
+
+  const addQuestionHandler = () => {
+    if (questionCount < MAX_QUESTIONS) {
+      const newFormData = {...formData};
+      newFormData.surveyData.push({
+        question: '',
+        options: ['매우 그렇다', '그렇다', '보통이다', '아니다', '매우 아니다'],
+        selectedOption: null,
+      });
+      setFormData(newFormData);
+      setQuestionCount(questionCount + 1);
     } else {
-      router.back();
+      console.warn('질문은 10개가 최대입니다.');
+      window.alert('질문은 10개가 최대입니다.');
     }
   };
 
-  const addQuestion = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setSurveyQuestions(prevQuestions => [...prevQuestions, {question: '', options: ['', '', '', '', '']}]);
-  };
+  const removeLastQuestion = () => {
+    const lastQuestionIndex = formData.surveyData.length - 1;
 
-  const deleteQuestion = (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
-    e.preventDefault();
-    setSurveyQuestions(prevQuestions => {
-      const newQuestions = [...prevQuestions];
-      newQuestions.splice(index, 1);
-      return newQuestions;
-    });
+    if (questionCount > 1) {
+      const newFormData = {...formData};
+      newFormData.surveyData.splice(lastQuestionIndex, 1);
+      setFormData(newFormData);
+      setQuestionCount(questionCount - 1);
+    } else {
+      console.warn('처음 질문은 삭제할 수 없습니다.');
+      window.alert('처음 질문은 삭제할 수 없습니다.');
+    }
   };
-
-  const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>, questionIndex: number, optionIndex: number) => {
-    const newQuestions = [...surveyQuestions];
-    newQuestions[questionIndex].options[optionIndex] = e.target.value;
-    setSurveyQuestions(newQuestions);
-  };
-
-  const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const newQuestions = [...surveyQuestions];
-    newQuestions[index].question = e.target.value;
-    setSurveyQuestions(newQuestions);
-  };
-
-  const optionLabels = ['많이 그렇다.', '조금 그렇다.', '보통이다', '조금 아니다', '많이 아니다'];
 
   return (
     <>
@@ -89,16 +89,13 @@ export default function PostForm({formData, onInputChange, onDateChange, onCateg
         {/* 흰생 배경 컨테이너 */}
         <div className="w-[80rem] h-[109.375rem] mt-[5.5rem] bg-white flex flex-col justify-center items-center">
           <div className="w-[80rem]">
-            <button
-              onClick={backButtonHandler}
-              className="flex justify-center items-center w-[3rem] h-[3rem] border-none bg-sky-400 rounded-full ml-10"
-            >
+            <button className="flex justify-center items-center w-[3rem] h-[3rem] border-none bg-sky-400 rounded-full ml-10">
               <MdArrowBackIos />
             </button>
           </div>
           {/* 문서 작성 컨테이너 */}
           <div className="w-[74rem] h-[101.56rem]">
-            <form>
+            <form onSubmit={onSubmit}>
               {/* 타이틀 및 참여대상 연령 등 컨테이너 */}
               <div className="w-[74rem] h-[6rem] flex ">
                 <div className="w-[74rem] h-[6rem] flex justify-center items-center  border-black border-b-2">
@@ -218,38 +215,59 @@ export default function PostForm({formData, onInputChange, onDateChange, onCateg
                 />
               </div>
               {/* 설문조사 폼 양식 컨테이너 */}
-              <div className="w-[74rem] h-[72.8125rem] mt-[2.31rem] flex bg-blue-200 justify-center">
+              <div className="w-[74rem] h-[72.8125rem] mt-[2.31rem] flex flex-col items-center bg-blue-100">
                 {/* TODO: 새로 추가된 문항과 그에 따른 옵션 */}
-                <div className="flex flex-col">
+                <div className="w-[54rem] overflow-y-auto">
                   <h3>문항</h3>
-                  {surveyQuestions.map((question, questionIndex) => (
+                  {formData.surveyData.map((question, questionIndex) => (
                     <div key={questionIndex}>
                       <Input
-                        type="text"
+                        label="질문을 입력해주세요."
                         value={question.question}
-                        onChange={e => handleQuestionChange(e, questionIndex)}
-                        placeholder="Enter question"
+                        onChange={e => questionChangeHandler(e, questionIndex)}
                       />
-                      {question.options.map((option, optionIndex) => (
-                        <div key={optionIndex}>
-                          <input
-                            type="radio"
-                            value={option}
-                            onChange={e => handleOptionChange(e, questionIndex, optionIndex)}
-                            placeholder={`Option ${optionIndex + 1}`}
-                          />
-                          <label>{optionLabels[optionIndex]}</label>
-                        </div>
-                      ))}
-                      <button onClick={e => deleteQuestion(e, questionIndex)}>Delete Question</button>
+                      <div>
+                        <RadioGroup
+                          className="flex flex-wrap gap-3 justify-center items-center border-2 border-gray-300"
+                          label="하나만 선택해주세요."
+                          orientation="horizontal"
+                        >
+                          {question.options.map((option, optionIndex) => (
+                            <Radio
+                              key={optionIndex}
+                              name={`question_${questionIndex}_option_${optionIndex}`}
+                              value={option}
+                              checked={question.selectedOption === option}
+                              onChange={e => optionChangeHandler(e, questionIndex, optionIndex)}
+                            >
+                              {option}
+                            </Radio>
+                          ))}
+                        </RadioGroup>
+                      </div>
                     </div>
                   ))}
-                  <button onClick={addQuestion}>Add Question</button>
+                  <div className="flex justify-center gap-5">
+                    <Button
+                      type="button"
+                      className="w-[10rem] h-[2.5rem] mt-[10px] bg-white rounded-[25rem] text-red-500"
+                      onClick={() => removeLastQuestion()}
+                    >
+                      마지막 질문 삭제
+                    </Button>
+                    <Button
+                      type="button"
+                      className="w-[10rem] h-[2.5rem] mt-[10px] bg-blue-500 text-white rounded-[25rem]"
+                      onClick={addQuestionHandler}
+                    >
+                      질문 추가
+                    </Button>
+                  </div>
                 </div>
               </div>
               {/* 버튼 컨테이너 */}
               <div className="flex justify-end items-start self-stretch gap-6">
-                <button
+                <Button
                   className="
             w-[15.625rem]
             h-[3rem]
@@ -261,29 +279,23 @@ export default function PostForm({formData, onInputChange, onDateChange, onCateg
             hover:bg-[#0051FF]
             hover:text-white
             "
-                  onClick={e => {
-                    e.preventDefault();
-                    backButtonHandler();
-                  }}
                 >
                   취소
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
-                  className={`
-              w-[15.625rem]
-              h-[3rem]
-              mt-[10px]
-              border-[1.4px]
-              bg-[#0051FF]
-              rounded-[25rem]
-              text-white
-              ${!isFormValid ? 'cursor-not-allowed' : 'hover:bg-white hover:text-[#0051FF] hover:border-none'}
-              }`}
-                  disabled={!isFormValid}
+                  className="
+                  w-[15.625rem]
+                  h-[3rem]
+                  mt-[10px]
+                  border-[1.4px]
+                  bg-[#0051FF]
+                  rounded-[25rem]
+                  text-white
+                  "
                 >
                   등록
-                </button>
+                </Button>
               </div>
             </form>
           </div>

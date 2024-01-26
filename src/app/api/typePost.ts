@@ -5,11 +5,9 @@ export type Post = {
   id: string;
   likes: boolean;
   views: number;
-  rewards: number;
 
   title: string;
   content: string;
-  imageUrl: string;
   category: string;
 
   sexType: string;
@@ -20,9 +18,9 @@ export type Post = {
 
   userId: string | undefined;
   email: string | null;
-  nickname?: string | undefined;
+  nickname?: string;
   createdAt: Timestamp;
-  updatedAt: Date;
+  updatedAt: Timestamp;
   deadlineDate: firebase.firestore.Timestamp | null;
 
   surveyData: Question[];
@@ -31,7 +29,7 @@ export type Post = {
 export type Question = {
   question: string;
   options: string[];
-  selectedAnswer?: string | null;
+  selectedOption?: string | null;
 };
 
 export type litePost = {
