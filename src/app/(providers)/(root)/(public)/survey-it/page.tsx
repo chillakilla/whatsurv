@@ -1,24 +1,21 @@
 'use client';
 import {getPosts} from '@/app/api/firebaseApi';
-import {useQuery} from '@tanstack/react-query';
-import {FaRegHeart} from 'react-icons/fa';
-import Link from 'next/link';
-import Popular from '../../(main)/_components/carousel/Popular';
+import {Post} from '@/app/api/typePost';
+import {auth, db} from '@/firebase';
 import {Spinner} from '@nextui-org/react';
+import {useQuery} from '@tanstack/react-query';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
-import {IoPeopleSharp} from 'react-icons/io5';
-import SortingPost from '../../(main)/_components/post/SortingPost';
-import {FaCalendarAlt} from 'react-icons/fa';
-import {useState} from 'react';
-import Swal from 'sweetalert2';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
-import {db} from '@/firebase';
-import {Post} from '@/app/api/typePost';
-import {FaHeart} from 'react-icons/fa';
+import Link from 'next/link';
 import {useRouter} from 'next/navigation';
-import {auth} from '@/firebase';
+import {useState} from 'react';
+import {FaCalendarAlt, FaHeart, FaRegHeart} from 'react-icons/fa';
+import {IoPeopleSharp} from 'react-icons/io5';
+import Swal from 'sweetalert2';
 import FloatingBtn from '../../(main)/_components/FloatingBtn';
+import Popular from '../../(main)/_components/carousel/Popular';
+import SortingPost from '../../(main)/_components/post/SortingPost';
 
 const isWithin24Hours = (createdAt: Date | firebase.firestore.Timestamp): boolean => {
   const currentTime = new Date();
@@ -193,21 +190,6 @@ export default function SurveyIt() {
                 <div className="flex items-center w-full mt-4 justify-between">
                   <p className="flex items-center gap-2 text-sm text-[#666]">
                     <FaCalendarAlt />{' '}
-                    <span className="text-[#0051FF]">
-                      {post.createdAt.toLocaleString('ko-KR', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                      })}{' '}
-                      ~ &nbsp;
-                      {post.deadlineDate
-                        ? post.deadlineDate.toDate
-                          ? post.deadlineDate
-                              .toDate()
-                              .toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})
-                          : '2099.12.31'
-                        : '2099.12.31'}
-                    </span>
                   </p>
                   <div className="viewer flex  gap-2 text-[#818490]">
                     <IoPeopleSharp />
