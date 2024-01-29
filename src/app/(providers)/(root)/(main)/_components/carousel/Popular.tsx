@@ -9,6 +9,7 @@ import {useRef, useState} from 'react';
 import {FaCalendarAlt} from 'react-icons/fa';
 import {IoPeopleSharp} from 'react-icons/io5';
 import {Swiper, SwiperSlide} from 'swiper/react';
+import {auth} from '@/firebase';
 
 // Swiper styles
 import 'swiper/css';
@@ -17,9 +18,13 @@ import 'swiper/css/pagination';
 
 import SwiperCore from 'swiper';
 import {Navigation, Pagination} from 'swiper/modules';
+import Swal from 'sweetalert2';
 
 export default function Popular() {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isDone, setIsDone] = useState<boolean>(false);
+  const user = auth.currentUser;
+
   const updateViewsCount = async (postId: string) => {
     try {
       const postRef = doc(db, 'posts', postId);
