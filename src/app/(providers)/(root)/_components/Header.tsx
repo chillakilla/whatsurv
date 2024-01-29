@@ -7,6 +7,7 @@ import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import Tab from './Tab';
+
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userPhotoURL, setUserPhotoURL] = useState<string | null>(null);

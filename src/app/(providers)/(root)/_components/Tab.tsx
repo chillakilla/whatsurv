@@ -6,7 +6,7 @@ export default function Tab() {
   const tabData = [
     {
       id: 'It',
-      name: 'IT',
+      name: 'IT Surv',
       path: '/survey-it',
     },
     {
@@ -18,6 +18,11 @@ export default function Tab() {
       id: 'Faq',
       name: 'FAQ',
       path: '/faq',
+    },
+    {
+      id: 'guide',
+      name: '이용 가이드',
+      path: '/guide',
     },
   ];
   // 탭 클릭 후 페이지 이동

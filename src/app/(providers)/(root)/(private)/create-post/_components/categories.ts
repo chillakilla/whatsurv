@@ -3,8 +3,10 @@ export const majorCategories = [
   {value: '전체', label: '전체'},
   {value: 'IT', label: 'IT'},
   {value: '프론트', label: '프론트'},
-  {value: '백엔드/서버', label: '백엔드/서버'},
-  {value: '머신러닝/AI', label: '머신러닝/AI'},
+  {value: '백엔드', label: '백엔드'},
+  {value: '서버', label: '서버'},
+  {value: '머신러닝', label: '머신러닝'},
+  {value: 'AI', label: 'AI'},
   {value: '데이터', label: '데이터'},
 ];
 
