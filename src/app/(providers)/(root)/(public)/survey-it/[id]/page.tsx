@@ -1,15 +1,15 @@
 'use client';
-import {deletePostById, getPostById, updatePost} from '@/app/api/firebaseApi';
+import {deletePostById, getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
+import {db} from '@/firebase';
 import {Radio, RadioGroup} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {getAuth} from 'firebase/auth';
+import {addDoc, collection, doc, getDocs} from 'firebase/firestore';
 import {useParams, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import Swal from 'sweetalert2';
 import ProgressBar from '../../../(main)/_components/progress/ProgressBar';
-import {addDoc, collection, doc, getDocs} from 'firebase/firestore';
-import {db} from '@/firebase';
 
 const SurveyItDetailPage: React.FC = () => {
   const {id} = useParams();
@@ -125,6 +125,7 @@ const SurveyItDetailPage: React.FC = () => {
         cancelButtonColor: '#d33',
         confirmButtonText: '확인',
         cancelButtonText: '취소',
+
         reverseButtons: true,
       }).then(async result => {
         if (result.isConfirmed) {
