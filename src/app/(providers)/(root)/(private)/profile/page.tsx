@@ -128,7 +128,18 @@ export default function ProfilePage() {
 
   // 성별 저장 함수
   const clickSaveSexTypeHandler = async () => {
-    if (auth.currentUser && userProfile) {
+    const result = await Swal.fire({
+      title: `선택한 성별이 ${sexType}인가요?`,
+      text: '설정한 이후는 변경이 어려워요.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+      confirmButtonColor: '#0051FF',
+      cancelButtonColor: '#d33',
+    });
+
+    if (result.isConfirmed && auth.currentUser && userProfile) {
       await updateDoc(doc(db, 'users', auth.currentUser.uid), {
         sexType: sexType,
       });
@@ -141,7 +152,18 @@ export default function ProfilePage() {
 
   // 생년월일 저장 함수
   const clickSaveBirthDateHandler = async () => {
-    if (auth.currentUser && newBirthDate) {
+    const result = await Swal.fire({
+      title: `생년월일이 ${newBirthDate} 인가요?`,
+      text: '설정한 이후는 변경이 어려워요.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+      confirmButtonColor: '#0051FF',
+      cancelButtonColor: '#d33',
+    });
+
+    if (result.isConfirmed && auth.currentUser && newBirthDate) {
       await updateDoc(doc(db, 'users', auth.currentUser.uid), {
         birthdate: newBirthDate,
       });
