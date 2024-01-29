@@ -29,10 +29,13 @@ export default function PostPage() {
     likes: false,
     deadlineDate: null as firebase.firestore.Timestamp | null,
     createdAt: Timestamp.now(),
-    nickname: user?.displayName,
+    nickname: user?.displayName || null,
+    email: user?.email || null,
+    views: 0,
+    userId: user?.uid || '',
+    updatedAt: Timestamp.now(),
     surveyData: [{question: '', options: ['매우 그렇다', '그렇다', '보통이다', '아니다', '매우 아니다']}],
   });
-
   const [selectedDeadline, setSelectedDeadline] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<string | null>(null);
@@ -88,8 +91,8 @@ export default function PostPage() {
       };
       console.log('formData before saving:', formData); // Log the formData for debugging
       await addPost(updatedFormData);
-
       setFormData({
+        ...formData,
         id: '',
         title: '',
         content: '',
@@ -102,7 +105,7 @@ export default function PostPage() {
         deadlineDate: null as firebase.firestore.Timestamp | null,
         createdAt: Timestamp.now(),
         likes: false,
-        nickname: user?.displayName,
+        nickname: user?.displayName || null,
         surveyData: [{question: '', options: ['', '', '', '', '']}],
       });
 
