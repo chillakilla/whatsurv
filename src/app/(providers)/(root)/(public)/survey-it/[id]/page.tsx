@@ -18,7 +18,7 @@ const SurveyItDetailPage: React.FC = () => {
   const postId = Array.isArray(id) ? id[0] : id;
   const currentUser = auth.currentUser?.uid;
   // 질문 input 값의 상태를 관리하는 state
-  const [answers, setAnswers] = useState<string[]>(['', '', '', '', '', '', '', '']);
+  const [answers, setAnswers] = useState<string[]>(['', '', '', '', '', '', '', '', '', '']);
   const [completedQuestions, setCompletedQuestions] = useState<number>(0);
 
   // SurveyItDetailPage 컴포넌트에서 질문에 답변이 입력될 때마다 호출되는 함수

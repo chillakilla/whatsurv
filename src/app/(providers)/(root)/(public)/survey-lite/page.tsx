@@ -37,6 +37,7 @@ export default function SurveyLitePage() {
     queryFn: getLiteSurveyPosts,
   });
 
+  // 게시물 조회수
   const updateViewsCount = async (postId: string) => {
     try {
       const postRef = doc(db, 'litesurveyposts', postId);
@@ -57,8 +58,12 @@ export default function SurveyLitePage() {
 
   // 게시물 클릭을 처리하는 함수
   const onClickPosthandler = (litepost: litePost) => {
-    setSelectedPost(litepost);
-    updateViewsCount(litepost.id); // 'views' 카운트를 업데이트하는 함수 호출
+    if (!user) {
+      Swal.fire('로그인 회원만 이용 가능합니다.', '', 'warning');
+    } else {
+      setSelectedPost(litepost);
+      updateViewsCount(litepost.id); // 'views' 카운트를 업데이트하는 함수 호출
+    }
   };
 
   // 게시물 모달창 닫기
@@ -92,6 +97,7 @@ export default function SurveyLitePage() {
     }));
   };
 
+  // 게시물 수정하기
   const onClickUpdateButton = (postId: string) => {
     if (!liteSurveyData) {
       return;
