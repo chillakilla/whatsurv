@@ -1,5 +1,5 @@
 'use client';
-import {deletePostById, getPostById} from '@/app/api/firebaseApi';
+import {deletePostById, getPostById, updatePost} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {Radio, RadioGroup} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
@@ -8,6 +8,8 @@ import {useParams, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import Swal from 'sweetalert2';
 import ProgressBar from '../../../(main)/_components/progress/ProgressBar';
+import {addDoc, collection, doc, getDoc} from 'firebase/firestore';
+import {db} from '@/firebase';
 
 const SurveyItDetailPage: React.FC = () => {
   const {id} = useParams();
@@ -48,9 +50,6 @@ const SurveyItDetailPage: React.FC = () => {
     return <div>Error fetching post data</div>;
   }
 
-  const createdAtDate = post?.createdAt.toDate() as Date;
-  const deadlineDate = post?.deadlineDate?.toDate() as Date;
-
   const cancelHandler = () => {
     Swal.fire({
       title: '취소하시겠습니까?',
@@ -74,18 +73,52 @@ const SurveyItDetailPage: React.FC = () => {
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
+    // TODO: 해당 부분에 Post 의 isDone 속성 조정할 게 필요함.
+
+    if (!currentUser) {
+      // Prompt the user to log in
+      Swal.fire({
+        title: '로그인이 필요합니다.',
+        text: '이 작업을 수행하려면 먼저 로그인해야 합니다.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#0051FF',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '로그인',
+        cancelButtonText: '취소',
+        reverseButtons: true,
+      }).then(result => {
+        if (result.isConfirmed) {
+          router.push('/auth');
+        }
+      });
+      return;
+    }
+
+    try {
+      const userDocRef = doc(db, 'users', currentUser);
+      const usersPostIsDone = collection(userDocRef, 'userPosts');
+
+      const createdAt = new Date();
+      await addDoc(usersPostIsDone, {
+        postId: postId,
+        createdAt: createdAt,
+        isDone: true,
+      });
+    } catch (error) {
+      console.error('Error occurred:', error);
+      // Handle errors
+    }
 
     Swal.fire({
       title: '제출하시겠습니까?',
       text: '작성하신 내용은 이후에 수정할 수 없습니다.',
       icon: 'warning',
-
       showCancelButton: true,
       confirmButtonColor: '#0051FF',
       cancelButtonColor: '#d33',
       confirmButtonText: '확인',
       cancelButtonText: '취소',
-
       reverseButtons: true,
     }).then(async result => {
       if (result.isConfirmed) {

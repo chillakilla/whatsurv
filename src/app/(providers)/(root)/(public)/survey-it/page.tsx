@@ -56,7 +56,8 @@ export default function SurveyIt() {
   };
   // 게시물 클릭을 처리하는 함수
   const clickPostHandler = (post: Post) => {
-    if (post.deadlineDate && post.deadlineDate.toDate() < new Date()) {
+    //TODO: 이 부분 string 에 맞게끔 수정 필요
+    if (post.deadlineDate) {
       Swal.fire({
         title: '해당 설문은 종료되었습니다.',
         text: '',
