@@ -1,15 +1,14 @@
 'use client';
 import {getPosts} from '@/app/api/firebaseApi';
-import {doc, getDoc, updateDoc} from 'firebase/firestore';
+import {Post} from '@/app/api/typePost';
 import {db} from '@/firebase';
 import {useQuery} from '@tanstack/react-query';
+import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import Link from 'next/link';
-import {useRef} from 'react';
+import {useRef, useState} from 'react';
+import {FaCalendarAlt} from 'react-icons/fa';
 import {IoPeopleSharp} from 'react-icons/io5';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import {Post} from '@/app/api/typePost';
-import {useState} from 'react';
-import {FaCalendarAlt} from 'react-icons/fa';
 
 // Swiper styles
 import 'swiper/css';
@@ -133,21 +132,6 @@ export default function Popular() {
                       <div className="flex items-center">
                         <p className=" flex items-center gap-2 text-sm text-[#666]">
                           <FaCalendarAlt />{' '}
-                          <span className="text-[#0051FF]">
-                            {post.createdAt.toLocaleString('ko-KR', {
-                              year: 'numeric',
-                              month: '2-digit',
-                              day: '2-digit',
-                            })}{' '}
-                            ~ &nbsp;
-                            {post.deadlineDate
-                              ? post.deadlineDate.toDate
-                                ? post.deadlineDate
-                                    .toDate()
-                                    .toLocaleString('ko-KR', {year: 'numeric', month: '2-digit', day: '2-digit'})
-                                : '2099.12.31'
-                              : '2099.12.31'}
-                          </span>
                         </p>
                       </div>
                       <div className="viewer flex  gap-2 text-[#818490]">
