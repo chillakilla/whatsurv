@@ -1,5 +1,5 @@
 'use client';
-import {deletePostById, getPostById} from '@/app/api/firebaseApi';
+import {deletePostById, getPostById, updatePost} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {Radio, RadioGroup} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
@@ -8,6 +8,8 @@ import {useParams, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import Swal from 'sweetalert2';
 import ProgressBar from '../../../(main)/_components/progress/ProgressBar';
+import {addDoc, collection, doc, getDocs} from 'firebase/firestore';
+import {db} from '@/firebase';
 
 const SurveyItDetailPage: React.FC = () => {
   const {id} = useParams();
@@ -48,9 +50,6 @@ const SurveyItDetailPage: React.FC = () => {
     return <div>Error fetching post data</div>;
   }
 
-  const createdAtDate = post?.createdAt.toDate() as Date;
-  const deadlineDate = post?.deadlineDate?.toDate() as Date;
-
   const cancelHandler = () => {
     Swal.fire({
       title: '취소하시겠습니까?',
@@ -75,24 +74,67 @@ const SurveyItDetailPage: React.FC = () => {
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    Swal.fire({
-      title: '제출하시겠습니까?',
-      text: '작성하신 내용은 이후에 수정할 수 없습니다.',
-      icon: 'warning',
+    if (!currentUser) {
+      Swal.fire({
+        title: '로그인이 필요합니다.',
+        text: '이 작업을 수행하려면 먼저 로그인해야 합니다.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#0051FF',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '로그인',
+        cancelButtonText: '취소',
+        reverseButtons: true,
+      }).then(result => {
+        if (result.isConfirmed) {
+          router.push('/auth');
+        }
+      });
+      return;
+    }
 
-      showCancelButton: true,
-      confirmButtonColor: '#0051FF',
-      cancelButtonColor: '#d33',
-      confirmButtonText: '확인',
-      cancelButtonText: '취소',
+    try {
+      const userDocRef = doc(db, 'users', currentUser);
+      const usersPostIsDone = collection(userDocRef, 'userPosts');
 
-      reverseButtons: true,
-    }).then(async result => {
-      if (result.isConfirmed) {
-        Swal.fire('감사합니다. 다음에 또 이용해주세요!');
-        router.replace('/');
+      const querySnapshot = await getDocs(usersPostIsDone);
+
+      const postIdExists = querySnapshot.docs.some(doc => doc.data().postId === postId);
+      if (postIdExists) {
+        Swal.fire({
+          title: '이미 제출된 설문입니다.',
+          text: '이미 제출한 설문입니다. 다른 설문을 진행해주세요.',
+          icon: 'error',
+        });
+        return;
       }
-    });
+
+      const createdAt = new Date();
+      await addDoc(usersPostIsDone, {
+        postId: postId,
+        createdAt: createdAt,
+        isDone: true,
+      });
+
+      Swal.fire({
+        title: '제출하시겠습니까?',
+        text: '작성하신 내용은 이후에 수정할 수 없습니다.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#0051FF',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+        reverseButtons: true,
+      }).then(async result => {
+        if (result.isConfirmed) {
+          Swal.fire('감사합니다. 다음에 또 이용해주세요!');
+          router.replace('/');
+        }
+      });
+    } catch (error) {
+      console.error('Error occurred:', error);
+    }
   };
 
   const editPostHandler = () => {

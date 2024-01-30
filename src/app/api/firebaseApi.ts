@@ -41,7 +41,6 @@ export const getPosts = async (): Promise<Post[]> => {
         images: data?.images || '',
         category: data?.category || '',
         userId: data?.userId || '',
-        // TODO: firebase 에서 지원하는 건 displayName 이었던 것으로 기억.
         nickname: data?.nickname || '',
         email: data?.email || '',
         ageGroup: data?.ageGroup || '',
@@ -51,9 +50,8 @@ export const getPosts = async (): Promise<Post[]> => {
         researchTime: data?.researchTime || '',
         createdAt: data?.createdAt?.toDate() || new Date(),
         updatedAt: data?.updatedAt?.toDate() || new Date(),
-        deadlineDate: data?.deadlineDate instanceof Timestamp ? data.deadlineDate : data?.deadlineDate || null,
-
-        // TODO: 바뀐 작성 페이지에 들어갈 문항과 문항에 대한 옵션
+        deadlineDate: data?.deadlineDate,
+        isDone: data?.isDone,
         surveyData: data?.questions || [],
       };
     });
@@ -101,6 +99,7 @@ export const addPost = async (newPost: Post): Promise<DocumentReference> => {
       userId: user.uid,
       email: user.email,
       nickname: user.displayName || '',
+      isDone: false,
     });
 
     // TODO: 유저 콜렉션 > 단일 유저 문서 내부 > 서브콜렉션에 문서추가
@@ -196,7 +195,7 @@ export const getUserData = async (userId?: string): Promise<UserData | null> => 
 };
 
 // 게시글 수정하기 updatePost
-export const updatePost = async (postId: string, updatedPost: Omit<Post, 'id' | 'createdAt'>): Promise<void> => {
+export const updatePost = async (postId: string, updatedPost: Partial<Post>): Promise<void> => {
   try {
     const postRef = doc(db, 'posts', postId);
     await updateDoc(postRef, updatedPost);

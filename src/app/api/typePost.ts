@@ -21,8 +21,9 @@ export type Post = {
   nickname: string | null;
   createdAt: Timestamp;
   updatedAt: Timestamp;
-  deadlineDate: firebase.firestore.Timestamp | null;
+  deadlineDate: string;
 
+  isDone: boolean;
   surveyData: Question[];
 };
 

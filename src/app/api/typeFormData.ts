@@ -3,7 +3,7 @@ import {Timestamp} from 'firebase/firestore';
 import {Question} from './typePost';
 import {Post} from './typePost';
 
-export type FormData = Omit<Post, 'likes' | 'views' | 'userId' | 'updatedAt' | 'email'> & {
+export type FormData = Omit<Post, 'views' | 'userId' | 'updatedAt' | 'email'> & {
   id: string;
 
   title: string;
@@ -19,7 +19,7 @@ export type FormData = Omit<Post, 'likes' | 'views' | 'userId' | 'updatedAt' | '
   email: string | null;
   nickname: string | null;
   createdAt: Timestamp;
-  deadlineDate: firebase.firestore.Timestamp | null;
+  deadlineDate: string;
 
   surveyData: Question[];
 

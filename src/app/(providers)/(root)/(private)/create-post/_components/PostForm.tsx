@@ -310,7 +310,7 @@ export default function PostForm({
                   size="lg"
                   labelPlacement="outside-left"
                   name="deadlineDate"
-                  value={formData.deadlineDate instanceof Date ? formData.deadlineDate.toISOString().split('T')[0] : ''}
+                  value={formData.deadlineDate}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
                 />
               </div>
