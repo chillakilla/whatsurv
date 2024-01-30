@@ -1,5 +1,5 @@
-import React, {FormEvent, useState} from 'react';
 import {sendData} from '@/app/api/sendFeedBack';
+import {FormEvent, useState} from 'react';
 import Swal from 'sweetalert2';
 
 export default function FeedBack() {

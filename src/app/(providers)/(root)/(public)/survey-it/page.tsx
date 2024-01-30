@@ -2,7 +2,6 @@
 import {getPosts} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {auth, db} from '@/firebase';
-import {Spinner} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import 'firebase/compat/firestore';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
@@ -14,8 +13,8 @@ import Popular from '../../(main)/_components/carousel/Popular';
 import SortingPost from '../../(main)/_components/post/SortingPost';
 import SearchBar from '../../(main)/searchForm/SearchBar';
 import {Category, majorCategories} from '../../(private)/create-post/_components/categories';
-import SearchRenderPost from './_components/SearchRenderPost';
 import NormalRenderPost from './_components/NormalRenderPost';
+import SearchRenderPost from './_components/SearchRenderPost';
 
 export default function SurveyIt() {
   const [categories, setCategories] = useState<Category[]>(majorCategories);
