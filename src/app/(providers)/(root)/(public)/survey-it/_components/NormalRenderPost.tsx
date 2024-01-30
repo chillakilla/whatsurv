@@ -5,6 +5,8 @@ import {FaHeart, FaRegHeart} from 'react-icons/fa';
 import {IoPeopleSharp} from 'react-icons/io5';
 import {RenderPostProps} from './SearchRenderPost';
 import firebase from 'firebase/compat/app';
+import {Tooltip} from '@nextui-org/react';
+import {BsQuestionCircleFill} from 'react-icons/bs';
 
 export default function NormalRenderPost({
   post,
@@ -54,7 +56,14 @@ export default function NormalRenderPost({
         </button>
       </div>
       <Link href={`/survey-it/${post.id}`}>
-        <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1">{post.title}</h3>
+        <div className="flex justify-between mb-2">
+          <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1">{post.title}</h3>
+          <Tooltip content={`설문 목적`}>
+            <button>
+              <BsQuestionCircleFill className="question" />
+            </button>
+          </Tooltip>
+        </div>
         <div className="survey-method flex flex-col gap-2 bg-slate-100 h-[70px] p-2  ">
           <div className="flex text-sm justify-start grid grid-cols-2 ">
             <p>

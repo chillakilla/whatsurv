@@ -6,6 +6,8 @@ import {useState} from 'react';
 import {FaHeart, FaRegHeart} from 'react-icons/fa';
 import {IoPeopleSharp} from 'react-icons/io5';
 import firebase from 'firebase/compat/app';
+import {Tooltip} from '@nextui-org/react';
+import {BsQuestionCircleFill} from 'react-icons/bs';
 
 export type RenderPostProps = {
   post: Post;
@@ -41,11 +43,11 @@ export default function SearchRenderPost({
       >
         <div className="category-box flex justify-between items-center mb-4">
           <div className="flex gap-2">
-            <div className="bg-[#0051FF] text-[#D6FF00] w-[60px] p-1 text-center rounded-full font-semibold text-xs">
+            <div className="bg-[#0051FF] text-[#D6FF00] w-[70px] p-1 text-center rounded-full font-semibold text-xs">
               {post.category}
             </div>
             <div
-              className={`bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs ${
+              className={`bg-[#D6FF00] text-black w-[70px] p-1 text-center rounded-full font-semibold text-xs ${
                 post.views >= 15 ? 'block' : 'hidden'
               }`}
             >
@@ -67,7 +69,15 @@ export default function SearchRenderPost({
           </button>
         </div>
         <Link href={`/survey-it/${post.id}`}>
-          <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1">{post.title}</h3>
+          <div>
+            <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1">{post.title}</h3>
+            <Tooltip content="설문목적이 무엇인가">
+              <button>
+                <BsQuestionCircleFill />
+              </button>
+            </Tooltip>
+          </div>
+
           <div className="survey-method flex flex-col gap-2 bg-slate-100 h-[70px] p-2  ">
             <div className="flex text-sm justify-start grid grid-cols-2 ">
               <p>

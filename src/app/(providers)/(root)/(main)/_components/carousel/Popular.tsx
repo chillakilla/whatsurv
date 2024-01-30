@@ -103,11 +103,11 @@ export default function Popular() {
                     onClick={() => clickPostHandler(post)}
                   >
                     <div className="category-box flex justify-between items-center">
-                      <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
+                      <div className="bg-[#0051FF] text-[#D6FF00] w-[70px] p-1 text-center rounded-full font-semibold text-xs">
                         {post.category}
                       </div>
                       <div
-                        className={`bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs ${
+                        className={`bg-[#D6FF00] text-black w-[70px] p-1 text-center rounded-full font-semibold text-xs ${
                           post.views >= 15 ? 'block' : 'hidden'
                         }`}
                       >
@@ -136,9 +136,7 @@ export default function Popular() {
 
                     <div className="border-t-1 border-[#eee] flex justify-between items-center p-2">
                       <div className="flex items-center">
-                        <p className=" flex items-center gap-2 text-sm text-[#666]">
-                        종료일 출력 오류에 지쳐가는 중..
-                        </p>
+                        <p className=" flex items-center gap-2 text-sm text-[#666]">종료일 출력 오류에 지쳐가는 중..</p>
                       </div>
                       <div className="viewer flex  gap-2 text-[#818490]">
                         <IoPeopleSharp />

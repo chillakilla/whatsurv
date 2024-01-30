@@ -109,7 +109,7 @@ export default function ItList() {
                 onClick={() => clickPostHandler(post)}
               >
                 <div className="category-box flex justify-between items-center mb-4">
-                  <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
+                  <div className="bg-[#0051FF] text-[#D6FF00] w-[70px] p-1 text-center rounded-full font-semibold text-xs">
                     {post.category}
                   </div>
                   <button
