@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default function WhatSurvGuidePage() {
-  return <div></div>;
+  return <div>쉿 아직 구현중~ ❤️</div>;
 }

@@ -74,7 +74,7 @@ export default function Popular() {
   return (
     <>
       <h2 className="text-xl font-bold">
-        주간 <span className="text-[#0051FF]">TOP 5</span> Surv
+        주간 <span className="text-[#0051ff]">Best</span> Surv
       </h2>
       <Swiper
         onSwiper={swiper => {
@@ -92,7 +92,8 @@ export default function Popular() {
         className="popular-swiper"
       >
         {posts
-          .filter(post => post.views >= 15)
+          .filter(post => post.views >= 40)
+          .sort((a, b) => b.views - a.views)
           .map(post => {
             return (
               <SwiperSlide id="popular-slide" key={post.id}>
@@ -136,7 +137,7 @@ export default function Popular() {
                     <div className="border-t-1 border-[#eee] flex justify-between items-center p-2">
                       <div className="flex items-center">
                         <p className=" flex items-center gap-2 text-sm text-[#666]">
-                          <FaCalendarAlt />{' '}
+                        종료일 출력 오류에 지쳐가는 중..
                         </p>
                       </div>
                       <div className="viewer flex  gap-2 text-[#818490]">

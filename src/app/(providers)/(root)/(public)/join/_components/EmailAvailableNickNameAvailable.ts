@@ -29,6 +29,14 @@ export default function EmailAvailableNickNameAvailable({
       setEmailValidationClass('text-[#EB271C]'); // 에러 색상 설정
       return; // 함수 종료
     }
+
+    // @gmail.com 차단 로직 추가
+    if (email.endsWith('@gmail.com')) {
+      setEmailCheck('@gmail.com은 사용할 수 없습니다');
+      setEmailValidationClass('text-[#EB271C]');
+      return; // 함수 종료
+    }
+
     try {
       const usersRef = collection(db, 'users');
       const q = query(usersRef, where('email', '==', email));

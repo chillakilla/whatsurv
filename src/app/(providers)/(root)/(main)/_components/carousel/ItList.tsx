@@ -6,7 +6,7 @@ import {useQuery} from '@tanstack/react-query';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import Link from 'next/link';
 import {useRef, useState} from 'react';
-import {FaCalendarAlt, FaHeart, FaRegHeart} from 'react-icons/fa';
+import {FaHeart, FaRegHeart} from 'react-icons/fa';
 import {IoPeopleSharp} from 'react-icons/io5';
 import {Swiper, SwiperSlide} from 'swiper/react';
 
@@ -141,9 +141,7 @@ export default function ItList() {
                   </div>
                   <div className="mt-2 border-t-1 border-[#eee] flex  items-center">
                     <div className="flex items-center mt-4 justify-between w-full">
-                      <p className="flex items-center gap-2 text-sm text-[#666]">
-                        <FaCalendarAlt />{' '}
-                      </p>
+                      <p className="flex items-center gap-2 text-sm text-[#666]">종료일 출력 오류에 지쳐가는 중..</p>
                       <div className="viewer flex  gap-2 text-[#818490]">
                         <IoPeopleSharp />
                         {post.views}
