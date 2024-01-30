@@ -1,7 +1,6 @@
 import React, {FormEvent, useState} from 'react';
 import {sendData} from '@/app/api/sendFeedBack';
 import Swal from 'sweetalert2';
-import {title} from 'process';
 
 export default function FeedBack() {
   const [feedback, setFeedback] = useState('');

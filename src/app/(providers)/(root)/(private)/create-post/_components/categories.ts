@@ -1,4 +1,9 @@
-export const majorCategories = [
+export type Category = {
+  label: string;
+  value: string;
+};
+
+export const majorCategories: Category[] = [
   {value: '직종', label: '직종'},
   {value: '전체', label: '전체'},
   {value: 'IT', label: 'IT'},
