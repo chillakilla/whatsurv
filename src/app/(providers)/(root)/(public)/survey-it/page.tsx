@@ -16,10 +16,10 @@ import Swal from 'sweetalert2';
 import FloatingBtn from '../../(main)/_components/FloatingBtn';
 import Popular from '../../(main)/_components/carousel/Popular';
 import SortingPost from '../../(main)/_components/post/SortingPost';
+import SearchBar from '../../(main)/searchForm/SearchBar';
 
 const isWithin24Hours = (createdAt: Date | firebase.firestore.Timestamp): boolean => {
   const currentTime = new Date();
-
   const createdAtDate = createdAt instanceof firebase.firestore.Timestamp ? createdAt.toDate() : createdAt;
 
   const timeDifference = currentTime.getTime() - createdAtDate.getTime();
@@ -33,6 +33,8 @@ export default function SurveyIt() {
   const [selectCategory, setSelectCategory] = useState<string>('전체');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [likedPosts, setLikedPosts] = useState<{[postId: string]: boolean}>({});
+  const [isDone, setIsDone] = useState<boolean>(false);
+  const [searchResults, setSearchResults] = useState<Post[]>([]);
 
   const router = useRouter();
   const user = auth.currentUser;
@@ -54,6 +56,7 @@ export default function SurveyIt() {
       console.error('Views 카운트 업데이트 중 오류:', error);
     }
   };
+
   // 게시물 클릭을 처리하는 함수
   const clickPostHandler = (post: Post) => {
     if (post.deadlineDate && post.deadlineDate.toDate() < new Date()) {
@@ -100,7 +103,7 @@ export default function SurveyIt() {
     data: posts,
     isLoading,
     isError,
-  } = useQuery({
+  } = useQuery<Post[]>({
     queryKey: ['posts'],
     queryFn: getPosts,
   });
@@ -123,83 +126,160 @@ export default function SurveyIt() {
 
   return (
     <div className="flex-col items-center justify-center w-[88.5rem] m-auto mt-20">
-      <SortingPost categories={categories} selectCategory={selectCategory} onCategorySelect={clickCategoryHandler} />
+      <SearchBar posts={posts} setSearchResults={setSearchResults} />
       <Popular />
       <div className="my-20">
         <div className="title-box flex-col items-center  mb-4">
+          <SortingPost
+            categories={categories}
+            selectCategory={selectCategory}
+            onCategorySelect={clickCategoryHandler}
+          />
           <div className="flex">
             <h2 className="font-bold text-xl w-[140px]  ">{selectCategory}</h2>
           </div>
         </div>
-        <div className="post-container grid grid-cols-4 gap-4">
-          {posts.map(post => (
-            <div
-              className={`h-64 border-2 border-[#e1e1e1] flex flex-col justify-between rounded-xl p-4 bg-white `}
-              onClick={() => clickPostHandler(post)}
-              key={post.id}
-            >
-              <div className="category-box flex justify-between items-center mb-4">
-                <div className="flex gap-2">
-                  <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
-                    {post.category}
+        {searchResults.length > 0 ? (
+          <div className="post-container grid grid-cols-4 gap-4">
+            {searchResults.map(post => (
+              <div
+                className={`h-64 border-2 border-[#e1e1e1] flex flex-col justify-between rounded-xl p-4 bg-white `}
+                onClick={() => clickPostHandler(post)}
+                key={post.id}
+              >
+                <div className="category-box flex justify-between items-center mb-4">
+                  <div className="flex gap-2">
+                    <div className="bg-[#0051FF] text-[#D6FF00] w-[60px] p-1 text-center rounded-full font-semibold text-xs">
+                      {post.category}
+                    </div>
+                    <div
+                      className={`bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs ${
+                        post.views >= 15 ? 'block' : 'hidden'
+                      }`}
+                    >
+                      {post.views >= 15 ? 'HOT🔥' : ''}
+                    </div>
+                    <div
+                      className={`bg-[#0051ffb3] text-black w-14 p-1 text-center rounded-full font-md text-xs text-white ${
+                        isWithin24Hours(post.createdAt) ? 'block' : 'hidden'
+                      }`}
+                    >
+                      {isWithin24Hours(post.createdAt) ? 'NEW🔥' : ''}
+                    </div>
                   </div>
-                  <div
-                    className={`bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs ${
-                      post.views >= 15 ? 'block' : 'hidden'
-                    }`}
+                  <button
+                    className="like-button w-[20px] h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent"
+                    onClick={() => clickLikedButtonHandler(post.id)}
                   >
-                    {post.views >= 15 ? 'HOT🔥' : ''}
+                    {likedPosts[post.id] ? <FaHeart /> : <FaRegHeart />}
+                  </button>
+                </div>
+                <Link href={`/survey-it/${post.id}`}>
+                  <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1">{post.title}</h3>
+                  <div className="survey-method flex flex-col gap-2 bg-slate-100 h-[70px] p-2  ">
+                    <div className="flex text-sm justify-start grid grid-cols-2 ">
+                      <p>
+                        <span className="text-[#666]">소요 시간</span> &nbsp; {post.researchTime}
+                      </p>
+                      <p>
+                        <span className="text-[#666]">설문 방식</span> &nbsp; {post.researchType}
+                      </p>
+                    </div>
+                    <div className="survey-method flex text-sm justify-start grid grid-cols-2">
+                      <p>
+                        <span className="text-[#666]">참여 연령</span> &nbsp; {post.ageGroup}
+                      </p>
+                      <p>
+                        <span className="text-[#666]">참여 대상</span> &nbsp; {post.sexType}
+                      </p>
+                    </div>
                   </div>
-                  <div
-                    className={`bg-[#0051ffb3] text-black w-14 p-1 text-center rounded-full font-md text-xs text-white ${
-                      isWithin24Hours(post.createdAt) ? 'block' : 'hidden'
-                    }`}
+                </Link>
+                <div className="border-t-1 border-[#eee] flex justify-between items-center p-2">
+                  <div className="flex items-center w-full mt-4 justify-between">
+                    <p className="flex items-center gap-2 text-sm text-[#666]">
+                      <FaCalendarAlt />{' '}
+                    </p>
+                    <div className="viewer flex  gap-2 text-[#818490]">
+                      <IoPeopleSharp />
+                      {post.views}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="post-container grid grid-cols-4 gap-4">
+            {posts.map(post => (
+              <div
+                className={`h-64 border-2 border-[#e1e1e1] flex flex-col justify-between rounded-xl p-4 bg-white `}
+                onClick={() => clickPostHandler(post)}
+                key={post.id}
+              >
+                <div className="category-box flex justify-between items-center mb-4">
+                  <div className="flex gap-2">
+                    <div className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
+                      {post.category}
+                    </div>
+                    <div
+                      className={`bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs ${
+                        post.views >= 15 ? 'block' : 'hidden'
+                      }`}
+                    >
+                      {post.views >= 15 ? 'HOT🔥' : ''}
+                    </div>
+                    <div
+                      className={`bg-[#0051ffb3] text-black w-14 p-1 text-center rounded-full font-md text-xs text-white ${
+                        isWithin24Hours(post.createdAt) ? 'block' : 'hidden'
+                      }`}
+                    >
+                      {isWithin24Hours(post.createdAt) ? 'NEW🔥' : ''}
+                    </div>
+                  </div>
+                  <button
+                    className="like-button w-[20px] h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent"
+                    onClick={() => clickLikedButtonHandler(post.id)}
                   >
-                    {isWithin24Hours(post.createdAt) ? 'NEW🔥' : ''}
-                  </div>
+                    {likedPosts[post.id] ? <FaHeart /> : <FaRegHeart />}
+                  </button>
                 </div>
-                <button
-                  className="like-button w-[20px] h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent"
-                  onClick={() => clickLikedButtonHandler(post.id)}
-                >
-                  {likedPosts[post.id] ? <FaHeart /> : <FaRegHeart />}
-                </button>
-              </div>
-              <Link href={`/survey-it/${post.id}`}>
-                <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1">{post.title}</h3>
-                <div className="survey-method flex flex-col gap-2 bg-slate-100 h-[70px] p-2  ">
-                  <div className="flex text-sm justify-start grid grid-cols-2 ">
-                    <p>
-                      <span className="text-[#666]">소요 시간</span> &nbsp; {post.researchTime}
-                    </p>
-                    <p>
-                      <span className="text-[#666]">설문 방식</span> &nbsp; {post.researchType}
-                    </p>
+                <Link href={`/survey-it/${post.id}`}>
+                  <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1">{post.title}</h3>
+                  <div className="survey-method flex flex-col gap-2 bg-slate-100 h-[70px] p-2  ">
+                    <div className="flex text-sm justify-start grid grid-cols-2 ">
+                      <p>
+                        <span className="text-[#666]">소요 시간</span> &nbsp; {post.researchTime}
+                      </p>
+                      <p>
+                        <span className="text-[#666]">설문 방식</span> &nbsp; {post.researchType}
+                      </p>
+                    </div>
+                    <div className="survey-method flex text-sm justify-start grid grid-cols-2">
+                      <p>
+                        <span className="text-[#666]">참여 연령</span> &nbsp; {post.ageGroup}
+                      </p>
+                      <p>
+                        <span className="text-[#666]">참여 대상</span> &nbsp; {post.sexType}
+                      </p>
+                    </div>
                   </div>
-                  <div className="survey-method flex text-sm justify-start grid grid-cols-2">
-                    <p>
-                      <span className="text-[#666]">참여 연령</span> &nbsp; {post.ageGroup}
+                </Link>
+                <div className="border-t-1 border-[#eee] flex justify-between items-center p-2">
+                  <div className="flex items-center w-full mt-4 justify-between">
+                    <p className="flex items-center gap-2 text-sm text-[#666]">
+                      <FaCalendarAlt />{' '}
                     </p>
-                    <p>
-                      <span className="text-[#666]">참여 대상</span> &nbsp; {post.sexType}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-              <div className="border-t-1 border-[#eee] flex justify-between items-center p-2">
-                <div className="flex items-center w-full mt-4 justify-between">
-                  <p className="flex items-center gap-2 text-sm text-[#666]">
-                    <FaCalendarAlt />{' '}
-                  </p>
-                  <div className="viewer flex  gap-2 text-[#818490]">
-                    <IoPeopleSharp />
-                    {post.views}
+                    <div className="viewer flex  gap-2 text-[#818490]">
+                      <IoPeopleSharp />
+                      {post.views}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
       <FloatingBtn />
     </div>
