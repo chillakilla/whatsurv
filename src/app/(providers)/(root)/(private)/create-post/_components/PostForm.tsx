@@ -44,16 +44,6 @@ export default function PostForm({
     setFormData(newFormData);
   };
 
-  const optionChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, questionIndex: number, optionIndex: number) => {
-    console.log('Handling option change:', e.target.value, questionIndex, optionIndex);
-    const newFormData = {...formData};
-    newFormData.surveyData[questionIndex] = {
-      ...newFormData.surveyData[questionIndex],
-      selectedOption: e.target.value,
-    };
-    setFormData(newFormData);
-  };
-
   const MAX_QUESTIONS = 10;
 
   const addQuestionHandler = () => {
@@ -255,23 +245,23 @@ export default function PostForm({
                 {/* TODO: 새로 추가된 문항과 그에 따른 옵션 */}
                 <div className="  m-auto">
                   {formData.surveyData.map((question, questionIndex) => (
-                    <>
-                      <div key={questionIndex} className=" m-auto max-w-5xl mt-[30px] mb-[50px]">
+                    <div key={questionIndex}>
+                      <div className=" m-auto max-w-5xl mt-[30px] mb-[50px]">
                         <Input
                           placeholder="질문을 입력해주세요"
                           size="lg"
                           className="mb-[20px] mt-[20px]"
                           value={question.question}
                           onChange={e => questionChangeHandler(e, questionIndex)}
+                          required
                         />
                         <div className="mb-[30px] mt-[30px]]">
-                          <RadioGroup className="" label="하나만 선택해주세요." orientation="horizontal">
+                          <RadioGroup className="" label="하나만 선택해주세요." isDisabled orientation="horizontal">
                             {question.options.map((option, optionIndex) => (
                               <Radio
                                 key={optionIndex}
                                 name={`question_${questionIndex}_option_${optionIndex}`}
                                 value={option}
-                                disabled={true}
                               >
                                 {option}
                               </Radio>
@@ -280,7 +270,7 @@ export default function PostForm({
                         </div>
                       </div>
                       <hr className="!bg-[#0051FF] h-[2px]" />
-                    </>
+                    </div>
                   ))}
                   <div className="mt-[30px] flex justify-end">
                     <Button

@@ -44,6 +44,25 @@ export default function PostPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFormChanged, setIsFormChanged] = useState(false);
 
+  const validateForm = () => {
+    // Basic validation rules
+    if (formData.title.trim() === '') {
+      // Check if title is empty
+      setIsError('Title is required.');
+      return false;
+    }
+    if (formData.content.trim() === '') {
+      // Check if content is empty
+      setIsError('Content is required.');
+      return false;
+    }
+    // Add more validation rules as needed
+
+    // If all validation passes
+    setIsError(null); // Clear any previous error messages
+    return true;
+  };
+
   useEffect(() => {
     const latestRoute = localStorage.getItem('latestRoute');
     if (latestRoute) {
@@ -84,6 +103,19 @@ export default function PostPage() {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const isValid = validateForm();
+    if (!isValid) {
+      // Display a warning message if validation fails
+      Swal.fire({
+        title: '경고!',
+        text: '모든 필드를 작성해야 합니다.',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
+      return; // Do not proceed with submission if validation fails
+    }
+
     setIsSubmitting(true);
 
     Swal.fire({

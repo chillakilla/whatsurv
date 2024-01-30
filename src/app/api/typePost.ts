@@ -21,7 +21,7 @@ export type Post = {
   nickname: string | null;
   createdAt: Timestamp;
   updatedAt: Timestamp;
-  deadlineDate: string;
+  deadlineDate?: string;
 
   surveyData: Question[];
 };
