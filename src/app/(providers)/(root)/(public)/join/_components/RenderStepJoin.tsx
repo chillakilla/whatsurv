@@ -160,7 +160,7 @@ export default function RenderStepJoin({
               </Button>
             </div>
             {emailCheck && <p className={`${emailValidationClass}  mt-[15px] text-center mt-2`}>{emailCheck}</p>}
-
+            <p className="text-center text-[#0051FF] mt-[15px] ">현재 Gmail은 간편로그인만 지원합니다.</p>
             <Button
               className="mt-[20px] w-full bg-[#0051FF] text-white"
               size="lg"
@@ -194,6 +194,10 @@ export default function RenderStepJoin({
               label="다시 한번 비밀번호를 입력해주세요"
             />
             {confirmPasswordCheck && <p className="text-[#EB271C] text-center mt-2">{confirmPasswordCheck}</p>}
+
+            <p className="text-center text-[#0051FF] mt-[15px] ">
+              비밀번호는 숫자, 특수문자 포함 8자 이상이어야 합니다.
+            </p>
             <Button
               className="mt-[20px]  w-full bg-[#0051FF] text-white"
               size="lg"

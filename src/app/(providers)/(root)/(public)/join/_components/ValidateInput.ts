@@ -51,6 +51,11 @@ export default function ValidateInput({
         setEmailCheck('');
         setEmailValidationClass('');
       }
+      if (email.includes('@gmail.com')) {
+        setEmailCheck('@gmail.com은 사용할 수 없습니다');
+        setEmailValidationClass('text-[#EB271C]');
+        isValid = false;
+      }
     }
 
     if (step === 3) {

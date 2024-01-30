@@ -1,18 +1,39 @@
 import {auth, db} from '@/firebase';
 import {Button} from '@nextui-org/react';
 import {
-  GithubAuthProvider,
   GoogleAuthProvider,
   User,
   browserSessionPersistence,
+  fetchSignInMethodsForEmail,
+  getRedirectResult,
   setPersistence,
-  signInWithPopup,
+  signInWithRedirect,
 } from 'firebase/auth';
 import {doc, getDoc, setDoc} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
+import {useEffect} from 'react';
 import Swal from 'sweetalert2';
 export default function SocialLogin() {
   const router = useRouter();
+
+  useEffect(() => {
+    getRedirectResult(auth)
+      .then(result => {
+        if (result) {
+          updateUserProfile(result.user);
+          Swal.fire({
+            title: '로그인 성공!',
+            icon: 'success',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#0051FF',
+          });
+          router.push('/');
+        }
+      })
+      .catch(error => {
+        console.error('로그인 실패:', error);
+      });
+  }, []);
 
   const updateUserProfile = async (user: User) => {
     const userRef = doc(db, 'users', user.uid);
@@ -33,50 +54,51 @@ export default function SocialLogin() {
     }
   };
 
+  const emailCheck = async (email: string | null) => {
+    if (email) {
+      const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+      return signInMethods.length > 0;
+    }
+    return false;
+  };
+
   const googleLogin = async () => {
     try {
       await setPersistence(auth, browserSessionPersistence); // 세션 지속성 설정
 
-      const result = await signInWithPopup(auth, new GoogleAuthProvider());
-      await updateUserProfile(result.user);
-      Swal.fire({
-        title: '로그인 성공!',
-        icon: 'success',
-        confirmButtonText: '확인',
-        confirmButtonColor: '#0051FF',
-      });
-      router.push('/');
+      await signInWithRedirect(auth, new GoogleAuthProvider());
+      const result = await getRedirectResult(auth);
+      if (result) {
+        const isDuplicate = await emailCheck(result.user.email);
+        console.log(isDuplicate);
+        if (isDuplicate) {
+          Swal.fire({
+            title: '이미 사용 중인 이메일입니다!',
+            icon: 'error',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#0051FF',
+          });
+        } else {
+          await updateUserProfile(result.user);
+          Swal.fire({
+            title: '로그인 성공!',
+            icon: 'success',
+            confirmButtonText: '확인',
+            confirmButtonColor: '#0051FF',
+          });
+          router.push('/');
+        }
+      }
     } catch (error) {
       console.error('Google 로그인 실패:', error);
     }
   };
 
-  // GitHub 로그인 함수
-  const githubLogin = async () => {
-    try {
-      await setPersistence(auth, browserSessionPersistence); // 세션 지속성 설정
-      const result = await signInWithPopup(auth, new GithubAuthProvider());
-      await updateUserProfile(result.user); // updateUserProfile 함수 사용
-
-      Swal.fire({
-        title: '로그인 성공!',
-        icon: 'success',
-        confirmButtonText: '확인',
-        confirmButtonColor: '#0051FF',
-      });
-      router.push('/');
-    } catch (error) {
-      console.error('GitHub 로그인 실패:', error);
-    }
-  };
   return (
     <div className="text-center font-bold mt-[30px]">
       <p className="text-xl">간편 로그인</p>
       <Button onClick={googleLogin} className="h-[50px] mt-[20px] bg-transparent	">
         <img src="/image/google_icon.svg" />
-      </Button>
-      <Button onClick={githubLogin} className="h-[50px] mt-[20px] bg-transparent	">
-        <img src="/image/github_icon.svg" />
       </Button>
     </div>
   );
