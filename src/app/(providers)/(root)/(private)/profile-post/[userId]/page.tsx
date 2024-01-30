@@ -1,5 +1,7 @@
 'use client';
-import {deletePost, deleteliteSurveyPostById} from '@/app/api/firebaseApi';
+
+import {deletePost} from '@/app/api/firebaseApi';
+import {deleteliteSurveyPostById} from '@/app/api/litepagefirbaseApi';
 import {Button, Card, CardBody, Tab, Tabs} from '@nextui-org/react';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';

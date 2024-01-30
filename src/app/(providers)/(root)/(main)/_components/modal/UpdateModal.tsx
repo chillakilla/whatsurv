@@ -1,6 +1,7 @@
 'use client';
 
-import {getLiteSurveyPosts, updateLiteSurveyPost, uploadImageToStorage} from '@/app/api/firebaseApi';
+import {uploadImageToStorage} from '@/app/api/firebaseApi';
+import {getLiteSurveyPosts, updateLiteSurveyPost} from '@/app/api/litepagefirbaseApi';
 import {litePost} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import React, {useEffect, useState} from 'react';
