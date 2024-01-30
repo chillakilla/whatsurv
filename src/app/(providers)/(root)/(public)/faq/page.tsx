@@ -1,4 +1,8 @@
 import TypingAnimation from './_components/TypingAnimation';
+import {TbWorld} from 'react-icons/tb';
+import {PiHandWavingFill} from 'react-icons/pi';
+import {AiOutlineFileSearch} from 'react-icons/ai';
+import {MdSecurity} from 'react-icons/md';
 
 export default function FaqPage() {
   const staticTextStart = 'What Surv은 ';
@@ -13,31 +17,58 @@ export default function FaqPage() {
             {staticTextEnd}
           </h1>
         </div>
-        <div className="mt-4 p-4 flex flex-col gap-8">
-          <div className="flex flex-col gap-2">
-            <h3 className="font-semibold text-lg ">WhatSurv 소개</h3>
-            <p className="bg-white  h-28 p-4">
-              WhatSurv은 IT 업계에서 종사하는 관계자들이 사용자의 니즈를 간편하고 빠르게 수집할 수 있도록 돕는 사용자
-              친화적인 설문조사 웹 사이트입니다. <br /> 우리의 목표는 사용자의 다양한 니즈와 의견을 체계적으로 수집하여
-              기업들이 더 나은 제품과 서비스를 개발하는 데 도움을 주는 것입니다.
-            </p>
+        <div className="mt-4 p-4 grid grid-cols-2 gap-8">
+          <div className="w-96 bg-white h-68 flex flex-col items-center p-4 rounded-lg">
+            <TbWorld className="faq-icon" />
+            <hr className="w-full mt-2 #eee" />
+            <div className="h-full flex flex-col justify-between">
+              <h3 className="text-center text-lg font-semibold mt-2">WhatSurv이란?</h3>
+              <p className="h-[144px] text-justify">
+                {' '}
+                WhatSurv은 영어 인삿말인 What&apos;s up? 에서 영감받아 What + survey를 합친 단어 입니다.
+                <br /> What&apos;s up?의 의미가 가벼운 인사인 것처럼 이 사이트가 사용자들에게 친근하고 편안하게 느껴지길
+                바라는 의미가 내포되어 있습니다.
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <h3 className="font-semibold text-lg ">다루는 주제</h3>
-            <p className="bg-white  h-28 p-4">
-              WhatSurv에서는 IT 관련 설문조사 뿐만 아니라, 누구나 쉽게 참여할 수 있는 다양한 주제의 설문조사를 다루고
-              있습니다.
-              <br /> 우리는 다양한 분야의 의견을 수렴하여 사회적, 경제적인 다양성을 존중하며, 그 결과를 기반으로
-              혁신적인 솔루션을 창출하고자 합니다.
-            </p>
+          <div className="w-96 bg-white h-68 flex flex-col items-center p-4 rounded-lg">
+            <PiHandWavingFill className="faq-icon" />
+            <hr className="w-full mt-2 #eee" />
+            <div className=" h-full flex flex-col justify-between">
+              <h3 className="text-center text-lg font-semibold mt-2">사이트 소개</h3>
+              <p className="text-justify">
+                {' '}
+                WhatSurv은 IT 업계에서 종사하는 관계자들이 사용자의 니즈를 간편하고 빠르게 수집할 수 있도록 돕는 사용자
+                친화적인 설문조사 웹 사이트입니다. <br /> 우리의 목표는 사용자의 다양한 니즈와 의견을 체계적으로
+                수집하여 기업들이 더 나은 제품과 서비스를 개발하는 데 도움을 주는 것입니다
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <h3 className="font-semibold text-lg ">WhatSurv의 가치: 신뢰와 정직</h3>
-            <p className="bg-white h-28 p-4">
-              WhatSurv는 신뢰와 정직을 기반으로 하는 이미지를 중요하게 생각하고 있습니다. <br /> 우리는 사용자들의
-              의견을 존중하며, 수집된 데이터를 안전하게 다루어 기업들과 사용자 모두에게 신뢰성 있는 결과물을 제공하고자
-              합니다.
-            </p>
+          <div className="w-96 bg-white h-68 flex flex-col items-center p-4 rounded-lg">
+            <AiOutlineFileSearch className="faq-icon" />
+            <hr className="w-full mt-2 #eee" />
+            <div className="h-full flex flex-col justify-between">
+              <h3 className="text-center text-lg font-semibold mt-2">다루는 주제</h3>
+              <p className="text-justify">
+                {' '}
+                WhatSurv에서는 IT 관련 설문조사 뿐만 아니라, 누구나 쉽게 참여할 수 있는 다양한 주제의 설문조사를 다루고
+                있습니다.
+                <br /> 우리는 다양한 분야의 의견을 수렴하여 사회적, 경제적인 다양성을 존중하며, 그 결과를 기반으로
+                혁신적인 솔루션을 창출하고자 합니다.
+              </p>
+            </div>
+          </div>
+          <div className="w-96 bg-white h-68 flex flex-col items-center p-4 rounded-lg">
+            <MdSecurity className="faq-icon" />
+            <hr className="w-full mt-2 #eee" />
+            <div className="h-full flex flex-col justify-between">
+              <h3 className="text-center text-lg font-semibold mt-2">가치</h3>
+              <p className="h-[144px] text-justify">
+                WhatSurv는 신뢰와 정직을 기반으로 하는 이미지를 중요하게 생각하고 있습니다. <br /> 우리는 사용자들의
+                의견을 존중하며, 수집된 데이터를 안전하게 다루어 기업들과 사용자 모두에게 신뢰성 있는 결과물을
+                제공하고자 합니다.
+              </p>
+            </div>
           </div>
         </div>
       </div>

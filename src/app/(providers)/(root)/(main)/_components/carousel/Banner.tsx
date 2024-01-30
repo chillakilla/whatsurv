@@ -36,12 +36,12 @@ export default function Banner() {
           <div className="flex flex-col justify-center items-center bg-gradient-to-r from-[#D6FF00] via-black to-[#0051FF] ">
             <div className="relative z-1 flex flex-col justify-center items-center w-[500px] h-[400px] m-auto">
               <h1 className="leading-10 text-3xl mb-4 text-white">
-                UT와 리서치 모객이 어려우신가요? <br />
-                WhatSurv으로 초대합니다.
+                환영합니다! <br />
+                WhatSurv 이용 가이드
               </h1>
-              <Link href="/auth">
+              <Link href="/guide">
                 <button className="w-24 h-[35px] bg-[#0051FF] text-white rounded-lg hover:bg-white hover:text-black">
-                  초대 수락
+                  보러가기
                 </button>
               </Link>
             </div>

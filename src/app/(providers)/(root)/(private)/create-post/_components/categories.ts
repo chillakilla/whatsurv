@@ -1,7 +1,7 @@
 export const majorCategories = [
   {value: '전체', label: '전체'},
   {value: 'IT', label: 'IT'},
-  {value: '프론트엔드', label: '프론트엔드'},
+  {value: '프론트', label: '프론트'},
   {value: '백엔드', label: '백엔드'},
   {value: '서버', label: '서버'},
   {value: '머신러닝', label: '머신러닝'},
