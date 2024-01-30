@@ -6,7 +6,7 @@ import {auth, db} from '@/firebase';
 import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {FaHeart, FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
 import {GrView} from 'react-icons/gr';
@@ -187,17 +187,35 @@ export default function SurveyLitePage() {
       return;
     }
 
-    if (likedPosts[postId]) {
+    // 로컬 스토리지에서 해당 게시물의 좋아요 상태를 가져옵니다.
+    const isLiked = likedPosts[postId];
+
+    if (isLiked) {
       // 사용자가 이미 좋아요를 누른 상태에서 다시 클릭한 경우
       await updateLikesCount(postId, -1); // 좋아요 수 감소
       setLikedPosts({...likedPosts, [postId]: false}); // 해당 게시물의 좋아요 상태 변경
+      localStorage.setItem(postId, 'false'); // 로컬 스토리지에 좋아요 상태 저장
     } else {
       // 사용자가 좋아요를 처음 누른 경우
       await updateLikesCount(postId, 1); // 좋아요 수 증가
       setLikedPosts({...likedPosts, [postId]: true}); // 해당 게시물의 좋아요 상태 변경
+      localStorage.setItem(postId, 'true'); // 로컬 스토리지에 좋아요 상태 저장
     }
     refetch(); // 데이터 리프레시
   };
+
+  // 페이지가 로드될 때 실행됩니다.
+  useEffect(() => {
+    // 모든 게시물에 대해 로컬 스토리지에서 좋아요 상태를 가져와서 설정합니다.
+    const storedLikedPosts: {[postId: string]: boolean} = {};
+    liteSurveyData?.forEach(litepost => {
+      const storedLike = localStorage.getItem(litepost.id);
+      if (storedLike !== null) {
+        storedLikedPosts[litepost.id] = storedLike === 'true';
+      }
+    });
+    setLikedPosts(storedLikedPosts);
+  }, [liteSurveyData]);
 
   return (
     <>
