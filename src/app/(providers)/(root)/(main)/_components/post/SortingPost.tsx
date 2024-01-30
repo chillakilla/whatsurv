@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {useQuery} from '@tanstack/react-query';
 import {getPosts} from '@/app/api/firebaseApi';
-import {Category} from '../../../(private)/create-post/_components/categories';
 import {Post} from '@/app/api/typePost';
-import Swal from 'sweetalert2';
+import {useQuery} from '@tanstack/react-query';
+import React, {useEffect} from 'react';
+import {Category} from '../../../(private)/create-post/_components/categories';
 
 type Message = {
   condition: boolean;

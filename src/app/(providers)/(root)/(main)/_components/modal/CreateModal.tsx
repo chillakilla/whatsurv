@@ -1,6 +1,6 @@
 'use client';
 
-import {getLiteSurveyPosts, saveDataToFirebase} from '@/app/api/firebaseApi';
+import {getLiteSurveyPosts, saveDataToFirebase} from '@/app/api/litepagefirbaseApi';
 import {litePost} from '@/app/api/typePost';
 import {db} from '@/firebase';
 import {useQuery} from '@tanstack/react-query';

@@ -112,14 +112,9 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
       {imagesLoaded ? (
         <div className="bg-white w-[39rem] p-8 rounded-lg">
-          <div className="mb-4 flex justify-center gap-4">
+          <div className="mb-4 flex gap-4 justify-center">
             {litepost.images.map((image, index) => (
-              <img
-                key={index}
-                src={image}
-                alt={`Image ${index}`}
-                className="max-w-64 h-auto max-h-64 object-cover mb-2"
-              />
+              <img key={index} src={image} alt={`Image ${index}`} className="w-[8rem] h-[8rem] mb-2 justify-center" />
             ))}
           </div>
           <div className="mb-2 flex justify-end">
@@ -128,7 +123,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
           <h2 className="text-2xl font-bold mb-4 border-b border-black pb-4 mb-4">{litepost.title}</h2>
           <div className="mb-4">
             {contents.map((item, index) => (
-              <div
+              <label
                 key={index}
                 className="flex items-center mb-2 cursor-pointer border-b border-blue-300 pb-4 mb-4"
                 onClick={() => onClickContentsHandler(index)}
@@ -141,7 +136,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
                   }`}
                 ></input>
                 {item}
-              </div>
+              </label>
             ))}
           </div>
           <div className="flex justify-end mt-4">

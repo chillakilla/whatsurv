@@ -1,15 +1,15 @@
 'use client';
-import {deletePostById, getPostById, updatePost} from '@/app/api/firebaseApi';
+import {deletePostById, getPostById} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
+import {db} from '@/firebase';
 import {Radio, RadioGroup} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {getAuth} from 'firebase/auth';
+import {addDoc, collection, doc, getDocs} from 'firebase/firestore';
 import {useParams, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import Swal from 'sweetalert2';
 import ProgressBar from '../../../(main)/_components/progress/ProgressBar';
-import {addDoc, collection, doc, getDocs} from 'firebase/firestore';
-import {db} from '@/firebase';
 
 const SurveyItDetailPage: React.FC = () => {
   const {id} = useParams();
@@ -18,7 +18,7 @@ const SurveyItDetailPage: React.FC = () => {
   const postId = Array.isArray(id) ? id[0] : id;
   const currentUser = auth.currentUser?.uid;
   // 질문 input 값의 상태를 관리하는 state
-  const [answers, setAnswers] = useState<string[]>(['', '', '', '', '', '', '', '']);
+  const [answers, setAnswers] = useState<string[]>(['', '', '', '', '', '', '', '', '', '']);
   const [completedQuestions, setCompletedQuestions] = useState<number>(0);
 
   // SurveyItDetailPage 컴포넌트에서 질문에 답변이 입력될 때마다 호출되는 함수
@@ -125,6 +125,7 @@ const SurveyItDetailPage: React.FC = () => {
         cancelButtonColor: '#d33',
         confirmButtonText: '확인',
         cancelButtonText: '취소',
+
         reverseButtons: true,
       }).then(async result => {
         if (result.isConfirmed) {

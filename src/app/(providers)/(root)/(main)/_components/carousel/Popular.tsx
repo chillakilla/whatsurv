@@ -1,7 +1,7 @@
 'use client';
 import {getPosts} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
-import {db} from '@/firebase';
+import {auth, db} from '@/firebase';
 import {useQuery} from '@tanstack/react-query';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
 import Link from 'next/link';
@@ -9,7 +9,6 @@ import {useRef, useState} from 'react';
 import {FaCalendarAlt} from 'react-icons/fa';
 import {IoPeopleSharp} from 'react-icons/io5';
 import {Swiper, SwiperSlide} from 'swiper/react';
-import {auth} from '@/firebase';
 
 // Swiper styles
 import 'swiper/css';
@@ -18,7 +17,6 @@ import 'swiper/css/pagination';
 
 import SwiperCore from 'swiper';
 import {Navigation, Pagination} from 'swiper/modules';
-import Swal from 'sweetalert2';
 
 export default function Popular() {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
