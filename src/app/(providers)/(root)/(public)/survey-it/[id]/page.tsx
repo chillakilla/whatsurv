@@ -236,7 +236,13 @@ const SurveyItDetailPage: React.FC = () => {
           <button className="w-[80px] h-8 bg-[#eee]" onClick={cancelHandler}>
             취소
           </button>
-          <button className="w-[80px] h-8 bg-[#0051FF] text-white" type="submit">
+          <button
+            className={`w-[80px] h-8 ${
+              completedQuestions < totalQuestions ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#0051FF]'
+            } text-white`}
+            type="submit"
+            disabled={completedQuestions < totalQuestions}
+          >
             제출
           </button>
         </div>
