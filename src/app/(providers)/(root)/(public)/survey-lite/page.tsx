@@ -1,6 +1,6 @@
 'use client';
 
-import {deleteliteSurveyPostById, getLiteSurveyPosts} from '@/app/api/firebaseApi';
+import {deleteliteSurveyPostById, getLiteSurveyPosts} from '@/app/api/litepagefirbaseApi';
 import {litePost} from '@/app/api/typePost';
 import {auth, db} from '@/firebase';
 import {Button} from '@nextui-org/react';
