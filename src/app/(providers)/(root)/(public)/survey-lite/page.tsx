@@ -165,10 +165,11 @@ export default function SurveyLitePage() {
       <div className="flex-col items-center justify-center w-[88.5rem] m-auto mb-20">
         <Banner />
         <div className="my-20">
-          <div>
+          <div className="flex justify-between">
             <h1 className="text-2xl font-bold mb-4">참여해 Surv?</h1>
             {isLoading && <div>로딩 중...</div>}
             {isError && <div>로딩 중에 오류가 발생했습니다.</div>}
+            <button onClick={onClickCreateModalOpen}>작성 하기</button>
           </div>
           <div>
             <div>
