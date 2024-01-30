@@ -1,5 +1,6 @@
 'use client';
-import {updateNicknameInDocs, updateNicknameInLite} from '@/app/api/firebaseApi';
+import {updateNicknameInDocs} from '@/app/api/firebaseApi';
+import {updateNicknameInLite} from '@/app/api/litepagefirbaseApi';
 import {auth, db, storage} from '@/firebase';
 import {Button, Input, Select, SelectItem} from '@nextui-org/react';
 import {useQueryClient} from '@tanstack/react-query';

@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
 import {Button} from '@nextui-org/react';
+import {User, getAuth, onAuthStateChanged} from 'firebase/auth';
+import {useEffect, useState} from 'react';
 import {LuPencilLine} from 'react-icons/lu';
-import {auth} from '@/firebase';
-import {getAuth, onAuthStateChanged, User} from 'firebase/auth';
 
 export default function FloatingBtn() {
   const [user, setUser] = useState<User | null>(null); // Use User from the auth module

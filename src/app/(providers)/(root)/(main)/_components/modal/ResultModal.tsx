@@ -17,12 +17,7 @@ const ResultModal: React.FC<ResultModalProps> = ({litepost, onClickResultModalCl
       <div className="bg-white w-[39rem] p-8 rounded-lg">
         <div className="mb-4 flex justify-center gap-4">
           {litepost.images.map((image, index) => (
-            <img
-              key={index}
-              src={image}
-              alt={`Image ${index}`}
-              className="max-w-64 h-auto max-h-64 object-cover mb-2"
-            />
+            <img key={index} src={image} alt={`Image ${index}`} className="w-[8rem] h-[8rem] mb-2 justify-center" />
           ))}
         </div>
         <div className="mb-2 flex justify-between items-center">

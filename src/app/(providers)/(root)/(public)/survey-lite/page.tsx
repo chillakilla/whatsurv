@@ -1,13 +1,14 @@
 'use client';
 
-import {deleteliteSurveyPostById, getLiteSurveyPosts} from '@/app/api/firebaseApi';
+import {deleteliteSurveyPostById, getLiteSurveyPosts} from '@/app/api/litepagefirbaseApi';
 import {litePost} from '@/app/api/typePost';
 import {auth, db} from '@/firebase';
 import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
-import {doc, getDoc, updateDoc} from 'firebase/firestore';
-import {useState} from 'react';
-import {FaRegCircleUser, FaRegHeart} from 'react-icons/fa6';
+import {collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc} from 'firebase/firestore';
+import {useEffect, useState} from 'react';
+import {FaHeart, FaRegHeart} from 'react-icons/fa';
+import {FaRegCircleUser} from 'react-icons/fa6';
 import {GrView} from 'react-icons/gr';
 import {LuPencilLine} from 'react-icons/lu';
 import Swal from 'sweetalert2';
@@ -22,6 +23,7 @@ export default function SurveyLitePage() {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [menuStates, setMenuStates] = useState<{[postId: string]: boolean}>({});
   const [editingPost, setEditingPost] = useState<litePost | null>(null);
+  const [likedPosts, setLikedPosts] = useState<{[postId: string]: boolean}>({});
 
   const user = auth.currentUser;
   const userId = user?.uid;
@@ -37,6 +39,7 @@ export default function SurveyLitePage() {
     queryFn: getLiteSurveyPosts,
   });
 
+  // 게시물 조회수
   const updateViewsCount = async (postId: string) => {
     try {
       const postRef = doc(db, 'litesurveyposts', postId);
@@ -57,8 +60,12 @@ export default function SurveyLitePage() {
 
   // 게시물 클릭을 처리하는 함수
   const onClickPosthandler = (litepost: litePost) => {
-    setSelectedPost(litepost);
-    updateViewsCount(litepost.id); // 'views' 카운트를 업데이트하는 함수 호출
+    if (!user) {
+      Swal.fire('로그인 회원만 이용 가능합니다.', '', 'warning');
+    } else {
+      setSelectedPost(litepost);
+      updateViewsCount(litepost.id); // 'views' 카운트를 업데이트하는 함수 호출
+    }
   };
 
   // 게시물 모달창 닫기
@@ -92,6 +99,7 @@ export default function SurveyLitePage() {
     }));
   };
 
+  // 게시물 수정하기
   const onClickUpdateButton = (postId: string) => {
     if (!liteSurveyData) {
       return;
@@ -111,7 +119,7 @@ export default function SurveyLitePage() {
         await handleUpdateLiteSurveyPost(updatedData);
       }
 
-      // 모달 닫기 및 데이터 리프레시
+      // 모달 닫기 및 데이터 리프레
       setIsUpdateModalOpen(false);
       await refetch();
     } catch (error) {
@@ -154,15 +162,93 @@ export default function SurveyLitePage() {
     return hoursDifference <= 24;
   };
 
+  // 좋아하는 게시물을 서브컬렉션으로 저장하기
+  const updateLikedPostsSubcollection = async (userId: string, postId: string, isLiked: boolean) => {
+    try {
+      const userRef = doc(db, 'users', userId);
+      const likedPostsRef = collection(userRef, 'likedPosts'); // likedPosts 서브컬렉션에 대한 참조
+
+      // 사용자가 게시물을 좋아하거나 좋아요를 취소할 때 해당 게시물을 likedPosts 서브컬렉션에 추가 또는 제거
+      if (isLiked) {
+        await setDoc(doc(likedPostsRef, postId), {liked: true}); // 게시물을 좋아하는 경우
+      } else {
+        await deleteDoc(doc(likedPostsRef, postId)); // 좋아요를 취소하는 경우
+      }
+    } catch (error) {
+      console.error('좋아하는 게시물 서브컬렉션 업데이트 중 오류:', error);
+    }
+  };
+
+  // 좋아요 버튼 구현하는 함수
+  const onClickLikedPostHandler = async (postId: string) => {
+    if (!user) {
+      return;
+    }
+    if (userId) {
+      try {
+        const postRef = doc(db, 'litesurveyposts', postId);
+        const postSnapshot = await getDoc(postRef);
+
+        if (postSnapshot.exists()) {
+          const currentLikes = postSnapshot.data().likes || 0;
+          const updatedLikes = likedPosts[postId] ? currentLikes - 1 : currentLikes + 1;
+
+          // 좋아요 수 업데이트
+          await updateDoc(postRef, {likes: updatedLikes});
+
+          // 사용자 문서 업데이트: 좋아하는 게시물의 ID를 업데이트합니다.
+          await updateLikedPostsSubcollection(userId, postId, !likedPosts[postId]);
+
+          // likedPosts 상태 업데이트
+          setLikedPosts(prevState => ({
+            ...prevState,
+            [postId]: !prevState[postId],
+          }));
+        } else {
+          console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
+        }
+      } catch (error) {
+        console.error('좋아요 수 업데이트 중 오류:', error);
+      }
+      refetch();
+    }
+  };
+
+  // 좋아요 버튼 누른 게시물 가져오는 함수
+  const getLikedPosts = async (userId: string) => {
+    try {
+      const userRef = doc(db, 'users', userId);
+      const likedPostsRef = collection(userRef, 'likedPosts');
+      const likedPostsSnapshot = await getDocs(likedPostsRef);
+
+      const likedPosts: {[postId: string]: boolean} = {};
+      likedPostsSnapshot.forEach(doc => {
+        likedPosts[doc.id] = true;
+      });
+
+      setLikedPosts(likedPosts);
+    } catch (error) {
+      console.error('좋아하는 게시물을 가져오는 중 오류 발생:', error);
+    }
+  };
+
+  // 좋아요 버튼 누른 게시물 화면에 적용시키는 함수
+  useEffect(() => {
+    if (userId) {
+      getLikedPosts(userId);
+    }
+  }, [userId]);
+
   return (
     <>
       <div className="flex-col items-center justify-center w-[88.5rem] m-auto mb-20">
         <Banner />
         <div className="my-20">
-          <div>
+          <div className="flex justify-between">
             <h1 className="text-2xl font-bold mb-4">참여해 Surv?</h1>
             {isLoading && <div>로딩 중...</div>}
             {isError && <div>로딩 중에 오류가 발생했습니다.</div>}
+            <button onClick={onClickCreateModalOpen}>작성 하기</button>
           </div>
           <div>
             <div>
@@ -207,8 +293,11 @@ export default function SurveyLitePage() {
                                 </div>
                               )}
                             </div>
-                            <button className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF] bg-transparent">
-                              <FaRegHeart />
+                            <button
+                              onClick={() => onClickLikedPostHandler(litepost.id)}
+                              className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF]"
+                            >
+                              {litepost.likes} {likedPosts[litepost.id] ? <FaHeart /> : <FaRegHeart />}
                             </button>
                           </div>
                           <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
