@@ -5,9 +5,9 @@ import {litePost} from '@/app/api/typePost';
 import {auth, db} from '@/firebase';
 import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
-import {doc, getDoc, updateDoc} from 'firebase/firestore';
-import {useState} from 'react';
-import {FaRegHeart} from 'react-icons/fa';
+import {collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc} from 'firebase/firestore';
+import {useEffect, useState} from 'react';
+import {FaHeart, FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
 import {GrView} from 'react-icons/gr';
 import {LuPencilLine} from 'react-icons/lu';
@@ -23,6 +23,7 @@ export default function SurveyLitePage() {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [menuStates, setMenuStates] = useState<{[postId: string]: boolean}>({});
   const [editingPost, setEditingPost] = useState<litePost | null>(null);
+  const [likedPosts, setLikedPosts] = useState<{[postId: string]: boolean}>({});
 
   const user = auth.currentUser;
   const userId = user?.uid;
@@ -161,6 +162,81 @@ export default function SurveyLitePage() {
     return hoursDifference <= 24;
   };
 
+  // 좋아하는 게시물을 서브컬렉션으로 저장하기
+  const updateLikedPostsSubcollection = async (userId: string, postId: string, isLiked: boolean) => {
+    try {
+      const userRef = doc(db, 'users', userId);
+      const likedPostsRef = collection(userRef, 'likedPosts'); // likedPosts 서브컬렉션에 대한 참조
+
+      // 사용자가 게시물을 좋아하거나 좋아요를 취소할 때 해당 게시물을 likedPosts 서브컬렉션에 추가 또는 제거
+      if (isLiked) {
+        await setDoc(doc(likedPostsRef, postId), {liked: true}); // 게시물을 좋아하는 경우
+      } else {
+        await deleteDoc(doc(likedPostsRef, postId)); // 좋아요를 취소하는 경우
+      }
+    } catch (error) {
+      console.error('좋아하는 게시물 서브컬렉션 업데이트 중 오류:', error);
+    }
+  };
+
+  // 좋아요 구현하기
+  const onClickLikedPostHandler = async (postId: string) => {
+    if (!user) {
+      return;
+    }
+    if (userId) {
+      try {
+        const postRef = doc(db, 'litesurveyposts', postId);
+        const postSnapshot = await getDoc(postRef);
+
+        if (postSnapshot.exists()) {
+          const currentLikes = postSnapshot.data().likes || 0;
+          const updatedLikes = likedPosts[postId] ? currentLikes - 1 : currentLikes + 1;
+
+          // 좋아요 수 업데이트
+          await updateDoc(postRef, {likes: updatedLikes});
+
+          // 사용자 문서 업데이트: 좋아하는 게시물의 ID를 업데이트합니다.
+          await updateLikedPostsSubcollection(userId, postId, !likedPosts[postId]);
+
+          // likedPosts 상태 업데이트
+          setLikedPosts(prevState => ({
+            ...prevState,
+            [postId]: !prevState[postId],
+          }));
+        } else {
+          console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
+        }
+      } catch (error) {
+        console.error('좋아요 수 업데이트 중 오류:', error);
+      }
+      refetch();
+    }
+  };
+
+  const getLikedPosts = async (userId: string) => {
+    try {
+      const userRef = doc(db, 'users', userId);
+      const likedPostsRef = collection(userRef, 'likedPosts');
+      const likedPostsSnapshot = await getDocs(likedPostsRef);
+
+      const likedPosts: {[postId: string]: boolean} = {};
+      likedPostsSnapshot.forEach(doc => {
+        likedPosts[doc.id] = true;
+      });
+
+      setLikedPosts(likedPosts);
+    } catch (error) {
+      console.error('좋아하는 게시물을 가져오는 중 오류 발생:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      getLikedPosts(userId);
+    }
+  }, [userId]);
+
   return (
     <>
       <div className="flex-col items-center justify-center w-[88.5rem] m-auto mb-20">
@@ -215,8 +291,11 @@ export default function SurveyLitePage() {
                                 </div>
                               )}
                             </div>
-                            <button className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF]">
-                              {litepost.likes} <FaRegHeart />
+                            <button
+                              onClick={() => onClickLikedPostHandler(litepost.id)}
+                              className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF]"
+                            >
+                              {litepost.likes} {likedPosts[litepost.id] ? <FaHeart /> : <FaRegHeart />}
                             </button>
                           </div>
                           <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
