@@ -119,7 +119,7 @@ export default function SurveyLitePage() {
         await handleUpdateLiteSurveyPost(updatedData);
       }
 
-      // 모달 닫기 및 데이터 리프레시
+      // 모달 닫기 및 데이터 리프레
       setIsUpdateModalOpen(false);
       await refetch();
     } catch (error) {
@@ -184,7 +184,6 @@ export default function SurveyLitePage() {
   // 좋아요 버튼의 상태를 토글하기 위한 함수
   const toggleLikesButton = async (postId: string) => {
     if (!user) {
-      Swal.fire('로그인 회원만 이용 가능합니다.', '', 'warning');
       return;
     }
 
@@ -256,12 +255,14 @@ export default function SurveyLitePage() {
                             </div>
                             <button
                               onClick={() => {
-                                toggleLikesButton(litepost.id);
-                                // 좋아요 상태를 토글할 때마다 아이콘 변경
-                                setLikedPosts(prevLikedPosts => ({
-                                  ...prevLikedPosts,
-                                  [litepost.id]: !prevLikedPosts[litepost.id], // 좋아요 상태 토글
-                                }));
+                                if (user) {
+                                  toggleLikesButton(litepost.id);
+                                  // 좋아요 상태를 토글할 때마다 아이콘 변경
+                                  setLikedPosts(prevLikedPosts => ({
+                                    ...prevLikedPosts,
+                                    [litepost.id]: !prevLikedPosts[litepost.id], // 좋아요 상태 토글
+                                  }));
+                                }
                               }}
                               aria-label="like-button"
                               className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF] bg-transparent"
