@@ -1,45 +1,17 @@
 'use client';
 import {auth} from '@/firebase';
 import {Button, Input, useDisclosure} from '@nextui-org/react';
-import {useQuery, useQueryClient} from '@tanstack/react-query';
-import {
-  AuthError,
-  User,
-  browserSessionPersistence,
-  setPersistence,
-  signInWithEmailAndPassword,
-  signOut,
-} from 'firebase/auth';
+import {AuthError, browserSessionPersistence, setPersistence, signInWithEmailAndPassword, signOut} from 'firebase/auth';
 import {useRouter} from 'next/navigation';
-import {FormEvent, useEffect} from 'react';
+import {FormEvent, useLayoutEffect} from 'react';
 import {AiOutlineEye, AiOutlineEyeInvisible} from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import AuthUseStateCollection from './_components/AuthUseStateCollection';
 import PasswordResetModal from './_components/PasswordResetModal';
 import SocialLogin from './_components/SocialLogin';
 import ValidateInput from './_components/ValidateInput';
-// 사용자 인증 상태 관리 Hook
-
-const useAuthStatus = () => {
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user: User | null) => {
-      queryClient.setQueryData(['auth'], user); // React Query 캐시 업데이트
-    });
-
-    return () => unsubscribe();
-  }, [queryClient]);
-
-  return useQuery<User | null>({
-    queryKey: ['auth'],
-    initialData: null,
-  });
-};
-
 // 로그인 컴포넌트
 export default function AuthPage() {
-  const {data: user, isFetching} = useAuthStatus();
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
   const {
@@ -68,12 +40,16 @@ export default function AuthPage() {
   } = AuthUseStateCollection();
 
   const router = useRouter();
-  useEffect(() => {
-    // 사용자의 인증 상태가 -확인되면 로딩 상태를 종료합니다.
-    if (!isFetching) {
-      setIsLoading(false);
-    }
-  }, [isFetching]);
+
+  useLayoutEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        router.push('/');
+      }
+    });
+
+    return () => unsubscribe();
+  }, [router]);
 
   // 비밀번호 표시 토글 함수
   const clickTogglePasswordhandler = () => {
@@ -145,27 +121,6 @@ export default function AuthPage() {
       setPassword('');
     }
   };
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex justify-center flex-wrap items-center overflow-y-hidden mt-[300px]">
-  //       <p>
-  //         <MoonLoader color="#0051FF" size={100} />
-  //       </p>
-
-  //       <p className="text-[#0051FF] w-full text-center mt-[30px]">잠시만 기다려 주세요..</p>
-  //     </div>
-  //   ); // 로딩 인디케이터 표시
-  // }
-
-  // if (user) {
-  //   return (
-  //     <div>
-  //       로그인 상태입니다! 사용자 이메일: {user.email} &nbsp;
-  //       <Button onClick={clickLogoutHandler}>로그아웃</Button>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="place-items-center grid select-none ">
