@@ -86,39 +86,51 @@ export default function PostPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    try {
-      const updatedFormData = {
-        ...formData,
-      };
-      console.log('formData before saving:', formData); // Log the formData for debugging
-      await addPost(updatedFormData);
-      setFormData({
-        ...formData,
-        id: '',
-        title: '',
-        content: '',
-        category: '',
-        ageGroup: '',
-        sexType: '',
-        researchType: '',
-        researchTime: '',
-        researchLocation: '',
-        deadlineDate: '',
-        createdAt: Timestamp.now(),
-        likes: false,
-        nickname: user?.displayName || null,
-        surveyData: [{question: '', options: ['', '', '', '', '']}],
-      });
+    Swal.fire({
+      title: '확실합니까?',
+      text: '한 번 제출하면, 게시글을 수정할 수 없습니다.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: '네, 제출합니다.',
+      cancelButtonText: '취소',
+      reverseButtons: true,
+    }).then(async result => {
+      if (result.isConfirmed) {
+        try {
+          const updatedFormData = {
+            ...formData,
+          };
+          console.log('formData before saving:', formData); // Log the formData for debugging
+          await addPost(updatedFormData);
+          setFormData({
+            ...formData,
+            id: '',
+            title: '',
+            content: '',
+            category: '',
+            ageGroup: '',
+            sexType: '',
+            researchType: '',
+            researchTime: '',
+            researchLocation: '',
+            deadlineDate: '',
+            createdAt: Timestamp.now(),
+            likes: false,
+            nickname: user?.displayName || null,
+            surveyData: [{question: '', options: ['', '', '', '', '']}],
+          });
 
-      setIsRedirecting(true);
-      setIsFormChanged(false);
-      router.push('/');
-    } catch (error) {
-      console.error('Error adding post:', error);
-      setIsError('Failed to add post. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
+          setIsRedirecting(true);
+          setIsFormChanged(false);
+          router.push('/');
+        } catch (error) {
+          console.error('Error adding post:', error);
+          setIsError('Failed to add post. Please try again.');
+        } finally {
+          setIsSubmitting(false);
+        }
+      }
+    });
   };
 
   return (
