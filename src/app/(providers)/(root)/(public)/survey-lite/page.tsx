@@ -179,7 +179,7 @@ export default function SurveyLitePage() {
     }
   };
 
-  // 좋아요 구현하기
+  // 좋아요 버튼 구현하는 함수
   const onClickLikedPostHandler = async (postId: string) => {
     if (!user) {
       return;
@@ -214,6 +214,7 @@ export default function SurveyLitePage() {
     }
   };
 
+  // 좋아요 버튼 누른 게시물 가져오는 함수
   const getLikedPosts = async (userId: string) => {
     try {
       const userRef = doc(db, 'users', userId);
@@ -231,6 +232,7 @@ export default function SurveyLitePage() {
     }
   };
 
+  // 좋아요 버튼 누른 게시물 화면에 적용시키는 함수
   useEffect(() => {
     if (userId) {
       getLikedPosts(userId);
