@@ -16,22 +16,19 @@ export const majorCategories: Category[] = [
 ];
 
 export const researchTime = [
-  {value: '소요시간', label: '소요시간'},
   {value: '5분 이하', label: '5분 이하'},
-  {value: '10분 이하', label: '10분 이하'},
-  {value: '20분 이하', label: '20분 이하'},
+  {value: '10분 이상', label: '10분 이상'},
+  {value: '20분 이상', label: '20분 이상'},
   {value: '30분 이상', label: '30분 이상'},
 ];
 
 export const sexType = [
-  {value: '성별', label: '성별'},
   {value: '전체', label: '전체'},
   {value: '남성', label: '남성'},
   {value: '여성', label: '여성'},
 ];
 
 export const ageGroup = [
-  {value: '연령', label: '연령'},
   {value: '전체', label: '전체'},
   {value: '10대', label: '10대'},
   {value: '20대', label: '20대'},
@@ -42,7 +39,6 @@ export const ageGroup = [
 ];
 
 export const researchType = [
-  {value: '설문 종류', label: '설문 종류'},
   {value: '전체', label: '전체'},
   {value: '온라인', label: '온라인'},
   {value: 'ARS', label: 'ARS'},
@@ -53,7 +49,6 @@ export const researchType = [
 ];
 
 export const researchLocation = [
-  {value: '설문 장소', label: '설문 장소'},
   {value: '전체', label: '전체'},
   {value: '온라인', label: '온라인'},
   {value: '오프라인', label: '오프라인'},
