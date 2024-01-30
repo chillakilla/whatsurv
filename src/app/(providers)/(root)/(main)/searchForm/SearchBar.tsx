@@ -35,7 +35,22 @@ export default function SearchBar({posts, setSearchResults}: SearchProps) {
 
     // 검색한 단어와 일치하는 게시물 없을 때 alert 창 띄우기
     if (filteredResults.length === 0) {
-      Swal.fire('일치하는 게시물이 없습니다.');
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: toast => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        },
+      });
+
+      Toast.fire({
+        icon: 'warning',
+        title: '존재하는 게시물이 없습니다.',
+      });
     }
 
     setSearchValue('');
