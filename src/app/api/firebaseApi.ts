@@ -51,7 +51,6 @@ export const getPosts = async (): Promise<Post[]> => {
         createdAt: data?.createdAt?.toDate() || new Date(),
         updatedAt: data?.updatedAt?.toDate() || new Date(),
         deadlineDate: data?.deadlineDate,
-        isDone: data?.isDone,
         surveyData: data?.questions || [],
       };
     });
@@ -99,7 +98,6 @@ export const addPost = async (newPost: Post): Promise<DocumentReference> => {
       userId: user.uid,
       email: user.email,
       nickname: user.displayName || '',
-      isDone: false,
     });
 
     // TODO: 유저 콜렉션 > 단일 유저 문서 내부 > 서브콜렉션에 문서추가

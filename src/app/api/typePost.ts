@@ -23,7 +23,6 @@ export type Post = {
   updatedAt: Timestamp;
   deadlineDate: string;
 
-  isDone: boolean;
   surveyData: Question[];
 };
 

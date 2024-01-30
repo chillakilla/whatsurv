@@ -10,6 +10,7 @@ import {Timestamp} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
 import React, {useEffect, useRef, useState} from 'react';
 import PostForm from './_components/PostForm';
+import Swal from 'sweetalert2';
 
 export default function PostPage() {
   const editorRef = useRef<Editor>(null);
@@ -33,7 +34,6 @@ export default function PostPage() {
     email: user?.email || null,
     views: 0,
     userId: user?.uid || '',
-    isDone: false,
     updatedAt: Timestamp.now(),
     surveyData: [{question: '', options: ['매우 그렇다', '그렇다', '보통이다', '아니다', '매우 아니다']}],
   });
@@ -106,7 +106,6 @@ export default function PostPage() {
         deadlineDate: '',
         createdAt: Timestamp.now(),
         likes: false,
-        isDone: false,
         nickname: user?.displayName || null,
         surveyData: [{question: '', options: ['', '', '', '', '']}],
       });
