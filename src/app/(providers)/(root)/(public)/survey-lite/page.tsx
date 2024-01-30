@@ -6,8 +6,8 @@ import {auth, db} from '@/firebase';
 import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {doc, getDoc, updateDoc} from 'firebase/firestore';
-import {useEffect, useState} from 'react';
-import {FaHeart, FaRegHeart} from 'react-icons/fa';
+import {useState} from 'react';
+import {FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
 import {GrView} from 'react-icons/gr';
 import {LuPencilLine} from 'react-icons/lu';
@@ -23,7 +23,6 @@ export default function SurveyLitePage() {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [menuStates, setMenuStates] = useState<{[postId: string]: boolean}>({});
   const [editingPost, setEditingPost] = useState<litePost | null>(null);
-  const [likedPosts, setLikedPosts] = useState<{[postId: string]: boolean}>({});
 
   const user = auth.currentUser;
   const userId = user?.uid;
@@ -162,61 +161,6 @@ export default function SurveyLitePage() {
     return hoursDifference <= 24;
   };
 
-  // 좋아요 카운트 firebase에 저장하기
-  const updateLikesCount = async (postId: string, increment: number) => {
-    try {
-      const postRef = doc(db, 'litesurveyposts', postId);
-      const postSnapshot = await getDoc(postRef);
-
-      if (postSnapshot.exists()) {
-        const currentLikes = postSnapshot.data().likes || 0;
-        await updateDoc(postRef, {
-          likes: currentLikes + increment, // 좋아요 수 업데이트
-        });
-      } else {
-        console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
-      }
-    } catch (error) {
-      console.error('Likes 카운트 업데이트 중 오류:', error);
-    }
-  };
-
-  // 좋아요 버튼의 상태를 토글하기 위한 함수
-  const toggleLikesButton = async (postId: string) => {
-    if (!user) {
-      return;
-    }
-
-    // 로컬 스토리지에서 해당 게시물의 좋아요 상태를 가져옵니다.
-    const isLiked = likedPosts[postId];
-
-    if (isLiked) {
-      // 사용자가 이미 좋아요를 누른 상태에서 다시 클릭한 경우
-      await updateLikesCount(postId, -1); // 좋아요 수 감소
-      setLikedPosts({...likedPosts, [postId]: false}); // 해당 게시물의 좋아요 상태 변경
-      localStorage.setItem(postId, 'false'); // 로컬 스토리지에 좋아요 상태 저장
-    } else {
-      // 사용자가 좋아요를 처음 누른 경우
-      await updateLikesCount(postId, 1); // 좋아요 수 증가
-      setLikedPosts({...likedPosts, [postId]: true}); // 해당 게시물의 좋아요 상태 변경
-      localStorage.setItem(postId, 'true'); // 로컬 스토리지에 좋아요 상태 저장
-    }
-    refetch(); // 데이터 리프레시
-  };
-
-  // 페이지가 로드될 때 실행됩니다.
-  useEffect(() => {
-    // 모든 게시물에 대해 로컬 스토리지에서 좋아요 상태를 가져와서 설정합니다.
-    const storedLikedPosts: {[postId: string]: boolean} = {};
-    liteSurveyData?.forEach(litepost => {
-      const storedLike = localStorage.getItem(litepost.id);
-      if (storedLike !== null) {
-        storedLikedPosts[litepost.id] = storedLike === 'true';
-      }
-    });
-    setLikedPosts(storedLikedPosts);
-  }, [liteSurveyData]);
-
   return (
     <>
       <div className="flex-col items-center justify-center w-[88.5rem] m-auto mb-20">
@@ -271,21 +215,8 @@ export default function SurveyLitePage() {
                                 </div>
                               )}
                             </div>
-                            <button
-                              onClick={() => {
-                                if (user) {
-                                  toggleLikesButton(litepost.id);
-                                  // 좋아요 상태를 토글할 때마다 아이콘 변경
-                                  setLikedPosts(prevLikedPosts => ({
-                                    ...prevLikedPosts,
-                                    [litepost.id]: !prevLikedPosts[litepost.id], // 좋아요 상태 토글
-                                  }));
-                                }
-                              }}
-                              aria-label="like-button"
-                              className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF] bg-transparent"
-                            >
-                              {litepost.likes} {likedPosts[litepost.id] ? <FaHeart /> : <FaRegHeart />}
+                            <button className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF]">
+                              {litepost.likes} <FaRegHeart />
                             </button>
                           </div>
                           <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
