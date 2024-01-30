@@ -271,8 +271,7 @@ export default function PostForm({
                                 key={optionIndex}
                                 name={`question_${questionIndex}_option_${optionIndex}`}
                                 value={option}
-                                checked={question.selectedOption === option}
-                                onChange={e => optionChangeHandler(e, questionIndex, optionIndex)}
+                                disabled={true}
                               >
                                 {option}
                               </Radio>
