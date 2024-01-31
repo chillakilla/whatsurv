@@ -1,11 +1,17 @@
 'use client';
 
-import {deleteliteSurveyPostById, getLiteSurveyPosts, updateLikesCount} from '@/app/api/litepagefirbaseApi';
+import {
+  deleteliteSurveyPostById,
+  getLiteSurveyPosts,
+  updateLikedPostsSubcollection,
+  updateLikesCount,
+  updateViewsCount,
+} from '@/app/api/litepagefirbaseApi';
 import {litePost} from '@/app/api/typePost';
 import {auth, db} from '@/firebase';
 import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
-import {collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc} from 'firebase/firestore';
+import {collection, doc, getDocs} from 'firebase/firestore';
 import {useEffect, useState} from 'react';
 import {LuPencilLine} from 'react-icons/lu';
 import Swal from 'sweetalert2';
@@ -36,25 +42,6 @@ export default function SurveyLitePage() {
     queryKey: ['surveyData'],
     queryFn: getLiteSurveyPosts,
   });
-
-  // 게시물 조회수
-  const updateViewsCount = async (postId: string) => {
-    try {
-      const postRef = doc(db, 'litesurveyposts', postId);
-      const postSnapshot = await getDoc(postRef);
-
-      if (postSnapshot.exists()) {
-        const currentViews = postSnapshot.data().views || 0;
-        await updateDoc(postRef, {
-          views: currentViews + 1, // 'views' 카운트 증가
-        });
-      } else {
-        console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
-      }
-    } catch (error) {
-      console.error('Views 카운트 업데이트 중 오류:', error);
-    }
-  };
 
   // 게시물 클릭을 처리하는 함수
   const onClickPosthandler = (litepost: litePost) => {
@@ -109,15 +96,13 @@ export default function SurveyLitePage() {
 
   const handleUpdateLiteSurveyPost = async (updatedData: {title: string; contents: string[]; images: string[]}) => {
     try {
-      // 수정할 게시물의 ID를 가져옵니다.
+      // 수정할 게시물의 ID 가져오기
       const postId = editingPost?.id;
 
       // 게시물 수정 함수 호출
       if (postId) {
         await handleUpdateLiteSurveyPost(updatedData);
       }
-
-      // 모달 닫기 및 데이터 리프레
       setIsUpdateModalOpen(false);
       await refetch();
     } catch (error) {
@@ -152,23 +137,6 @@ export default function SurveyLitePage() {
     }
   };
 
-  // 좋아하는 게시물을 서브컬렉션으로 저장하기
-  const updateLikedPostsSubcollection = async (userId: string, postId: string, isLiked: boolean) => {
-    try {
-      const userRef = doc(db, 'users', userId);
-      const likedPostsRef = collection(userRef, 'likedPosts'); // likedPosts 서브컬렉션에 대한 참조
-
-      // 사용자가 게시물을 좋아하거나 좋아요를 취소할 때 해당 게시물을 likedPosts 서브컬렉션에 추가 또는 제거
-      if (isLiked) {
-        await setDoc(doc(likedPostsRef, postId), {liked: true}); // 게시물을 좋아하는 경우
-      } else {
-        await deleteDoc(doc(likedPostsRef, postId)); // 좋아요를 취소하는 경우
-      }
-    } catch (error) {
-      console.error('좋아하는 게시물 서브컬렉션 업데이트 중 오류:', error);
-    }
-  };
-
   // 좋아요 버튼 구현하는 함수
   const onClickLikedPostHandler = async (postId: string) => {
     if (!user) {
@@ -179,7 +147,7 @@ export default function SurveyLitePage() {
         // 좋아요 수 카운트 함수
         await updateLikesCount(postId, userId, likedPosts);
 
-        // 사용자 문서 업데이트: 좋아하는 게시물의 ID를 업데이트합니다.
+        // 사용자 문서 업데이트: 좋아하는 게시물의 ID를 업데이트하기
         await updateLikedPostsSubcollection(userId, postId, !likedPosts[postId]);
 
         // likedPosts 상태 업데이트

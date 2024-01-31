@@ -3,6 +3,7 @@ import {Timestamp} from 'firebase/firestore';
 
 export type Post = {
   id: string;
+  liked: number;
   likes: boolean;
   views: number;
 
