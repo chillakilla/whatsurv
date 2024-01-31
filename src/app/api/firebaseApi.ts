@@ -13,6 +13,7 @@ import {
   getDocs,
   orderBy,
   query,
+  setDoc,
   updateDoc,
   where,
 } from 'firebase/firestore';
@@ -28,6 +29,7 @@ export const getPosts = async (): Promise<Post[]> => {
       const data = doc.data();
       return {
         id: doc.id,
+        liked: data?.likes || 0,
         likes: data?.likes || 0,
         counts: data?.counts || 0,
         views: data?.views || 0,
@@ -133,15 +135,20 @@ export const updateViewsCount = async (postId: string) => {
 
 // 게시글 좋아요 증가 (광희님 코드 참고)
 // TODO: 좋아요 감소 추가,  optimistic update 적용 필요
-export const updateLikesCount = async (postId: string): Promise<void> => {
+export const updateLikesCount = async (
+  postId: string,
+  userId: string,
+  itPageLikedPosts: {[postId: string]: boolean},
+): Promise<void> => {
   try {
     const postRef = doc(db, 'posts', postId);
     const postSnapshot = await getDoc(postRef);
 
     if (postSnapshot.exists()) {
-      const currentLikes = postSnapshot.data().likes || 0;
+      const currentLikeds = postSnapshot.data().liked || 0;
+      const updatedLikeds = itPageLikedPosts[postId] ? currentLikeds - 1 : currentLikeds + 1;
       await updateDoc(postRef, {
-        likes: currentLikes + 1, // 'likes' 카운트 증가
+        liked: updatedLikeds,
       });
     } else {
       console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
@@ -280,4 +287,21 @@ export const getUserPostsIT = async (userId: string) => {
   });
 
   return posts;
+};
+
+// 좋아하는 게시물을 유저컬렉션의 likedPosts 서브컬렉션으로 저장하기
+export const updateItPageLikedPostsSubcollection = async (userId: string, postId: string, isLiked: boolean) => {
+  try {
+    const userRef = doc(db, 'users', userId);
+    const likedPostsRef = collection(userRef, 'itSurveyLikedPosts'); // likedPosts 서브컬렉션에 대한 참조
+
+    // 사용자가 게시물을 좋아하거나 좋아요를 취소할 때 해당 게시물을 likedPosts 서브컬렉션에 추가 또는 제거
+    if (isLiked) {
+      await setDoc(doc(likedPostsRef, postId), {liked: true}); // 게시물을 좋아하는 경우
+    } else {
+      await deleteDoc(doc(likedPostsRef, postId)); // 좋아요를 취소하는 경우
+    }
+  } catch (error) {
+    console.error('좋아하는 게시물 서브컬렉션 업데이트 중 오류:', error);
+  }
 };

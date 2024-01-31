@@ -4,7 +4,6 @@ import {addPost} from '@/app/api/firebaseApi';
 import {FormData} from '@/app/api/typeFormData';
 import {Editor} from '@toast-ui/react-editor';
 import {getAuth} from 'firebase/auth';
-import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import {Timestamp} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
@@ -27,6 +26,7 @@ export default function PostPage() {
     researchType: '',
     researchTime: '',
     researchLocation: '',
+    liked: 0,
     likes: false,
     deadlineDate: '',
     createdAt: Timestamp.now(),
