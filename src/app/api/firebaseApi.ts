@@ -242,32 +242,6 @@ export const uploadImageToStorage = async (file: File): Promise<string> => {
   return downloadUrl;
 };
 
-// 게시글+사용자(작성자) 정보 불러오기 fetchPostWithUser
-//TODO: 유저 정보 불러오는 로직 작성
-//TODO: 해당 로직은 미완성.
-// export const fetchPostsWithUser = async (): Promise<PostWithUser[]> => {
-//   try {
-//     const postsQuery = query(collection(db, 'posts'));
-//     const snapshot: QuerySnapshot<DocumentData> = await getDocs(postsQuery);
-//     const postsWithUser: PostWithUser[] = [];
-
-//     for (const doc of snapshot.docs) {
-//       const postData: Post = { id: doc.id, ...(doc.data() as any) } as Post;
-//       const user = await fetchUserById(postData.userId); // Implement fetchUserById
-
-//       if (user) {
-//         const postWithUser: PostWithUser = { ...postData, user };
-//         postsWithUser.push(postWithUser);
-//       }
-//     }
-
-//     return postsWithUser;
-//   } catch (error) {
-//     console.error('에러', error);
-//     throw new Error('게시글을 불러오는 것에 실패했습니다.');
-//   }
-// };
-
 //프로필 페이지의 작성자가 작성한 IT 게시글
 export const getUserPostsIT = async (userId: string) => {
   const postsQuery = query(collection(db, 'posts'), where('userId', '==', userId));
