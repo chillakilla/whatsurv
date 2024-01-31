@@ -1,5 +1,5 @@
 import {db} from '@/firebase';
-import {collection, doc, getDoc, getDocs, query, where} from 'firebase/firestore';
+import {collection, deleteDoc, doc, getDoc, getDocs, query, where} from 'firebase/firestore';
 // getUserLiteSurveyPosts 함수
 export const getUserPostLite = async (userId: string) => {
   const postsQuery = query(collection(db, 'litesurveyposts'), where('userId', '==', userId));
@@ -56,4 +56,16 @@ export const getLikedPosts = async (userId: string) => {
   );
 
   return likedPosts;
+};
+
+// 좋아요한 참여했Surv을 삭제하는 함수
+export const deleteLikedPost = async (userId: string, postId: string) => {
+  try {
+    const postRef = doc(db, `users/${userId}/likedPosts`, postId);
+    await deleteDoc(postRef);
+  } catch (error) {
+    console.error(`좋아요한 게시글 ${postId} 삭제 실패: `, error);
+    // 오류를 다시 던져 상위 컴포넌트에서 처리할 수 있게 함
+    throw error;
+  }
 };

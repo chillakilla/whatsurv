@@ -6,9 +6,10 @@ import {Button, Card, CardBody, Tab, Tabs} from '@nextui-org/react';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import {FaHeart} from 'react-icons/fa';
 import {MoonLoader} from 'react-spinners';
 import Swal from 'sweetalert2';
-import {getLikedPosts, getUserPostLite, getUserPostsIT} from '../_components/getUserPost';
+import {deleteLikedPost, getLikedPosts, getUserPostLite, getUserPostsIT} from '../_components/getUserPost';
 interface PostIT {
   id: string;
   title: string;
@@ -112,6 +113,39 @@ export default function ProfilePost() {
     }
   };
 
+  // 좋아요한 게시글 삭제 핸들러
+  const clickDeleteLikedPostHandler = async (postId: string) => {
+    const result = await Swal.fire({
+      title: '좋아요를 해제하시겠습니까?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteLikedPost(userId, postId); // 좋아요한 게시글 삭제 함수 호출
+        setLikedPosts(prevPosts => prevPosts.filter(post => post.id !== postId)); // UI 업데이트
+
+        Swal.fire({
+          title: '좋아요가 해제되었습니다.',
+          confirmButtonText: '확인',
+          confirmButtonColor: '#3085d6',
+          icon: 'success',
+        });
+      } catch (error) {
+        console.error('좋아요한 게시글 삭제 실패: ', error);
+        Swal.fire({
+          title: '좋아요 해제에 실패했습니다.',
+          text: '다시 시도해 주세요.',
+          icon: 'error',
+        });
+      }
+    }
+  };
   return (
     <div className="max-w-[1400px] m-auto mt-[20px] select-none ">
       <Tabs
@@ -226,15 +260,12 @@ export default function ProfilePost() {
                         <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
                       </Link>
                       <hr />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        color="danger"
-                        className="my-[10px] float-right absolute bottom-[6.5px] right-[10px]"
-                        onClick={() => clickDeleteLiteHandler(post.id)}
+                      <p
+                        className="my-[10px] text-[#0051FF] float-right text-3xl cursor-pointer absolute bottom-[6px] right-[15px]"
+                        onClick={() => clickDeleteLikedPostHandler(post.id)}
                       >
-                        삭제
-                      </Button>
+                        <FaHeart />
+                      </p>
                     </li>
                   ))}
                 </ul>
