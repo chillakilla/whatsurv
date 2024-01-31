@@ -166,7 +166,7 @@ export default function SurveyLitePage() {
   const getLikedPosts = async (userId: string) => {
     try {
       const userRef = doc(db, 'users', userId);
-      const likedPostsRef = collection(userRef, 'likedPosts');
+      const likedPostsRef = collection(userRef, 'liteSurveyLikedPosts');
       const likedPostsSnapshot = await getDocs(likedPostsRef);
 
       const likedPosts: {[postId: string]: boolean} = {};

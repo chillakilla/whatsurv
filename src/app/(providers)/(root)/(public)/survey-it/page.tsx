@@ -1,11 +1,12 @@
 'use client';
 import {getPosts, updateItPageLikedPostsSubcollection, updateLikesCount, updateViewsCount} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
-import {auth} from '@/firebase';
+import {auth, db} from '@/firebase';
 import {useQuery} from '@tanstack/react-query';
 import 'firebase/compat/firestore';
+import {collection, doc, getDocs} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import Swal from 'sweetalert2';
 import FloatingBtn from '../../(main)/_components/FloatingBtn';
 import Popular from '../../(main)/_components/carousel/Popular';
@@ -98,6 +99,31 @@ export default function SurveyIt() {
       refetch();
     }
   };
+
+  // 좋아요 버튼 누른 게시물 가져오는 함수 (광희)
+  const getLikedPosts = async (userId: string) => {
+    try {
+      const userRef = doc(db, 'users', userId);
+      const likedPostsRef = collection(userRef, 'itSurveyLikedPosts');
+      const likedPostsSnapshot = await getDocs(likedPostsRef);
+
+      const likedPosts: {[postId: string]: boolean} = {};
+      likedPostsSnapshot.forEach(doc => {
+        likedPosts[doc.id] = true;
+      });
+
+      setLikedPosts(likedPosts);
+    } catch (error) {
+      console.error('좋아하는 게시물을 가져오는 중 오류 발생:', error);
+    }
+  };
+
+  // 좋아요 버튼 누른 게시물 화면에 적용시키는 함수 (광희)
+  useEffect(() => {
+    if (userId) {
+      getLikedPosts(userId);
+    }
+  }, [userId]);
 
   // 카테고리 선택 함수
   const clickCategoryHandler = (category: string) => {
