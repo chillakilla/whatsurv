@@ -6,7 +6,6 @@ import {Button, Card, CardBody, Tab, Tabs} from '@nextui-org/react';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {FaHeart} from 'react-icons/fa';
 import {MoonLoader} from 'react-spinners';
 import Swal from 'sweetalert2';
 import {deleteLikedPost, getLikedPosts, getUserPostLite, getUserPostsIT} from '../_components/getUserPost';
@@ -260,12 +259,15 @@ export default function ProfilePost() {
                         <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
                       </Link>
                       <hr />
-                      <p
-                        className="my-[10px] text-[#0051FF] float-right text-3xl cursor-pointer absolute bottom-[6px] right-[15px]"
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        color="danger"
+                        className="my-[10px] float-right absolute bottom-[6.5px] right-[10px]"
                         onClick={() => clickDeleteLikedPostHandler(post.id)}
                       >
-                        <FaHeart />
-                      </p>
+                        삭제
+                      </Button>
                     </li>
                   ))}
                 </ul>
