@@ -9,6 +9,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   serverTimestamp,
@@ -150,5 +151,25 @@ export const updateLiteSurveyPost = async (
   } catch (error) {
     console.error('Error updating liteSurvey post: ', error);
     throw new Error('litesurvey 게시글을 수정하는 것에 실패했습니다.');
+  }
+};
+
+// 좋아요 수 카운트 함수
+export const updateLikesCount = async (postId: string, userId: string, likedPosts: {[postId: string]: boolean}) => {
+  try {
+    const postRef = doc(db, 'litesurveyposts', postId);
+    const postSnapshot = await getDoc(postRef);
+
+    if (postSnapshot.exists()) {
+      const currentLikes = postSnapshot.data()?.likes || 0;
+      const updatedLikes = likedPosts[postId] ? currentLikes - 1 : currentLikes + 1;
+
+      // 좋아요 수 업데이트
+      await updateDoc(postRef, {likes: updatedLikes});
+    } else {
+      console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
+    }
+  } catch (error) {
+    console.error('좋아요 수 업데이트 중 오류:', error);
   }
 };
