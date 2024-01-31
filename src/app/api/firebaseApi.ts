@@ -50,7 +50,7 @@ export const getPosts = async (): Promise<Post[]> => {
         researchTime: data?.researchTime || '',
         createdAt: data?.createdAt?.toDate() || new Date(),
         updatedAt: data?.updatedAt?.toDate() || new Date(),
-        deadlineDate: data?.deadlineDate,
+        deadline: data?.deadline,
         surveyData: data?.questions || [],
       };
     });

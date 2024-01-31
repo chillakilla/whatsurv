@@ -14,22 +14,18 @@ interface PostFormProps {
   formData: FormData;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onDateChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   isFormChanged: boolean;
-  selectedDeadline?: string;
 }
 
 export default function PostForm({
   formData,
   setFormData,
   onInputChange,
-  onDateChange,
   onCategoryChange,
   onSubmit,
   isFormChanged,
-  selectedDeadline,
 }: PostFormProps) {
   const auth = getAuth();
   const user = auth.currentUser;
@@ -296,13 +292,14 @@ export default function PostForm({
               <div className="my-[30px] float-right">
                 <Input
                   className="p-[2px]  rounded-lg"
-                  type="date"
+                  type="text"
                   label="마감일"
                   size="lg"
                   labelPlacement="outside-left"
-                  name="deadlineDate"
-                  value={formData.deadlineDate}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
+                  pattern="\d{4}\d{2}\d{2}"
+                  placeholder="yyyymmdd"
+                  name="deadline"
+                  onChange={onInputChange}
                   required
                 />
               </div>

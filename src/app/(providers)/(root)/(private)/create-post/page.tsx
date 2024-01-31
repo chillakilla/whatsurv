@@ -7,7 +7,7 @@ import {getAuth} from 'firebase/auth';
 import 'firebase/compat/firestore';
 import {Timestamp} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import PostForm from './_components/PostForm';
 import Swal from 'sweetalert2';
 
@@ -28,8 +28,8 @@ export default function PostPage() {
     researchLocation: '',
     liked: 0,
     likes: false,
-    deadlineDate: '',
     createdAt: Timestamp.now(),
+    deadline: '',
     nickname: user?.displayName || null,
     email: user?.email || null,
     views: 0,
@@ -37,7 +37,6 @@ export default function PostPage() {
     updatedAt: Timestamp.now(),
     surveyData: [{question: '', options: ['매우 그렇다', '그렇다', '보통이다', '아니다', '매우 아니다']}],
   });
-  const [selectedDeadline, setSelectedDeadline] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -70,19 +69,6 @@ export default function PostPage() {
       router.push(latestRoute);
     }
   }, []);
-
-  const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target;
-
-    setSelectedDeadline(value);
-
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value,
-    }));
-
-    setIsFormChanged(true);
-  };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const {name, value} = e.target;
@@ -132,7 +118,6 @@ export default function PostPage() {
         try {
           const updatedFormData = {
             ...formData,
-            deadlineDate: selectedDeadline,
           };
           console.log('formData before saving:', formData); // Log the formData for debugging
           await addPost(updatedFormData);
@@ -147,7 +132,7 @@ export default function PostPage() {
             researchType: '',
             researchTime: '',
             researchLocation: '',
-            deadlineDate: '',
+            deadline: '',
             createdAt: Timestamp.now(),
             likes: false,
             nickname: user?.displayName || null,
@@ -180,11 +165,9 @@ export default function PostPage() {
           formData={formData}
           setFormData={setFormData}
           onInputChange={onInputChange}
-          onDateChange={onDateChange}
           onCategoryChange={onCategoryChange}
           onSubmit={onSubmit}
           isFormChanged={isFormChanged}
-          selectedDeadline={selectedDeadline}
         />
       </div>
     </div>
