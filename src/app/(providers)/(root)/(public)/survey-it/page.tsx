@@ -1,12 +1,12 @@
 'use client';
-import {getPosts} from '@/app/api/firebaseApi';
+import {getPosts, updateItPageLikedPostsSubcollection, updateLikesCount, updateViewsCount} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {auth, db} from '@/firebase';
 import {useQuery} from '@tanstack/react-query';
 import 'firebase/compat/firestore';
-import {doc, getDoc, updateDoc} from 'firebase/firestore';
+import {collection, doc, getDocs} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import Swal from 'sweetalert2';
 import FloatingBtn from '../../(main)/_components/FloatingBtn';
 import Popular from '../../(main)/_components/carousel/Popular';
@@ -26,32 +26,16 @@ export default function SurveyIt() {
 
   const router = useRouter();
   const user = auth.currentUser;
+  const userId = user?.uid;
   const {
     data: posts,
     isLoading,
     isError,
+    refetch,
   } = useQuery<Post[]>({
     queryKey: ['posts'],
     queryFn: getPosts,
   });
-
-  const updateViewsCount = async (postId: string) => {
-    try {
-      const postRef = doc(db, 'posts', postId);
-      const postSnapshot = await getDoc(postRef);
-
-      if (postSnapshot.exists()) {
-        const currentViews = postSnapshot.data().views || 0;
-        await updateDoc(postRef, {
-          views: currentViews + 1, // 'views' 카운트 증가
-        });
-      } else {
-        console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
-      }
-    } catch (error) {
-      console.error('Views 카운트 업데이트 중 오류:', error);
-    }
-  };
 
   // 게시물 클릭을 처리하는 함수
   const clickPostHandler = (post: Post) => {
@@ -83,13 +67,63 @@ export default function SurveyIt() {
   };
 
   // 게시물 찜 업데이트 함수
-  const clickLikedButtonHandler = (postId: string) => {
-    setLikedPosts(prev => {
-      const updatedLikedPosts = {...prev};
-      updatedLikedPosts[postId] = !updatedLikedPosts[postId];
-      return updatedLikedPosts;
-    });
+  // const clickLikedButtonHandler = (postId: string) => {
+  //   setLikedPosts(prev => {
+  //     const updatedLikedPosts = {...prev};
+  //     updatedLikedPosts[postId] = !updatedLikedPosts[postId];
+  //     return updatedLikedPosts;
+  //   });
+  // };
+
+  // 게시물 찜 업데이트 함수 (광희)
+  const clickLikedButtonHandler = async (postId: string) => {
+    if (!user) {
+      return;
+    }
+    if (userId) {
+      try {
+        // 좋아요 수 카운트 함수
+        await updateLikesCount(postId, userId, likedPosts);
+
+        // 사용자 문서 업데이트: 좋아하는 게시물의 ID를 업데이트하기
+        await updateItPageLikedPostsSubcollection(userId, postId, !likedPosts[postId]);
+
+        // likedPosts 상태 업데이트
+        setLikedPosts(prevState => ({
+          ...prevState,
+          [postId]: !prevState[postId],
+        }));
+      } catch (error) {
+        console.error('좋아요 수 업데이트 중 오류:', error);
+      }
+      refetch();
+    }
   };
+
+  // 좋아요 버튼 누른 게시물 가져오는 함수 (광희)
+  const getLikedPosts = async (userId: string) => {
+    try {
+      const userRef = doc(db, 'users', userId);
+      const likedPostsRef = collection(userRef, 'itSurveyLikedPosts');
+      const likedPostsSnapshot = await getDocs(likedPostsRef);
+
+      const likedPosts: {[postId: string]: boolean} = {};
+      likedPostsSnapshot.forEach(doc => {
+        likedPosts[doc.id] = true;
+      });
+
+      setLikedPosts(likedPosts);
+    } catch (error) {
+      console.error('좋아하는 게시물을 가져오는 중 오류 발생:', error);
+    }
+  };
+
+  // 좋아요 버튼 누른 게시물 화면에 적용시키는 함수 (광희)
+  useEffect(() => {
+    if (userId) {
+      getLikedPosts(userId);
+    }
+  }, [userId]);
 
   // 카테고리 선택 함수
   const clickCategoryHandler = (category: string) => {
