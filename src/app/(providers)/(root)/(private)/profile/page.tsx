@@ -197,8 +197,6 @@ export default function ProfilePage() {
         photoURL: photoURL,
       };
     });
-    //! 원인찾기1. 헤더 쿼리 상태와 프로필 페이지 쿼리 무효화 되는지 확인하기
-    console.log('이미지 업로드 완료, 쿼리 무효화 시작');
 
     if (auth.currentUser.uid) {
       queryClient.invalidateQueries({
@@ -219,7 +217,7 @@ export default function ProfilePage() {
 
   return (
     <div className="text-lg leading-10 w-[400px] m-auto mt-[80px] select-none">
-      <div className="w-[200px] m-auto mt-[30px]" style={{cursor: 'pointer'}}>
+      <div className="w-[200px] m-auto mt-[30px]">
         {userProfile?.photoURL ? (
           <div className="relative">
             <div className="w-[200px] h-[200px]  rounded-full overflow-hidden ">
@@ -233,7 +231,7 @@ export default function ProfilePage() {
               onClick={clickImageHandler}
               className="m-auto absolute rounded-full bg-white  p-[10px] left-[75px] bottom-[-15px]"
             >
-              <FaCamera size={25} className="camera-icon  " />
+              <FaCamera size={25} className="camera-icon cursor-pointer  " />
             </p>
           </div>
         ) : (
@@ -243,7 +241,7 @@ export default function ProfilePage() {
               onClick={clickImageHandler}
               className="m-auto absolute rounded-full bg-white  p-[10px] left-[75px] bottom-[-15px]"
             >
-              <FaCamera size={25} className="camera-icon " />
+              <FaCamera size={25} className="camera-icon cursor-pointer " />
             </p>
           </div>
         )}

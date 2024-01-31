@@ -1,21 +1,25 @@
 'use client';
 
-import {deleteliteSurveyPostById, getLiteSurveyPosts} from '@/app/api/litepagefirbaseApi';
+import {
+  deleteliteSurveyPostById,
+  getLiteSurveyPosts,
+  updateLikedPostsSubcollection,
+  updateLikesCount,
+  updateViewsCount,
+} from '@/app/api/litepagefirbaseApi';
 import {litePost} from '@/app/api/typePost';
 import {auth, db} from '@/firebase';
 import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
-import {collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc} from 'firebase/firestore';
+import {collection, doc, getDocs} from 'firebase/firestore';
 import {useEffect, useState} from 'react';
-import {FaHeart, FaRegHeart} from 'react-icons/fa';
-import {FaRegCircleUser} from 'react-icons/fa6';
-import {GrView} from 'react-icons/gr';
 import {LuPencilLine} from 'react-icons/lu';
 import Swal from 'sweetalert2';
 import Banner from '../../(main)/_components/carousel/Banner';
 import LiteSurveyCreateModal from '../../(main)/_components/modal/CreateModal';
 import LiteSurveyModal from '../../(main)/_components/modal/SurveyModal';
 import UpdateModal from '../../(main)/_components/modal/UpdateModal';
+import LitePostComponent from './_components/LitePostComponent';
 
 export default function SurveyLitePage() {
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
@@ -38,25 +42,6 @@ export default function SurveyLitePage() {
     queryKey: ['surveyData'],
     queryFn: getLiteSurveyPosts,
   });
-
-  // 게시물 조회수
-  const updateViewsCount = async (postId: string) => {
-    try {
-      const postRef = doc(db, 'litesurveyposts', postId);
-      const postSnapshot = await getDoc(postRef);
-
-      if (postSnapshot.exists()) {
-        const currentViews = postSnapshot.data().views || 0;
-        await updateDoc(postRef, {
-          views: currentViews + 1, // 'views' 카운트 증가
-        });
-      } else {
-        console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
-      }
-    } catch (error) {
-      console.error('Views 카운트 업데이트 중 오류:', error);
-    }
-  };
 
   // 게시물 클릭을 처리하는 함수
   const onClickPosthandler = (litepost: litePost) => {
@@ -111,15 +96,13 @@ export default function SurveyLitePage() {
 
   const handleUpdateLiteSurveyPost = async (updatedData: {title: string; contents: string[]; images: string[]}) => {
     try {
-      // 수정할 게시물의 ID를 가져옵니다.
+      // 수정할 게시물의 ID 가져오기
       const postId = editingPost?.id;
 
       // 게시물 수정 함수 호출
       if (postId) {
         await handleUpdateLiteSurveyPost(updatedData);
       }
-
-      // 모달 닫기 및 데이터 리프레
       setIsUpdateModalOpen(false);
       await refetch();
     } catch (error) {
@@ -154,31 +137,6 @@ export default function SurveyLitePage() {
     }
   };
 
-  // 새로운 게시물 알려주기
-  const isWithin24Hours = (createdAt: Date): boolean => {
-    const currentTime = new Date();
-    const timeDifference = currentTime.getTime() - createdAt.getTime();
-    const hoursDifference = timeDifference / (1000 * 60 * 60);
-    return hoursDifference <= 24;
-  };
-
-  // 좋아하는 게시물을 서브컬렉션으로 저장하기
-  const updateLikedPostsSubcollection = async (userId: string, postId: string, isLiked: boolean) => {
-    try {
-      const userRef = doc(db, 'users', userId);
-      const likedPostsRef = collection(userRef, 'likedPosts'); // likedPosts 서브컬렉션에 대한 참조
-
-      // 사용자가 게시물을 좋아하거나 좋아요를 취소할 때 해당 게시물을 likedPosts 서브컬렉션에 추가 또는 제거
-      if (isLiked) {
-        await setDoc(doc(likedPostsRef, postId), {liked: true}); // 게시물을 좋아하는 경우
-      } else {
-        await deleteDoc(doc(likedPostsRef, postId)); // 좋아요를 취소하는 경우
-      }
-    } catch (error) {
-      console.error('좋아하는 게시물 서브컬렉션 업데이트 중 오류:', error);
-    }
-  };
-
   // 좋아요 버튼 구현하는 함수
   const onClickLikedPostHandler = async (postId: string) => {
     if (!user) {
@@ -186,27 +144,17 @@ export default function SurveyLitePage() {
     }
     if (userId) {
       try {
-        const postRef = doc(db, 'litesurveyposts', postId);
-        const postSnapshot = await getDoc(postRef);
+        // 좋아요 수 카운트 함수
+        await updateLikesCount(postId, userId, likedPosts);
 
-        if (postSnapshot.exists()) {
-          const currentLikes = postSnapshot.data().likes || 0;
-          const updatedLikes = likedPosts[postId] ? currentLikes - 1 : currentLikes + 1;
+        // 사용자 문서 업데이트: 좋아하는 게시물의 ID를 업데이트하기
+        await updateLikedPostsSubcollection(userId, postId, !likedPosts[postId]);
 
-          // 좋아요 수 업데이트
-          await updateDoc(postRef, {likes: updatedLikes});
-
-          // 사용자 문서 업데이트: 좋아하는 게시물의 ID를 업데이트합니다.
-          await updateLikedPostsSubcollection(userId, postId, !likedPosts[postId]);
-
-          // likedPosts 상태 업데이트
-          setLikedPosts(prevState => ({
-            ...prevState,
-            [postId]: !prevState[postId],
-          }));
-        } else {
-          console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
-        }
+        // likedPosts 상태 업데이트
+        setLikedPosts(prevState => ({
+          ...prevState,
+          [postId]: !prevState[postId],
+        }));
       } catch (error) {
         console.error('좋아요 수 업데이트 중 오류:', error);
       }
@@ -218,7 +166,7 @@ export default function SurveyLitePage() {
   const getLikedPosts = async (userId: string) => {
     try {
       const userRef = doc(db, 'users', userId);
-      const likedPostsRef = collection(userRef, 'likedPosts');
+      const likedPostsRef = collection(userRef, 'liteSurveyLikedPosts');
       const likedPostsSnapshot = await getDocs(likedPostsRef);
 
       const likedPosts: {[postId: string]: boolean} = {};
@@ -255,86 +203,17 @@ export default function SurveyLitePage() {
               {liteSurveyData && liteSurveyData.length > 0 ? (
                 <div className="post-container grid grid-cols-4 gap-4">
                   {liteSurveyData?.sort(sortByCreatedAt).map(litepost => (
-                    <div key={litepost.id}>
-                      <div className="h-[13.4375rem] bg-white border-1 border-[#C1C5CC] flex-col justify-between rounded-md p-4">
-                        <div className="top-content h-[5.625rem]">
-                          <div className="flex justify-between items-center mb-4">
-                            <div className="flex gap-2">
-                              {/* <p className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
-                                Lite
-                              </p> */}
-                              <p
-                                className={`bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs ${
-                                  isWithin24Hours(litepost.createdAt) ? '' : 'hidden'
-                                }`}
-                              >
-                                {isWithin24Hours(litepost.createdAt) ? 'New🔥' : ''}
-                              </p>
-                              <button
-                                className="toggle-menu w-8 h-7"
-                                onClick={() => onClickUpdateDeleteMenuToggle(litepost.id)}
-                              >
-                                {userId === litepost.userId && (menuStates[litepost.id] ? 'X' : '⁝')}
-                              </button>
-                              {menuStates[litepost.id] && (
-                                <div className="gap-2">
-                                  <button
-                                    className="w-8 h-7 text-blue-800 hover:bg-gray-100"
-                                    onClick={() => onClickUpdateButton(litepost.id)}
-                                  >
-                                    수정
-                                  </button>
-                                  <button
-                                    className="w-8 h-7 text-red-500 hover:bg-gray-100"
-                                    onClick={() => onClickDeleteButton(litepost.id)}
-                                  >
-                                    삭제
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                            <button
-                              onClick={() => onClickLikedPostHandler(litepost.id)}
-                              className="like-button w-12 h-[1.25rem] flex justify-evenly items-center text-[#0051FF]"
-                            >
-                              {litepost.likes} {likedPosts[litepost.id] ? <FaHeart /> : <FaRegHeart />}
-                            </button>
-                          </div>
-                          <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
-                            <div className="flex justify-between">
-                              <div>
-                                <p className="text-xs text-[#666] mb-4">
-                                  작성일 |{' '}
-                                  {litepost.createdAt
-                                    ? litepost.createdAt.toLocaleString('ko-KR', {
-                                        year: 'numeric',
-                                        month: '2-digit',
-                                        day: '2-digit',
-                                      })
-                                    : '2099.12.31'}
-                                </p>
-                              </div>
-                              {/* <p className="text-xs text-[#666] mb-4">
-                                마감일 | {litepost.deadlineDate ? litepost.deadlineDate.toLocaleString() : '2099.12.31'}
-                              </p> */}
-                            </div>
-                            <h3 className="text-lg font-bold">{litepost.title}</h3>
-                          </a>
-                        </div>
-                        <div className="bottom-content flex items-end">
-                          <div className="flex justify-between items-center mt-[3.125rem] w-full border-t-1 ">
-                            <div className="user flex mt-4 gap-2">
-                              <FaRegCircleUser />
-                              <p className="font-semibold">{litepost.nickname}</p>
-                            </div>
-                            <div className="viewer flex mt-4 gap-2 text-[#818490]">
-                              <GrView />
-                              {litepost.views}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <LitePostComponent
+                      key={litepost.id}
+                      litepost={litepost}
+                      onClickPosthandler={onClickPosthandler}
+                      onClickUpdateDeleteMenuToggle={onClickUpdateDeleteMenuToggle}
+                      onClickUpdateButton={onClickUpdateButton}
+                      onClickDeleteButton={onClickDeleteButton}
+                      onClickLikedPostHandler={onClickLikedPostHandler}
+                      likedPosts={likedPosts}
+                      menuStates={menuStates}
+                    />
                   ))}
                 </div>
               ) : (
