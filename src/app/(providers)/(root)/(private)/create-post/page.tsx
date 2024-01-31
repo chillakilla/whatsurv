@@ -37,7 +37,7 @@ export default function PostPage() {
     updatedAt: Timestamp.now(),
     surveyData: [{question: '', options: ['매우 그렇다', '그렇다', '보통이다', '아니다', '매우 아니다']}],
   });
-  const [selectedDeadline, setSelectedDeadline] = useState<Date | null>(null);
+  const [selectedDeadline, setSelectedDeadline] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -73,14 +73,15 @@ export default function PostPage() {
 
   const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
-    const dateValue = value ? new Date(value) : null;
 
-    setSelectedDeadline(dateValue);
+    setSelectedDeadline(value);
 
     setFormData(prevData => ({
       ...prevData,
-      [name]: dateValue,
+      [name]: value,
     }));
+
+    setIsFormChanged(true);
   };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -113,7 +114,7 @@ export default function PostPage() {
         icon: 'warning',
         confirmButtonText: '확인',
       });
-      return; // Do not proceed with submission if validation fails
+      return;
     }
 
     setIsSubmitting(true);
@@ -131,6 +132,7 @@ export default function PostPage() {
         try {
           const updatedFormData = {
             ...formData,
+            deadlineDate: selectedDeadline,
           };
           console.log('formData before saving:', formData); // Log the formData for debugging
           await addPost(updatedFormData);
@@ -182,6 +184,7 @@ export default function PostPage() {
           onCategoryChange={onCategoryChange}
           onSubmit={onSubmit}
           isFormChanged={isFormChanged}
+          selectedDeadline={selectedDeadline}
         />
       </div>
     </div>

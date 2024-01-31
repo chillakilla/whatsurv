@@ -18,6 +18,7 @@ interface PostFormProps {
   onSubmit: React.FormEventHandler<HTMLFormElement>;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   isFormChanged: boolean;
+  selectedDeadline?: string;
 }
 
 export default function PostForm({
@@ -28,6 +29,7 @@ export default function PostForm({
   onCategoryChange,
   onSubmit,
   isFormChanged,
+  selectedDeadline,
 }: PostFormProps) {
   const auth = getAuth();
   const user = auth.currentUser;
@@ -301,6 +303,7 @@ export default function PostForm({
                   name="deadlineDate"
                   value={formData.deadlineDate}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
+                  required
                 />
               </div>
               {/* 버튼 컨테이너 */}
