@@ -210,3 +210,20 @@ export const updateLikedPostsSubcollection = async (userId: string, postId: stri
     console.error('좋아하는 게시물 서브컬렉션 업데이트 중 오류:', error);
   }
 };
+
+// Lite설문조사 작성할때 users 컬렉션의 userPosts 서브컬렉션에도 데이터 삭제하기
+export const deleteLiteSurveyPostOfUsers = async (postId: string, userId: any) => {
+  try {
+    // 사용자의 게시물 목록에서 해당 게시물의 ID를 찾아 제거
+    const userPostsQuery = query(collection(db, 'users', userId, 'userPosts'), where('postId', '==', postId));
+    const userPostsSnapshot = await getDocs(userPostsQuery);
+
+    userPostsSnapshot.forEach(async doc => {
+      await deleteDoc(doc.ref);
+    });
+    console.log(`userPosts의 게시물 ${postId} 삭제 완료`);
+  } catch (error) {
+    console.error(`게시물 삭제 중 오류 발생 ${postId}:`, error);
+    throw new Error('게시물 삭제 오류');
+  }
+};
