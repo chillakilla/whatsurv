@@ -110,6 +110,20 @@ const SurveyItDetailPage: React.FC = () => {
       }
 
       const createdAt = new Date();
+      await addDoc(collection(db, 'submitedposts'), {
+        postId: id,
+        email: post?.email,
+        nickname: post?.nickname,
+        category: post?.category,
+        sexType: post?.sexType,
+        ageGroup: post?.ageGroup,
+        title: post?.title,
+        content: post?.content,
+        researchLocation: post?.researchLocation,
+        researchTime: post?.researchTime,
+        researchType: post?.researchType,
+        answers: answers,
+      });
       await addDoc(usersPostIsDone, {
         postId: postId,
         createdAt: createdAt,
