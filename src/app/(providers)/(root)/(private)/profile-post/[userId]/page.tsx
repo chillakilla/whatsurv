@@ -8,7 +8,7 @@ import {useParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {MoonLoader} from 'react-spinners';
 import Swal from 'sweetalert2';
-import {getUserPostLite, getUserPostsIT} from '../_components/getUserPost';
+import {getLikedPosts, getUserPostLite, getUserPostsIT} from '../_components/getUserPost';
 interface PostIT {
   id: string;
   title: string;
@@ -24,6 +24,8 @@ interface PostLite {
 export default function ProfilePost() {
   const [posts, setPosts] = useState<PostIT[]>([]);
   const [userPostLite, setUserPostLite] = useState<PostLite[]>([]);
+  const [likedPosts, setLikedPosts] = useState<PostLite[]>([]);
+
   const params = useParams<{userId: string}>();
   const userId = params.userId;
 
@@ -32,10 +34,11 @@ export default function ProfilePost() {
   useEffect(() => {
     if (userId) {
       setIsLoading(true);
-      Promise.all([getUserPostsIT(userId), getUserPostLite(userId)])
-        .then(([postsIT, postsLite]) => {
+      Promise.all([getUserPostsIT(userId), getUserPostLite(userId), getLikedPosts(userId)])
+        .then(([postsIT, postsLite, likedPostsData]) => {
           setPosts(postsIT);
           setUserPostLite(postsLite);
+          setLikedPosts(likedPostsData);
         })
         .finally(() => {
           setIsLoading(false);
@@ -201,6 +204,43 @@ export default function ProfilePost() {
               ) : (
                 <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
                   작성한 글이 없습니다.
+                </p>
+              )}
+            </CardBody>
+          </Card>
+        </Tab>
+        <Tab title="내가 좋아요한 참여했Surv">
+          <Card className="bg-transparent border-0  rounded-none shadow-none">
+            <CardBody>
+              {likedPosts.length > 0 ? (
+                <ul
+                  className="grid grid-cols-2 md:grid-cols-4 gap-4 auto
+                "
+                >
+                  {likedPosts.map(post => (
+                    <li
+                      key={post.id}
+                      className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
+                    >
+                      <Link href="/survey-lite" className="text-xl">
+                        <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
+                      </Link>
+                      <hr />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        color="danger"
+                        className="my-[10px] float-right absolute bottom-[6.5px] right-[10px]"
+                        onClick={() => clickDeleteLiteHandler(post.id)}
+                      >
+                        삭제
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
+                  좋아요한 글이 없습니다.
                 </p>
               )}
             </CardBody>

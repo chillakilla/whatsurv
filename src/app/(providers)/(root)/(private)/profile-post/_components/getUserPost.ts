@@ -1,6 +1,5 @@
 import {db} from '@/firebase';
-import {collection, getDocs, query, where} from 'firebase/firestore';
-
+import {collection, doc, getDoc, getDocs, query, where} from 'firebase/firestore';
 // getUserLiteSurveyPosts 함수
 export const getUserPostLite = async (userId: string) => {
   const postsQuery = query(collection(db, 'litesurveyposts'), where('userId', '==', userId));
@@ -35,4 +34,26 @@ export const getUserPostsIT = async (userId: string) => {
   });
 
   return posts;
+};
+
+//내가 좋아요한 참여했Surv
+export const getLikedPosts = async (userId: string) => {
+  const likedPostsQuery = query(collection(db, `users/${userId}/likedPosts`), where('liked', '==', true));
+  const querySnapshot = await getDocs(likedPostsQuery);
+  const likedPosts = await Promise.all(
+    querySnapshot.docs.map(async documentSnapshot => {
+      const postId = documentSnapshot.id;
+      const postRef = doc(db, 'litesurveyposts', postId); // 'litesurveyposts' 컬렉션을 참조합니다.
+      const postSnap = await getDoc(postRef);
+      const postData = postSnap.data();
+
+      return {
+        id: postId,
+        title: postData?.title,
+        content: postData?.content,
+      };
+    }),
+  );
+
+  return likedPosts;
 };
