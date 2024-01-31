@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  deleteLiteSurveyPostOfUsers,
   deleteliteSurveyPostById,
   getLiteSurveyPosts,
   updateLikedPostsSubcollection,
@@ -43,8 +44,15 @@ export default function SurveyLitePage() {
     queryFn: getLiteSurveyPosts,
   });
 
+  // 좋아요 버튼 누른 게시물 화면에 적용시키는 함수
+  useEffect(() => {
+    if (userId) {
+      getLikedPosts(userId);
+    }
+  }, [userId]);
+
   // 게시물 클릭을 처리하는 함수
-  const onClickPosthandler = (litepost: litePost) => {
+  const onClickPostHandler = (litepost: litePost) => {
     if (!user) {
       Swal.fire('로그인 회원만 이용 가능합니다.', '', 'warning');
     } else {
@@ -123,6 +131,7 @@ export default function SurveyLitePage() {
     });
     if (result.isConfirmed) {
       try {
+        await deleteLiteSurveyPostOfUsers(postId, userId);
         await deleteliteSurveyPostById(postId);
         Swal.fire({
           title: '삭제되었습니다.',
@@ -180,13 +189,6 @@ export default function SurveyLitePage() {
     }
   };
 
-  // 좋아요 버튼 누른 게시물 화면에 적용시키는 함수
-  useEffect(() => {
-    if (userId) {
-      getLikedPosts(userId);
-    }
-  }, [userId]);
-
   return (
     <>
       <div className="flex-col items-center justify-center w-[88.5rem] m-auto mb-20">
@@ -206,7 +208,7 @@ export default function SurveyLitePage() {
                     <LitePostComponent
                       key={litepost.id}
                       litepost={litepost}
-                      onClickPosthandler={onClickPosthandler}
+                      onClickPostHandler={onClickPostHandler}
                       onClickUpdateDeleteMenuToggle={onClickUpdateDeleteMenuToggle}
                       onClickUpdateButton={onClickUpdateButton}
                       onClickDeleteButton={onClickDeleteButton}
