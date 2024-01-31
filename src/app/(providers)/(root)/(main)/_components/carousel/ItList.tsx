@@ -1,11 +1,11 @@
 'use client';
-import {getPosts} from '@/app/api/firebaseApi';
+import {getPosts, updateItPageLikedPostsSubcollection, updateLikesCount} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
-import {db} from '@/firebase';
+import {auth, db} from '@/firebase';
 import {useQuery} from '@tanstack/react-query';
-import {doc, getDoc, updateDoc} from 'firebase/firestore';
+import {collection, doc, getDoc, getDocs, updateDoc} from 'firebase/firestore';
 import Link from 'next/link';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {FaHeart, FaRegHeart} from 'react-icons/fa';
 import {IoPeopleSharp} from 'react-icons/io5';
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -21,6 +21,17 @@ import {Navigation, Pagination} from 'swiper/modules';
 export default function ItList() {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [likedPosts, setLikedPosts] = useState<{[postId: string]: boolean}>({});
+  const user = auth.currentUser;
+  const userId = user?.uid;
+  const {
+    // data: posts,
+    // isLoading,
+    // isError,
+    refetch,
+  } = useQuery<Post[]>({
+    queryKey: ['posts'],
+    queryFn: getPosts,
+  });
   const updateViewsCount = async (postId: string) => {
     try {
       const postRef = doc(db, 'posts', postId);
@@ -45,13 +56,63 @@ export default function ItList() {
   };
 
   // 게시물 찜 업데이트 함수
-  const clickLikedButtonHandler = (postId: string) => {
-    setLikedPosts(prev => {
-      const updatedLikedPosts = {...prev};
-      updatedLikedPosts[postId] = !updatedLikedPosts[postId];
-      return updatedLikedPosts;
-    });
+  // const clickLikedButtonHandler = (postId: string) => {
+  //   setLikedPosts(prev => {
+  //     const updatedLikedPosts = {...prev};
+  //     updatedLikedPosts[postId] = !updatedLikedPosts[postId];
+  //     return updatedLikedPosts;
+  //   });
+  // };
+
+  // 게시물 찜 업데이트 함수 (광희)
+  const clickLikedButtonHandler = async (postId: string) => {
+    if (!user) {
+      return;
+    }
+    if (userId) {
+      try {
+        // 좋아요 수 카운트 함수
+        await updateLikesCount(postId, userId, likedPosts);
+
+        // 사용자 문서 업데이트: 좋아하는 게시물의 ID를 업데이트하기
+        await updateItPageLikedPostsSubcollection(userId, postId, !likedPosts[postId]);
+
+        // likedPosts 상태 업데이트
+        setLikedPosts(prevState => ({
+          ...prevState,
+          [postId]: !prevState[postId],
+        }));
+      } catch (error) {
+        console.error('좋아요 수 업데이트 중 오류:', error);
+      }
+      refetch();
+    }
   };
+
+  // 좋아요 버튼 누른 게시물 가져오는 함수 (광희)
+  const getLikedPosts = async (userId: string) => {
+    try {
+      const userRef = doc(db, 'users', userId);
+      const likedPostsRef = collection(userRef, 'itSurveyLikedPosts');
+      const likedPostsSnapshot = await getDocs(likedPostsRef);
+
+      const likedPosts: {[postId: string]: boolean} = {};
+      likedPostsSnapshot.forEach(doc => {
+        likedPosts[doc.id] = true;
+      });
+
+      setLikedPosts(likedPosts);
+    } catch (error) {
+      console.error('좋아하는 게시물을 가져오는 중 오류 발생:', error);
+    }
+  };
+
+  // 좋아요 버튼 누른 게시물 화면에 적용시키는 함수 (광희)
+  useEffect(() => {
+    if (userId) {
+      getLikedPosts(userId);
+    }
+  }, [userId]);
 
   SwiperCore.use([Navigation, Pagination]);
   const swiperRef = useRef<SwiperCore>();
