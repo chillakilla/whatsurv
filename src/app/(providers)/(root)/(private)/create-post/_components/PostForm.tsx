@@ -14,7 +14,6 @@ interface PostFormProps {
   formData: FormData;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onDateChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
   isFormChanged: boolean;
@@ -24,7 +23,6 @@ export default function PostForm({
   formData,
   setFormData,
   onInputChange,
-  onDateChange,
   onCategoryChange,
   onSubmit,
   isFormChanged,
@@ -40,16 +38,6 @@ export default function PostForm({
       ...newFormData.surveyData[questionIndex],
       question: e.target.value,
       selectedOption: null,
-    };
-    setFormData(newFormData);
-  };
-
-  const optionChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, questionIndex: number, optionIndex: number) => {
-    console.log('Handling option change:', e.target.value, questionIndex, optionIndex);
-    const newFormData = {...formData};
-    newFormData.surveyData[questionIndex] = {
-      ...newFormData.surveyData[questionIndex],
-      selectedOption: e.target.value,
     };
     setFormData(newFormData);
   };
@@ -255,24 +243,23 @@ export default function PostForm({
                 {/* TODO: 새로 추가된 문항과 그에 따른 옵션 */}
                 <div className="  m-auto">
                   {formData.surveyData.map((question, questionIndex) => (
-                    <>
-                      <div key={questionIndex} className=" m-auto max-w-5xl mt-[30px] mb-[50px]">
+                    <div key={questionIndex}>
+                      <div className=" m-auto max-w-5xl mt-[30px] mb-[50px]">
                         <Input
                           placeholder="질문을 입력해주세요"
                           size="lg"
                           className="mb-[20px] mt-[20px]"
                           value={question.question}
                           onChange={e => questionChangeHandler(e, questionIndex)}
+                          required
                         />
                         <div className="mb-[30px] mt-[30px]]">
-                          <RadioGroup className="" label="하나만 선택해주세요." orientation="horizontal">
+                          <RadioGroup className="" label="하나만 선택해주세요." isDisabled orientation="horizontal">
                             {question.options.map((option, optionIndex) => (
                               <Radio
                                 key={optionIndex}
                                 name={`question_${questionIndex}_option_${optionIndex}`}
                                 value={option}
-                                checked={question.selectedOption === option}
-                                onChange={e => optionChangeHandler(e, questionIndex, optionIndex)}
                               >
                                 {option}
                               </Radio>
@@ -281,7 +268,7 @@ export default function PostForm({
                         </div>
                       </div>
                       <hr className="!bg-[#0051FF] h-[2px]" />
-                    </>
+                    </div>
                   ))}
                   <div className="mt-[30px] flex justify-end">
                     <Button
@@ -305,13 +292,16 @@ export default function PostForm({
               <div className="my-[30px] float-right">
                 <Input
                   className="p-[2px]  rounded-lg"
-                  type="date"
+                  type="text"
                   label="마감일"
                   size="lg"
                   labelPlacement="outside-left"
-                  name="deadlineDate"
-                  value={formData.deadlineDate}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => onDateChange(e)}
+                  pattern="\d{4}.\d{2}.\d{2}"
+                  name="deadline"
+                  value={formData.deadline}
+                  placeholder="yyyy.mm.dd"
+                  onChange={onInputChange}
+                  required
                 />
               </div>
               {/* 버튼 컨테이너 */}
