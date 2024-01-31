@@ -9,9 +9,11 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
   where,
 } from 'firebase/firestore';
@@ -150,5 +152,61 @@ export const updateLiteSurveyPost = async (
   } catch (error) {
     console.error('Error updating liteSurvey post: ', error);
     throw new Error('litesurvey 게시글을 수정하는 것에 실패했습니다.');
+  }
+};
+
+// 게시물 조회수
+export const updateViewsCount = async (postId: string) => {
+  try {
+    const postRef = doc(db, 'litesurveyposts', postId);
+    const postSnapshot = await getDoc(postRef);
+
+    if (postSnapshot.exists()) {
+      const currentViews = postSnapshot.data().views || 0;
+      await updateDoc(postRef, {
+        views: currentViews + 1, // 'views' 카운트 증가
+      });
+    } else {
+      console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
+    }
+  } catch (error) {
+    console.error('Views 카운트 업데이트 중 오류:', error);
+  }
+};
+
+// 좋아요 수 카운트 함수
+export const updateLikesCount = async (postId: string, userId: string, likedPosts: {[postId: string]: boolean}) => {
+  try {
+    const postRef = doc(db, 'litesurveyposts', postId);
+    const postSnapshot = await getDoc(postRef);
+
+    if (postSnapshot.exists()) {
+      const currentLikes = postSnapshot.data()?.likes || 0;
+      const updatedLikes = likedPosts[postId] ? currentLikes - 1 : currentLikes + 1;
+
+      // 좋아요 수 업데이트
+      await updateDoc(postRef, {likes: updatedLikes});
+    } else {
+      console.error(`게시물 ID ${postId}에 해당하는 문서가 존재하지 않습니다.`);
+    }
+  } catch (error) {
+    console.error('좋아요 수 업데이트 중 오류:', error);
+  }
+};
+
+// 좋아하는 게시물을 유저컬렉션의 likedPosts 서브컬렉션으로 저장하기
+export const updateLikedPostsSubcollection = async (userId: string, postId: string, isLiked: boolean) => {
+  try {
+    const userRef = doc(db, 'users', userId);
+    const likedPostsRef = collection(userRef, 'liteSurveyLikedPosts'); // likedPosts 서브컬렉션에 대한 참조
+
+    // 사용자가 게시물을 좋아하거나 좋아요를 취소할 때 해당 게시물을 likedPosts 서브컬렉션에 추가 또는 제거
+    if (isLiked) {
+      await setDoc(doc(likedPostsRef, postId), {liked: true}); // 게시물을 좋아하는 경우
+    } else {
+      await deleteDoc(doc(likedPostsRef, postId)); // 좋아요를 취소하는 경우
+    }
+  } catch (error) {
+    console.error('좋아하는 게시물 서브컬렉션 업데이트 중 오류:', error);
   }
 };
