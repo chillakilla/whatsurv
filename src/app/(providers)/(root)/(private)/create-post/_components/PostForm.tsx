@@ -296,9 +296,10 @@ export default function PostForm({
                   label="마감일"
                   size="lg"
                   labelPlacement="outside-left"
-                  pattern="\d{4}\d{2}\d{2}"
-                  placeholder="yyyymmdd"
+                  pattern="\d{4}.\d{2}.\d{2}"
                   name="deadline"
+                  value={formData.deadline}
+                  placeholder="yyyy.mm.dd"
                   onChange={onInputChange}
                   required
                 />

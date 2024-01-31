@@ -44,21 +44,16 @@ export default function PostPage() {
   const [isFormChanged, setIsFormChanged] = useState(false);
 
   const validateForm = () => {
-    // Basic validation rules
     if (formData.title.trim() === '') {
-      // Check if title is empty
       setIsError('Title is required.');
       return false;
     }
     if (formData.content.trim() === '') {
-      // Check if content is empty
       setIsError('Content is required.');
       return false;
     }
-    // Add more validation rules as needed
 
-    // If all validation passes
-    setIsError(null); // Clear any previous error messages
+    setIsError(null);
     return true;
   };
 
