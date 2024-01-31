@@ -19,11 +19,10 @@ export type FormData = Omit<Post, 'views' | 'userId' | 'updatedAt' | 'email'> & 
   email: string | null;
   nickname: string | null;
   createdAt: Timestamp;
-  deadlineDate: string;
+  deadline?: string;
 
   surveyData: Question[];
 
-  likes: boolean;
   views: number;
   userId: string | undefined;
   updatedAt: Timestamp;

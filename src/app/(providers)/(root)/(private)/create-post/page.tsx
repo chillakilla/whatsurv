@@ -7,8 +7,9 @@ import {getAuth} from 'firebase/auth';
 import 'firebase/compat/firestore';
 import {Timestamp} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
 import PostForm from './_components/PostForm';
+import Swal from 'sweetalert2';
 
 export default function PostPage() {
   const editorRef = useRef<Editor>(null);
@@ -27,22 +28,34 @@ export default function PostPage() {
     researchLocation: '',
     liked: 0,
     likes: false,
-    deadlineDate: '',
     createdAt: Timestamp.now(),
+    deadline: '',
     nickname: user?.displayName || null,
     email: user?.email || null,
     views: 0,
     userId: user?.uid || '',
-    isDone: false,
     updatedAt: Timestamp.now(),
     surveyData: [{question: '', options: ['매우 그렇다', '그렇다', '보통이다', '아니다', '매우 아니다']}],
   });
-  const [selectedDeadline, setSelectedDeadline] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFormChanged, setIsFormChanged] = useState(false);
+
+  const validateForm = () => {
+    if (formData.title.trim() === '') {
+      setIsError('Title is required.');
+      return false;
+    }
+    if (formData.content.trim() === '') {
+      setIsError('Content is required.');
+      return false;
+    }
+
+    setIsError(null);
+    return true;
+  };
 
   useEffect(() => {
     const latestRoute = localStorage.getItem('latestRoute');
@@ -51,18 +64,6 @@ export default function PostPage() {
       router.push(latestRoute);
     }
   }, []);
-
-  const onDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target;
-    const dateValue = value ? new Date(value) : null;
-
-    setSelectedDeadline(dateValue);
-
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: dateValue,
-    }));
-  };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const {name, value} = e.target;
@@ -84,42 +85,66 @@ export default function PostPage() {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const isValid = validateForm();
+    if (!isValid) {
+      // Display a warning message if validation fails
+      Swal.fire({
+        title: '경고!',
+        text: '모든 필드를 작성해야 합니다.',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
-    try {
-      const updatedFormData = {
-        ...formData,
-      };
-      console.log('formData before saving:', formData); // Log the formData for debugging
-      await addPost(updatedFormData);
-      setFormData({
-        ...formData,
-        id: '',
-        title: '',
-        content: '',
-        category: '',
-        ageGroup: '',
-        sexType: '',
-        researchType: '',
-        researchTime: '',
-        researchLocation: '',
-        deadlineDate: '',
-        createdAt: Timestamp.now(),
-        likes: false,
-        isDone: false,
-        nickname: user?.displayName || null,
-        surveyData: [{question: '', options: ['', '', '', '', '']}],
-      });
+    Swal.fire({
+      title: '확실합니까?',
+      text: '한 번 제출하면, 게시글을 수정할 수 없습니다.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: '네, 제출합니다.',
+      cancelButtonText: '취소',
+      reverseButtons: true,
+    }).then(async result => {
+      if (result.isConfirmed) {
+        try {
+          const updatedFormData = {
+            ...formData,
+          };
+          console.log('formData before saving:', formData); // Log the formData for debugging
+          await addPost(updatedFormData);
+          setFormData({
+            ...formData,
+            id: '',
+            title: '',
+            content: '',
+            category: '',
+            ageGroup: '',
+            sexType: '',
+            researchType: '',
+            researchTime: '',
+            researchLocation: '',
+            deadline: '',
+            createdAt: Timestamp.now(),
+            likes: false,
+            nickname: user?.displayName || null,
+            surveyData: [{question: '', options: ['', '', '', '', '']}],
+          });
 
-      setIsRedirecting(true);
-      setIsFormChanged(false);
-      router.push('/');
-    } catch (error) {
-      console.error('Error adding post:', error);
-      setIsError('Failed to add post. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
+          setIsRedirecting(true);
+          setIsFormChanged(false);
+          router.push('/');
+        } catch (error) {
+          console.error('Error adding post:', error);
+          setIsError('Failed to add post. Please try again.');
+        } finally {
+          setIsSubmitting(false);
+        }
+      }
+    });
   };
 
   return (
@@ -135,7 +160,6 @@ export default function PostPage() {
           formData={formData}
           setFormData={setFormData}
           onInputChange={onInputChange}
-          onDateChange={onDateChange}
           onCategoryChange={onCategoryChange}
           onSubmit={onSubmit}
           isFormChanged={isFormChanged}
