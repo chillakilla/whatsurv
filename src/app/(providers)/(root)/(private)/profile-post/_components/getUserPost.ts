@@ -37,8 +37,8 @@ export const getUserPostsIT = async (userId: string) => {
 };
 
 //내가 좋아요한 참여했Surv
-export const getLikedPosts = async (userId: string) => {
-  const likedPostsQuery = query(collection(db, `users/${userId}/likedPosts`), where('liked', '==', true));
+export const getLikedPostsLite = async (userId: string) => {
+  const likedPostsQuery = query(collection(db, `users/${userId}/liteSurveyLikedPosts`), where('liked', '==', true));
   const querySnapshot = await getDocs(likedPostsQuery);
   const likedPosts = await Promise.all(
     querySnapshot.docs.map(async documentSnapshot => {
@@ -59,9 +59,42 @@ export const getLikedPosts = async (userId: string) => {
 };
 
 // 좋아요한 참여했Surv을 삭제하는 함수
-export const deleteLikedPost = async (userId: string, postId: string) => {
+export const deleteLikedPostsLite = async (userId: string, postId: string) => {
   try {
-    const postRef = doc(db, `users/${userId}/likedPosts`, postId);
+    const postRef = doc(db, `users/${userId}/liteSurveyLikedPosts`, postId);
+    await deleteDoc(postRef);
+  } catch (error) {
+    console.error(`좋아요한 게시글 ${postId} 삭제 실패: `, error);
+    // 오류를 다시 던져 상위 컴포넌트에서 처리할 수 있게 함
+    throw error;
+  }
+};
+//내가 좋아요한 IT 서베이
+export const getLikedPostsIT = async (userId: string) => {
+  const likedPostsQuery = query(collection(db, `users/${userId}/itSurveyLikedPosts`), where('liked', '==', true));
+  const querySnapshot = await getDocs(likedPostsQuery);
+  const likedPosts = await Promise.all(
+    querySnapshot.docs.map(async documentSnapshot => {
+      const postId = documentSnapshot.id;
+      const postRef = doc(db, 'posts', postId); //
+      const postSnap = await getDoc(postRef);
+      const postData = postSnap.data();
+
+      return {
+        id: postId,
+        title: postData?.title,
+        content: postData?.content,
+      };
+    }),
+  );
+
+  return likedPosts;
+};
+
+// 좋아요한 IT 서베이를 삭제하는 함수
+export const deleteLikedPostIT = async (userId: string, postId: string) => {
+  try {
+    const postRef = doc(db, `users/${userId}/itSurveyLikedPosts`, postId);
     await deleteDoc(postRef);
   } catch (error) {
     console.error(`좋아요한 게시글 ${postId} 삭제 실패: `, error);
