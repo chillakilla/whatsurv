@@ -8,7 +8,7 @@ import {GrView} from 'react-icons/gr';
 
 export type LitePostProps = {
   litepost: litePost;
-  onClickPosthandler: (litepost: litePost) => void;
+  onClickPostHandler: (litepost: litePost) => void;
   onClickUpdateDeleteMenuToggle: (postId: string) => void;
   onClickUpdateButton: (postId: string) => void;
   onClickDeleteButton: (postId: string) => void;
@@ -19,7 +19,7 @@ export type LitePostProps = {
 
 export default function LitePostComponent({
   litepost,
-  onClickPosthandler,
+  onClickPostHandler,
   onClickUpdateDeleteMenuToggle,
   onClickUpdateButton,
   onClickDeleteButton,
@@ -82,7 +82,7 @@ export default function LitePostComponent({
                 {litepost.likes} {likedPosts[litepost.id] ? <FaHeart /> : <FaRegHeart />}
               </button>
             </div>
-            <a onClick={() => onClickPosthandler(litepost)} className="cursor-pointer">
+            <a onClick={() => onClickPostHandler(litepost)} className="cursor-pointer">
               <div className="flex justify-between">
                 <div>
                   <p className="text-xs text-[#666] mb-4">

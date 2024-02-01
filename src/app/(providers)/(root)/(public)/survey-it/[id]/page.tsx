@@ -5,7 +5,7 @@ import {db} from '@/firebase';
 import {Radio, RadioGroup} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {getAuth} from 'firebase/auth';
-import {addDoc, collection, doc, getDocs} from 'firebase/firestore';
+import {addDoc, collection, doc, getDocs, deleteDoc, query, where} from 'firebase/firestore';
 import {useParams, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import Swal from 'sweetalert2';
@@ -110,6 +110,20 @@ const SurveyItDetailPage: React.FC = () => {
       }
 
       const createdAt = new Date();
+      await addDoc(collection(db, 'submitedposts'), {
+        postId: id,
+        email: post?.email,
+        nickname: post?.nickname,
+        category: post?.category,
+        sexType: post?.sexType,
+        ageGroup: post?.ageGroup,
+        title: post?.title,
+        content: post?.content,
+        researchLocation: post?.researchLocation,
+        researchTime: post?.researchTime,
+        researchType: post?.researchType,
+        answers: answers,
+      });
       await addDoc(usersPostIsDone, {
         postId: postId,
         createdAt: createdAt,
@@ -156,6 +170,12 @@ const SurveyItDetailPage: React.FC = () => {
       if (result.isConfirmed) {
         try {
           await deletePostById(postId);
+          const userPostsQuery = query(collection(db, `users/${currentUser}/userPosts`), where('postId', '==', postId));
+          const userPostsSnapshot = await getDocs(userPostsQuery);
+
+          userPostsSnapshot.forEach(async doc => {
+            await deleteDoc(doc.ref);
+          });
           Swal.fire('게시글이 성공적으로 삭제되었습니다.', '', 'success');
           router.replace('/');
         } catch (error) {
@@ -237,7 +257,13 @@ const SurveyItDetailPage: React.FC = () => {
           <button className="w-[80px] h-8 bg-[#eee]" onClick={cancelHandler}>
             취소
           </button>
-          <button className="w-[80px] h-8 bg-[#0051FF] text-white" type="submit">
+          <button
+            className={`w-[80px] h-8 ${
+              completedQuestions < totalQuestions ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#0051FF]'
+            } text-white`}
+            type="submit"
+            disabled={completedQuestions < totalQuestions}
+          >
             제출
           </button>
         </div>

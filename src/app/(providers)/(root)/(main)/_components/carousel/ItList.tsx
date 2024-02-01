@@ -17,6 +17,7 @@ import 'swiper/css/pagination';
 
 import SwiperCore from 'swiper';
 import {Navigation, Pagination} from 'swiper/modules';
+import {stringify} from 'querystring';
 
 export default function ItList() {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
@@ -202,7 +203,9 @@ export default function ItList() {
                   </div>
                   <div className="mt-2 border-t-1 border-[#eee] flex  items-center">
                     <div className="flex items-center mt-4 justify-between w-full">
-                      <p className="flex items-center gap-2 text-sm text-[#666]">종료일 출력 오류에 지쳐가는 중..</p>
+                      <p className="flex items-center gap-2 text-sm text-[#666]">
+                        <span className="text-[#666]">종료일</span> &nbsp; {post.deadline}
+                      </p>
                       <div className="viewer flex  gap-2 text-[#818490]">
                         <IoPeopleSharp />
                         {post.views}

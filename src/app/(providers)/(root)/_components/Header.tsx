@@ -73,9 +73,9 @@ export default function Header() {
                   <Avatar isBordered as="button" className="transition-transform" src={userProfile?.photoURL || ''} />
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Static Actions">
-                  <DropdownItem textValue="내가 작성한 서베이">
+                  <DropdownItem textValue="나의 서베이">
                     <Link href={`/profile-post/${userId}`}>
-                      <p className="font-bold">내가 작성한 서베이</p>
+                      <p className="font-bold">나의 서베이</p>
                     </Link>
                   </DropdownItem>
                   <DropdownItem textValue="프로필 설정">
