@@ -73,7 +73,7 @@ export default function FaqPage() {
         </div>
       </div>
       <hr />
-      <div className="question p-4  flex flex-col items-center">
+      <div className="qna p-4 flex flex-col items-center">
         <h2 className="flex justify-start text-2xl font-bold">자주 묻는 질문 Q&A</h2>
         <div className="mt-4 p-4 flex flex-col w-[980px]">
           <div className="p-2 ">

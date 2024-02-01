@@ -13,8 +13,7 @@ import Popular from '../../(main)/_components/carousel/Popular';
 import SortingPost from '../../(main)/_components/post/SortingPost';
 import SearchBar from '../../(main)/searchForm/SearchBar';
 import {Category, majorCategories} from '../../(private)/create-post/_components/categories';
-import NormalRenderPost from './_components/NormalRenderPost';
-import SearchRenderPost from './_components/SearchRenderPost';
+import RenderPost from './_components/RenderPost';
 
 export default function SurveyIt() {
   const [categories, setCategories] = useState<Category[]>(majorCategories);
@@ -27,6 +26,7 @@ export default function SurveyIt() {
   const router = useRouter();
   const user = auth.currentUser;
   const userId = user?.uid;
+
   const {
     data: posts,
     isLoading,
@@ -67,15 +67,6 @@ export default function SurveyIt() {
   };
 
   // 게시물 찜 업데이트 함수
-  // const clickLikedButtonHandler = (postId: string) => {
-  //   setLikedPosts(prev => {
-  //     const updatedLikedPosts = {...prev};
-  //     updatedLikedPosts[postId] = !updatedLikedPosts[postId];
-  //     return updatedLikedPosts;
-  //   });
-  // };
-
-  // 게시물 찜 업데이트 함수 (광희)
   const clickLikedButtonHandler = async (postId: string) => {
     if (!user) {
       return;
@@ -100,7 +91,7 @@ export default function SurveyIt() {
     }
   };
 
-  // 좋아요 버튼 누른 게시물 가져오는 함수 (광희)
+  // 좋아요 버튼 누른 게시물 가져오는 함수
   const getLikedPosts = async (userId: string) => {
     try {
       const userRef = doc(db, 'users', userId);
@@ -118,7 +109,7 @@ export default function SurveyIt() {
     }
   };
 
-  // 좋아요 버튼 누른 게시물 화면에 적용시키는 함수 (광희)
+  // 좋아요 버튼 누른 게시물 화면에 적용시키는 함수
   useEffect(() => {
     if (userId) {
       getLikedPosts(userId);
@@ -129,6 +120,9 @@ export default function SurveyIt() {
   const clickCategoryHandler = (category: string) => {
     setSelectCategory(category);
   };
+
+  // 이미 참여한 설문 비활성화 함수
+  const blindSurvey = () => {};
 
   return (
     <div className="flex-col items-center justify-center w-[88.5rem] m-auto mt-20">
@@ -150,7 +144,7 @@ export default function SurveyIt() {
           {searchResults.length > 0 || filteredPosts.length > 0 ? (
             searchResults.length > 0 ? (
               searchResults.map(post => (
-                <SearchRenderPost
+                <RenderPost
                   key={post.id}
                   post={post}
                   clickPostHandler={clickPostHandler}
@@ -160,7 +154,7 @@ export default function SurveyIt() {
               ))
             ) : (
               filteredPosts.map(post => (
-                <NormalRenderPost
+                <RenderPost
                   key={post.id}
                   post={post}
                   clickPostHandler={clickPostHandler}
@@ -177,7 +171,6 @@ export default function SurveyIt() {
             </p>
           )}
         </div>
-
         <FloatingBtn />
       </div>
     </div>

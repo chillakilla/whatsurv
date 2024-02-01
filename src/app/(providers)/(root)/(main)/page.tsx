@@ -13,8 +13,10 @@ export default function MainPage() {
         <Popular />
         <ItList />
         <FeedBack />
-        <FloatingBtn />
       </div>
     </div>
   );
 }
+
+// 이 사이트를 이용하는 고객 성별 연령 추이한 결과표 보여주기
+// 우리 사이트는 현재 ~연령층과 ~성별 몇 프로 추이 합산 해서 ~명의 사용자가 있다. 믿을만한 사이트다다
