@@ -7,6 +7,7 @@ import firebase from 'firebase/compat/app';
 import {BsFillQuestionCircleFill} from 'react-icons/bs';
 import {RenderPostProps} from '@/app/api/typePost';
 import {IoPeopleSharp} from 'react-icons/io5';
+import {format} from 'date-fns';
 
 export default function RenderPost({post, clickPostHandler, clickLikedButtonHandler, likedPosts}: RenderPostProps) {
   const isWithin24Hours = (createdAt: Date | firebase.firestore.Timestamp): boolean => {
