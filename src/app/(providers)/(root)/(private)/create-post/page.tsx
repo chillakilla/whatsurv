@@ -7,9 +7,9 @@ import {getAuth} from 'firebase/auth';
 import 'firebase/compat/firestore';
 import {Timestamp} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
-import React, {ChangeEvent, useEffect, useRef, useState} from 'react';
-import PostForm from './_components/PostForm';
+import React, {useEffect, useRef, useState} from 'react';
 import Swal from 'sweetalert2';
+import PostForm from './_components/PostForm';
 
 export default function PostPage() {
   const editorRef = useRef<Editor>(null);
@@ -28,7 +28,7 @@ export default function PostPage() {
     researchLocation: '',
     liked: 0,
     likes: false,
-    createdAt: Timestamp.now(),
+    createdAt: new Date(),
     deadline: '',
     nickname: user?.displayName || null,
     email: user?.email || null,
@@ -128,7 +128,7 @@ export default function PostPage() {
             researchTime: '',
             researchLocation: '',
             deadline: '',
-            createdAt: Timestamp.now(),
+            createdAt: new Date(),
             likes: false,
             nickname: user?.displayName || null,
             surveyData: [{question: '', options: ['', '', '', '', '']}],
