@@ -121,6 +121,9 @@ export default function SurveyIt() {
     setSelectCategory(category);
   };
 
+  // 이미 참여한 설문 비활성화 함수
+  const blindSurvey = () => {};
+
   return (
     <div className="flex-col items-center justify-center w-[88.5rem] m-auto mt-20">
       <SearchBar posts={posts || []} setSearchResults={setSearchResults} />
