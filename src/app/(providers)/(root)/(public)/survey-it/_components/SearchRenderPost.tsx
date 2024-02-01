@@ -89,7 +89,9 @@ export default function SearchRenderPost({
         </Link>
         <div className="border-t-1 border-[#eee] flex justify-between items-center p-2">
           <div className="flex items-center w-full mt-4 justify-between">
-            <p className="flex items-center gap-2 text-sm text-[#666]">{post.deadline}</p>
+            <p className="flex items-center gap-2 text-sm text-[#666]">
+              <span className="text-[#666]">종료일</span> &nbsp; {post.deadline ?? '없음'}
+            </p>
             <div className="viewer flex  gap-2 text-[#818490]">
               <IoPeopleSharp />
               {post.views}
