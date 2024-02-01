@@ -2,7 +2,8 @@
 
 import {litePost} from '@/app/api/typePost';
 import {db} from '@/firebase';
-import {doc, getDoc, updateDoc} from 'firebase/firestore';
+import {getAuth} from 'firebase/auth';
+import {addDoc, collection, doc, getDoc, getDocs, updateDoc} from 'firebase/firestore';
 import React, {useEffect, useState} from 'react';
 import Swal from 'sweetalert2';
 import ResultModal from './ResultModal';
@@ -19,6 +20,9 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
   const [contentsCounts, setContentsCounts] = useState<number[]>(new Array(contents.length).fill(0));
   const [showResultModal, setShowResultModal] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+
+  const auth = getAuth();
+  const currentUser = auth.currentUser?.uid;
 
   useEffect(() => {
     // 이미지 로딩이 완료되면 상태 변경
@@ -49,9 +53,33 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
     setContentsCounts(newCounts);
   };
 
-  // Lite 설문조사 게시물 등록하기
-  const onClickSurveySubmitHandler = async () => {
+  // Lite 설문조사 게시물 참여하기
+  const onClickSurveySubmitHandler = async (postId: string) => {
+    if (!currentUser) {
+      return;
+    }
     try {
+      const userDocRef = doc(db, 'users', currentUser);
+      const usersPostIsDone = collection(userDocRef, 'userPosts');
+
+      const querySnapshot = await getDocs(usersPostIsDone);
+
+      const postIdExists = querySnapshot.docs.some(doc => doc.data().postId === postId);
+      if (postIdExists) {
+        Swal.fire({
+          title: '이미 제출된 설문입니다.',
+          text: '이미 제출한 설문입니다. 다른 설문을 진행해주세요.',
+          icon: 'error',
+        });
+        return;
+      }
+      const createdAt = new Date();
+      await addDoc(usersPostIsDone, {
+        postId: postId,
+        createdAt: createdAt,
+        isDone: true,
+      });
+
       if (selectedContentIndex !== null) {
         const contentId = litepost.id;
         const postRef = doc(db, 'litesurveyposts', contentId);
@@ -142,7 +170,9 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
           <div className="flex justify-end mt-4">
             <button
               className="bg-[#4D85FF] text-white px-4 py-2 rounded-md mr-2 hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
-              onClick={onClickSurveySubmitHandler}
+              onClick={() => {
+                onClickSurveySubmitHandler(litepost.id);
+              }}
             >
               참여하기
             </button>
