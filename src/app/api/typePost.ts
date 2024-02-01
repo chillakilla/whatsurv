@@ -52,3 +52,10 @@ export type litePost = {
 export type feedBack = {
   feedback: string;
 };
+
+export type RenderPostProps = {
+  post: Post;
+  clickPostHandler: (post: Post) => void;
+  clickLikedButtonHandler: (postId: string) => void;
+  likedPosts: {[postId: string]: boolean};
+};

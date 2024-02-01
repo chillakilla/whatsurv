@@ -129,23 +129,8 @@ const SurveyItDetailPage: React.FC = () => {
         reverseButtons: true,
       }).then(async result => {
         if (result.isConfirmed) {
-          Swal.fire({
-            title: '설문 결과를 확인하시겠습니까?',
-            text: '다른사람들의 의견도 확인해보세요~',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#0051FF',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '결과 보기',
-            cancelButtonText: '나가기',
-            reverseButtons: true,
-          }).then(async result => {
-            if (result.isConfirmed) {
-              router.replace('/survey-it/total-result');
-            } else {
-              router.replace('/');
-            }
-          });
+          Swal.fire('제출되었습니다.', '설문에 참여해주셔서 감사합니다.');
+          router.replace('/');
         }
       });
     } catch (error) {
