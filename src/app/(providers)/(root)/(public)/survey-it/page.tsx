@@ -8,12 +8,11 @@ import {collection, doc, getDocs} from 'firebase/firestore';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import Swal from 'sweetalert2';
-import FloatingBtn from '../../(main)/_components/FloatingBtn';
-import Popular from '../../(main)/_components/carousel/Popular';
-import SortingPost from '../../(main)/_components/post/SortingPost';
+import SortCategory from '../../(main)/_components/post/SortCategory';
 import SearchBar from '../../(main)/searchForm/SearchBar';
 import {Category, majorCategories} from '../../(private)/create-post/_components/categories';
 import RenderPost from './_components/RenderPost';
+import SortSelect from '../../(main)/_components/post/SortSelect';
 
 export default function SurveyIt() {
   const [categories, setCategories] = useState<Category[]>(majorCategories);
@@ -22,6 +21,7 @@ export default function SurveyIt() {
   const [likedPosts, setLikedPosts] = useState<{[postId: string]: boolean}>({});
   const [searchResults, setSearchResults] = useState<Post[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+  const [sortOptions, setSortOptions] = useState<string>('정렬');
 
   const router = useRouter();
   const user = auth.currentUser;
@@ -40,25 +40,29 @@ export default function SurveyIt() {
   // 게시물 클릭을 처리하는 함수
   const clickPostHandler = (post: Post) => {
     //TODO: 이 부분 string 에 맞게끔 수정 필요
-    if (post.deadline) {
-      Swal.fire({
-        title: '해당 설문은 종료되었습니다.',
-        text: '',
-        icon: 'warning',
+    if (post.deadline && new Date(post.deadline) < new Date()) {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: toast => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        },
+      });
 
-        showCancelButton: false,
-        cancelButtonColor: '#d33',
-        cancelButtonText: '닫기',
-      }).then(async result => {
-        if (result.isDismissed) {
-          router.replace('/survey-it');
-        }
+      Toast.fire({
+        icon: 'warning',
+        title: '설문 참여가 종료되었습니다.',
       });
     } else {
       if (!user) {
         Swal.fire('로그인 회원만 이용 가능합니다.', '', 'warning');
         router.replace('/auth');
       } else {
+        router.replace(`/survey-it/${post.id}`);
         setSelectedPost(post);
         updateViewsCount(post.id);
       }
@@ -122,22 +126,28 @@ export default function SurveyIt() {
   };
 
   // 이미 참여한 설문 비활성화 함수
+  // userid 가져와서 참여했으면 disabled 안했으면 show
   const blindSurvey = () => {};
 
   return (
     <div className="flex-col items-center justify-center w-[88.5rem] m-auto mt-20">
       <SearchBar posts={posts || []} setSearchResults={setSearchResults} />
-      <Popular />
       <div className="my-20">
         <div className="title-box flex-col items-center  mb-4">
-          <SortingPost
+          <SortCategory
             categories={categories}
             selectCategory={selectCategory}
             onCategorySelect={clickCategoryHandler}
             setFilteredPosts={setFilteredPosts}
           />
-          <div className="flex">
-            <h2 className="font-bold text-xl w-[140px]  ">{selectCategory}</h2>
+          <div className="flex justify-between">
+            <h2 className="font-bold text-xl w-[140px]">{selectCategory}</h2>
+            <SortSelect
+              filteredPosts={filteredPosts}
+              sortOptions={sortOptions}
+              setSortOptions={setSortOptions}
+              setFilteredPosts={setFilteredPosts}
+            />
           </div>
         </div>
         <div className="post-container grid grid-cols-4 gap-4">
@@ -171,7 +181,6 @@ export default function SurveyIt() {
             </p>
           )}
         </div>
-        <FloatingBtn />
       </div>
     </div>
   );

@@ -2,28 +2,29 @@ import {getPosts} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import React, {useEffect} from 'react';
+import Link from 'next/link';
 import {Category} from '../../../(private)/create-post/_components/categories';
-import {useState} from 'react';
 
 type Message = {
   condition: boolean;
   text: string;
 };
 
-type SortingPostProps = {
+type SortingCategoryProps = {
   categories: Category[];
   onCategorySelect: (category: string) => void;
   selectCategory: string;
+
   setFilteredPosts: React.Dispatch<React.SetStateAction<Post[]>>;
 };
 
-export default function SortingPost({
+export default function SortCategory({
   categories,
   onCategorySelect,
   selectCategory,
+
   setFilteredPosts,
-}: SortingPostProps) {
-  const [sortOptions, setSortOptions] = useState<string>('');
+}: SortingCategoryProps) {
   const {
     data: posts,
     isLoading,
@@ -39,14 +40,15 @@ export default function SortingPost({
     {condition: !posts, text: '불러올 수 있는 게시글이 없습니다.'},
   ];
 
+  // 게시물 정렬하기 (최신순, 인기순, 마감 임박순)
+
   const filterByCategory = (selectedCategory: string) => {
     // 필터링 할 카테고리
     const filterCategory = selectedCategory.trim();
 
     // 카테고리가 '전체'일 때, 모든 게시물 보여주기
     if (filterCategory === '전체') {
-      setFilteredPosts(posts || []);
-      return;
+      return posts || [];
     }
 
     // 카테고리 필터링
@@ -54,31 +56,13 @@ export default function SortingPost({
       return post.category === filterCategory;
     });
 
-    setFilteredPosts(filteredPosts || []);
-
-    if (filteredPosts?.length === 0) {
-      return <p>현재 등록된 게시물이 없습니다.</p>;
-    }
+    return filteredPosts || [];
   };
 
   useEffect(() => {
-    filterByCategory(selectCategory);
+    const filteredPosts = filterByCategory(selectCategory);
+    setFilteredPosts(filteredPosts);
   }, [selectCategory, posts, setFilteredPosts]);
-
-  const changeOptionValueHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = e.target.value;
-    setSortOptions(selectedValue);
-  };
-
-  // 게시물 정렬하기 (최신순, 인기순, 마감 임박순)
-  const sortingPostHandler = (selectedValue: string) => {
-    let sortedPosts: Post[] | undefined;
-
-    switch (selectedValue) {
-      case 'latest':
-        sortedPosts = posts?.slice().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    }
-  };
 
   return (
     <>
@@ -94,13 +78,11 @@ export default function SortingPost({
             </button>
           ))}
         </div>
-        <div className="sort-post">
-          <select className="bg-transparent" value={sortOptions} onChange={changeOptionValueHandler}>
-            <option value="latest">최신순</option>
-            <option value="popular">인기순</option>
-            <option value="deadline">마감임박 순</option>
-          </select>
-        </div>
+        <Link href={`/create-post`}>
+          <button className="bg-white h-[30px] text-xs w-[80px] border-1 bg-[#0051ff] text-white rounded-md">
+            설문 만들기
+          </button>
+        </Link>
       </div>
     </>
   );
