@@ -163,3 +163,8 @@ input {
   height: 60px;
   color: #0051ff;
 }
+.question {
+  width: 24px;
+  height: 24px;
+  color: #ddd;
+}

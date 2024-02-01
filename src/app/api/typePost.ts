@@ -20,7 +20,7 @@ export type Post = {
   userId: string | undefined;
   email: string | null;
   nickname: string | null;
-  createdAt: Timestamp;
+  createdAt: Date;
   updatedAt: Timestamp;
   deadline?: string;
 
@@ -50,4 +50,11 @@ export type litePost = {
 
 export type feedBack = {
   feedback: string;
+};
+
+export type RenderPostProps = {
+  post: Post;
+  clickPostHandler: (post: Post) => void;
+  clickLikedButtonHandler: (postId: string) => void;
+  likedPosts: {[postId: string]: boolean};
 };
