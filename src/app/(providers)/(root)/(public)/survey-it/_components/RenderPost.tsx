@@ -2,10 +2,11 @@
 import 'firebase/compat/firestore';
 import Link from 'next/link';
 import {FaHeart, FaRegHeart} from 'react-icons/fa';
-import {Tooltip, Button} from '@nextui-org/react';
+import {Tooltip} from '@nextui-org/react';
 import firebase from 'firebase/compat/app';
 import {BsFillQuestionCircleFill} from 'react-icons/bs';
 import {RenderPostProps} from '@/app/api/typePost';
+import {IoPeopleSharp} from 'react-icons/io5';
 
 export default function RenderPost({post, clickPostHandler, clickLikedButtonHandler, likedPosts}: RenderPostProps) {
   const isWithin24Hours = (createdAt: Date | firebase.firestore.Timestamp): boolean => {
@@ -49,8 +50,10 @@ export default function RenderPost({post, clickPostHandler, clickLikedButtonHand
           {likedPosts[post.id] ? <FaHeart /> : <FaRegHeart />}
         </button>
       </div>
-
-      <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1 mb-2">{post.title}</h3>
+      <div>
+        <p className="text-xs">등록일 {post.createdAt.toLocaleDateString()}</p>
+        <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1 mb-2">{post.title}</h3>
+      </div>
       <div className="survey-method flex flex-col gap-2 bg-slate-100 h-[70px] p-2  ">
         <div className="flex text-sm justify-start grid grid-cols-2 ">
           <p>
@@ -69,9 +72,9 @@ export default function RenderPost({post, clickPostHandler, clickLikedButtonHand
           </p>
         </div>
       </div>
-      <div className=" flex justify-between items-center p-2">
+      <div className=" flex justify-between items-center">
         <div className="flex items-center w-full justify-between">
-          <p className="flex items-center gap-2 text-sm text-[#666]">종료일 2024.02.04</p>
+          <p className="flex items-center gap-2 text-sm text-[#666]">종료일 {post.deadline}</p>
           <div className="goal flex  gap-2 text-[#818490]">
             <Tooltip content={`설문 목적 : ${post.content}`} className="line-clamp-1 text-wrap" placement="left">
               <button>
@@ -82,17 +85,23 @@ export default function RenderPost({post, clickPostHandler, clickLikedButtonHand
         </div>
       </div>
 
-      <div className=" h-[40px] flex justify-start items-center gap-2">
-        <Link href={`/survey-it/${post.id}`}>
-          <button className="w-[100px] h-[32px] border-1 border-[#0051ff] hover:bg-[#0051ff] hover:text-white text-sm rounded-xl ">
-            참여하기
-          </button>
-        </Link>
-        <Link href={`/survey-it/total-result/${post.id}`}>
-          <button className="w-[100px] h-[32px] border-1 border-[#ddd]  hover:bg-black hover:text-white text-sm rounded-xl ">
-            결과보기
-          </button>
-        </Link>
+      <div className=" h-[40px] flex justify-between items-center ">
+        <div className="flex gap-2">
+          <Link href={`/survey-it/${post.id}`}>
+            <button className="w-[100px] h-[32px] border-1 border-[#0051ff] hover:bg-[#0051ff] hover:text-white text-sm rounded-xl ">
+              참여하기
+            </button>
+          </Link>
+          <Link href={`/survey-it/total-result/${post.id}`}>
+            <button className="w-[100px] h-[32px] border-1 border-[#ddd]  hover:bg-black hover:text-white text-sm rounded-xl ">
+              결과보기
+            </button>
+          </Link>
+        </div>
+        <div className="viewer flex  gap-2 text-[#818490]">
+          <IoPeopleSharp />
+          {post.views}
+        </div>
       </div>
     </div>
   );

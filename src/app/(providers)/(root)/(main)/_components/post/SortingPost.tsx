@@ -3,6 +3,7 @@ import {Post} from '@/app/api/typePost';
 import {useQuery} from '@tanstack/react-query';
 import React, {useEffect} from 'react';
 import {Category} from '../../../(private)/create-post/_components/categories';
+import {useState} from 'react';
 
 type Message = {
   condition: boolean;
@@ -22,6 +23,7 @@ export default function SortingPost({
   selectCategory,
   setFilteredPosts,
 }: SortingPostProps) {
+  const [sortOptions, setSortOptions] = useState<string>('');
   const {
     data: posts,
     isLoading,
@@ -63,6 +65,21 @@ export default function SortingPost({
     filterByCategory(selectCategory);
   }, [selectCategory, posts, setFilteredPosts]);
 
+  const changeOptionValueHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.target.value;
+    setSortOptions(selectedValue);
+  };
+
+  // 게시물 정렬하기 (최신순, 인기순, 마감 임박순)
+  const sortingPostHandler = (selectedValue: string) => {
+    let sortedPosts: Post[] | undefined;
+
+    switch (selectedValue) {
+      case 'latest':
+        sortedPosts = posts?.slice().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+  };
+
   return (
     <>
       <div className="flex mb-10 justify-between border-b-2 border-[#eee]">
@@ -78,10 +95,10 @@ export default function SortingPost({
           ))}
         </div>
         <div className="sort-post">
-          <select>
-            <option>최신순</option>
-            <option>인기순</option>
-            <option>마감임박 순</option>
+          <select className="bg-transparent" value={sortOptions} onChange={changeOptionValueHandler}>
+            <option value="latest">최신순</option>
+            <option value="popular">인기순</option>
+            <option value="deadline">마감임박 순</option>
           </select>
         </div>
       </div>

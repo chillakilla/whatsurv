@@ -20,7 +20,7 @@ export type Post = {
   userId: string | undefined;
   email: string | null;
   nickname: string | null;
-  createdAt: Timestamp;
+  createdAt: Date;
   updatedAt: Timestamp;
   deadline?: string;
 
