@@ -79,9 +79,7 @@ export default function SortCategory({
           ))}
         </div>
         <Link href={`/create-post`}>
-          <button className="bg-white h-[30px] text-xs w-[80px] border-1 bg-[#0051ff] text-white rounded-md">
-            설문 만들기
-          </button>
+          <button className="h-[30px] text-xs w-[80px] border-1 bg-[#0051ff] text-white rounded-md">설문 만들기</button>
         </Link>
       </div>
     </>
