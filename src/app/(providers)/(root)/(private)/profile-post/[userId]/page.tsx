@@ -45,7 +45,7 @@ export default function ProfilePost() {
       Promise.all([getUserPostsIT(userId), getUserPostLite(userId), getLikedPostsLite(userId), getLikedPostsIT(userId)])
         .then(([postsIT, postsLite, likedLitePostsData, likedITPostsData]) => {
           setPosts(postsIT);
-          // setUserPostLite(postsLite);
+          setUserPostLite(postsLite);
           //setLikedITPosts(likedITPostsData);
           setLikedLitePosts(likedLitePostsData);
 
