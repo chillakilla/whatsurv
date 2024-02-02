@@ -22,27 +22,6 @@ export default function EditPostForm() {
   const auth = getAuth();
   const user = auth.currentUser;
   const router = useRouter();
-  const [formData, setFormData] = useState<FormData>({
-    id: '',
-    title: '',
-    content: '',
-    category: '',
-    ageGroup: '',
-    sexType: '',
-    researchType: '',
-    researchTime: '',
-    researchLocation: '',
-    liked: 0,
-    likes: false,
-    createdAt: new Date(),
-    deadline: '',
-    nickname: user?.displayName || null,
-    email: user?.email || null,
-    views: 0,
-    userId: user?.uid || '',
-    updatedAt: new Date(),
-    surveyData: [{question: '', options: ['매우 그렇다', '그렇다', '보통이다', '아니다', '매우 아니다']}],
-  });
   const [isFormChanged, setIsFormChanged] = useState(false);
   const [questionCount, setQuestionCount] = useState(1);
 
@@ -71,7 +50,6 @@ export default function EditPostForm() {
           ...postData,
           updatedAt: new Date(),
         });
-        console.log('postdata category', postData.category);
       } catch (error) {
         console.error('Error fetching post data:', error);
       }
@@ -79,6 +57,28 @@ export default function EditPostForm() {
 
     fetchData();
   }, []);
+
+  const [formData, setFormData] = useState<FormData>({
+    id: '',
+    title: '',
+    content: '',
+    category: '',
+    ageGroup: '',
+    sexType: '',
+    researchType: '',
+    researchTime: '',
+    researchLocation: '',
+    liked: 0,
+    likes: false,
+    createdAt: new Date(),
+    deadline: '',
+    nickname: user?.displayName || null,
+    email: user?.email || null,
+    views: 0,
+    userId: user?.uid || '',
+    updatedAt: new Date(),
+    surveyData: [{question: '', options: ['매우 그렇다', '그렇다', '보통이다', '아니다', '매우 아니다']}],
+  });
 
   const SubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
