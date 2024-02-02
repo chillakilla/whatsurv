@@ -21,6 +21,7 @@ interface PostIT {
   title: string;
   content: string;
   deadlineDate?: string;
+  category: string;
 }
 interface PostLite {
   id: string;
@@ -223,13 +224,16 @@ export default function ProfilePost() {
                       className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
                     >
                       <Link href={`/survey-it/${post.id}`} className="text-xl">
-                        <p className="text-sm">
-                          종료일 | {''}
-                          {post.deadlineDate || 'No deadline'}
+                        <p className="  bg-[#0051ff] mb-[7px] text-center text-[#D6FF00] w-14 p-1 rounded-full font-semibold text-xs">
+                          {post.category}
                         </p>
                         <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
                       </Link>
                       <hr />
+                      <p className="text-sm absolute bottom-[20px]">
+                        종료일 | {''}
+                        {post.deadlineDate || 'No deadline'}
+                      </p>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -267,6 +271,7 @@ export default function ProfilePost() {
                         <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
                       </Link>
                       <hr />
+
                       <Button
                         variant="ghost"
                         size="sm"
@@ -301,13 +306,16 @@ export default function ProfilePost() {
                       className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
                     >
                       <Link href={`/survey-it/${post.id}`} className="text-xl">
-                        <p className="text-sm">
-                          종료일 | {''}
-                          {post.deadlineDate ? post.deadlineDate : 'No deadline'}
+                        <p className="bg-[#0051ff]  text-center text-[#D6FF00] w-14 p-1 rounded-full font-semibold text-xs mb-[7px]">
+                          {post.category}
                         </p>
                         <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
                       </Link>
                       <hr />
+                      <p className="text-sm absolute bottom-[20px]">
+                        종료일 | {''}
+                        {post.deadlineDate ? post.deadlineDate : 'No deadline'}
+                      </p>
                       <Button
                         variant="ghost"
                         size="sm"

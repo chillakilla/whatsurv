@@ -30,6 +30,7 @@ export const getUserPostsIT = async (userId: string) => {
       title: docData.title,
       content: docData.content,
       deadlineDate: deadline,
+      category: docData.category || 'No category',
     };
   });
 
@@ -87,7 +88,8 @@ export const getLikedPostsIT = async (userId: string) => {
         id: postId,
         title: postData?.title,
         content: postData?.content,
-        deadlineDate: deadline, // 문자열 그대로 할당
+        deadlineDate: deadline,
+        category: postData?.category || 'No category',
       };
     }),
   );
