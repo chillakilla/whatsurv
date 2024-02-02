@@ -4,18 +4,14 @@ import {
   GoogleAuthProvider,
   User,
   browserSessionPersistence,
-  fetchSignInMethodsForEmail,
   getRedirectResult,
   setPersistence,
   signInWithRedirect,
 } from 'firebase/auth';
 import {doc, getDoc, setDoc} from 'firebase/firestore';
-import {useRouter} from 'next/navigation';
 import {useEffect} from 'react';
 import Swal from 'sweetalert2';
 export default function SocialLogin() {
-  const router = useRouter();
-
   useEffect(() => {
     getRedirectResult(auth)
       .then(result => {
@@ -27,7 +23,6 @@ export default function SocialLogin() {
             confirmButtonText: '확인',
             confirmButtonColor: '#0051FF',
           });
-          router.push('/');
         }
       })
       .catch(error => {
@@ -38,7 +33,6 @@ export default function SocialLogin() {
   const updateUserProfile = async (user: User) => {
     const userRef = doc(db, 'users', user.uid);
     const docSnap = await getDoc(userRef);
-
     // Firestore에 사용자 데이터가 없는 경우에만 초기 데이터 설정
     if (!docSnap.exists()) {
       // 이메일이 없는 경우, 대체 이메일 주소 생성
@@ -54,41 +48,11 @@ export default function SocialLogin() {
     }
   };
 
-  const emailCheck = async (email: string | null) => {
-    if (email) {
-      const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-      return signInMethods.length > 0;
-    }
-    return false;
-  };
-
   const googleLogin = async () => {
     try {
       await setPersistence(auth, browserSessionPersistence); // 세션 지속성 설정
 
       await signInWithRedirect(auth, new GoogleAuthProvider());
-      const result = await getRedirectResult(auth);
-      if (result) {
-        const isDuplicate = await emailCheck(result.user.email);
-        console.log(isDuplicate);
-        if (isDuplicate) {
-          Swal.fire({
-            title: '이미 사용 중인 이메일입니다!',
-            icon: 'error',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#0051FF',
-          });
-        } else {
-          await updateUserProfile(result.user);
-          Swal.fire({
-            title: '로그인 성공!',
-            icon: 'success',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#0051FF',
-          });
-          router.push('/');
-        }
-      }
     } catch (error) {
       console.error('Google 로그인 실패:', error);
     }
