@@ -114,7 +114,7 @@ export const updateNicknameInLite = async (userId: string, newNickName: string) 
       await updateDoc(docRef, {nickname: newNickName});
     });
 
-    console.log('변경된 닉네임이 문서에 반영됨');
+    //console.log('변경된 닉네임이 문서에 반영됨');
   } catch (error) {
     console.error('닉네임 업데이트 중 오류', error);
   }
