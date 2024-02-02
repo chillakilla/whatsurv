@@ -117,14 +117,12 @@ export default function ProfilePage() {
       await updateNicknameInLite(auth.currentUser.uid, newNickName);
       setIsNickNameEditing(false);
     }
-    console.log('닉네임 업데이트 완료, 쿼리 무효화 시작');
 
     if (auth.currentUser?.uid) {
       queryClient.invalidateQueries({
         queryKey: ['userProfile', auth.currentUser.uid],
       });
     }
-    console.log('쿼리 무효화 완료');
   };
 
   // 성별 저장 함수

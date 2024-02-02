@@ -1,5 +1,5 @@
 import {auth, db} from '@/firebase';
-import {Button, Checkbox, Input} from '@nextui-org/react';
+import {Button, Checkbox, Input, Radio, RadioGroup} from '@nextui-org/react';
 import confetti from 'canvas-confetti';
 import {createUserWithEmailAndPassword, signOut} from 'firebase/auth';
 import {doc, setDoc} from 'firebase/firestore';
@@ -10,7 +10,6 @@ import {SyncLoader} from 'react-spinners';
 import Swal from 'sweetalert2';
 import type {RenderStepJoinTypes} from '../_types/typeJoin';
 import TermsModal from './TermsModal';
-
 export default function RenderStepJoin({
   email,
   setEmail,
@@ -26,6 +25,8 @@ export default function RenderStepJoin({
   setStep,
   progress,
   setProgress,
+  joinPurpose,
+  setJoinPurpose,
   isJoining,
   setIsJoining,
   isAgreedToTerms,
@@ -34,6 +35,8 @@ export default function RenderStepJoin({
   clickEmailCheckHandler,
   clickNicknameCheckHandler,
   emailCheck,
+  joinPurposeCheck,
+  setJoinPurposeCheck,
   termsCheck,
   emailValidationClass,
   passwordCheck,
@@ -50,7 +53,7 @@ export default function RenderStepJoin({
     setStep(newStep);
 
     // 진행률 갱신
-    setProgress((newStep / 6) * 100);
+    setProgress((newStep / 7) * 100);
   };
 
   //가입축하 폭죽
@@ -87,7 +90,7 @@ export default function RenderStepJoin({
         email,
         birthdate: birthDate,
         nickname,
-
+        joinPurpose,
         sexType: '--미설정--',
       });
 
@@ -101,7 +104,7 @@ export default function RenderStepJoin({
         confirmButtonText: '확인',
         confirmButtonColor: '#0051FF',
       });
-      setStep(6);
+      setStep(7);
       // 프로그래스 바 완료 상태로 설정
       setProgress(100);
     } catch (error) {
@@ -262,6 +265,44 @@ export default function RenderStepJoin({
                 {nicknameCheck && <p className={`${nicknameValidationClass} text-center mt-2`}>{nicknameCheck}</p>}
                 <Button
                   size="lg"
+                  onClick={() => {
+                    if (validate()) moveToNextStep();
+                  }}
+                  className="mt-[20px]  w-full bg-[#0051FF] text-white"
+                  type="button"
+                >
+                  다음
+                </Button>
+              </>
+            )}
+          </div>
+        );
+      case 6:
+        return (
+          <div className="mt-[20px] w-[400px]">
+            {!isJoining && (
+              <>
+                <div className="flex items-center">
+                  <RadioGroup
+                    label="가입목적을 선택해주세요."
+                    value={joinPurpose}
+                    onChange={e => setJoinPurpose(e.target.value)}
+                  >
+                    <Radio value="IT 업계 동향 및 정보에 대한 설문조사 참여">
+                      IT 업계 동향 및 정보에 대한 설문조사 참여
+                    </Radio>
+                    <Radio value="나만의 설문조사 생성 및 공유">나만의 설문조사 생성 및 공유</Radio>
+                    <Radio value="재미있는 밸런스 게임 및 메뉴 추천 설문 참여">
+                      재미있는 밸런스 게임 및 메뉴 추천 설문 참여
+                    </Radio>
+                    <Radio value="직업적 성장 및 업계 인사이트 얻기">직업적 성장 및 업계 인사이트 얻기</Radio>
+                    <Radio value="교육적 목적으로 IT 관련 지식 습득">교육적 목적으로 IT 관련 지식 습득</Radio>
+                  </RadioGroup>
+                </div>
+                {joinPurposeCheck && <p className="text-[#EB271C] text-center mt-2">{joinPurposeCheck}</p>}
+
+                <Button
+                  size="lg"
                   onClick={clickJoinHandler}
                   className="mt-[20px]  w-full bg-[#0051FF] text-white"
                   type="button"
@@ -278,7 +319,7 @@ export default function RenderStepJoin({
             )}
           </div>
         );
-      case 6:
+      case 7:
         triggerConfetti();
         return (
           <div className="mt-[20px] w-[400px] ">
