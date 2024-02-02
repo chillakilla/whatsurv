@@ -4,7 +4,7 @@ import {litePost} from '@/app/api/typePost';
 import {auth} from '@/firebase';
 import {FaHeart, FaRegHeart} from 'react-icons/fa';
 import {FaRegCircleUser} from 'react-icons/fa6';
-import {GrView} from 'react-icons/gr';
+import {IoPeopleSharp} from 'react-icons/io5';
 
 export type LitePostProps = {
   litepost: litePost;
@@ -110,7 +110,7 @@ export default function LitePostComponent({
                 <p className="font-semibold">{litepost.nickname}</p>
               </div>
               <div className="viewer flex mt-4 gap-2 text-[#818490]">
-                <GrView />
+                <IoPeopleSharp />
                 {litepost.views}
               </div>
             </div>
