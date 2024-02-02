@@ -23,13 +23,13 @@ export const getUserPostsIT = async (userId: string) => {
 
   const posts = querySnapshot.docs.map(doc => {
     const docData = doc.data();
-    const deadlineDate = docData.deadlineDate ? docData.deadlineDate.toDate() : null;
+    const deadline = docData.deadline || 'No deadline';
 
     return {
       id: doc.id,
       title: docData.title,
       content: docData.content,
-      deadlineDate: deadlineDate,
+      deadlineDate: deadline,
     };
   });
 
@@ -43,7 +43,7 @@ export const getLikedPostsLite = async (userId: string) => {
   const likedPosts = await Promise.all(
     querySnapshot.docs.map(async documentSnapshot => {
       const postId = documentSnapshot.id;
-      const postRef = doc(db, 'litesurveyposts', postId); // 'litesurveyposts' 컬렉션을 참조합니다.
+      const postRef = doc(db, 'litesurveyposts', postId);
       const postSnap = await getDoc(postRef);
       const postData = postSnap.data();
 
@@ -76,14 +76,18 @@ export const getLikedPostsIT = async (userId: string) => {
   const likedPosts = await Promise.all(
     querySnapshot.docs.map(async documentSnapshot => {
       const postId = documentSnapshot.id;
-      const postRef = doc(db, 'posts', postId); //
+      const postRef = doc(db, 'posts', postId);
       const postSnap = await getDoc(postRef);
       const postData = postSnap.data();
+
+      // deadline 필드를 문자열 그대로 사용
+      const deadline = postData?.deadline || 'No deadline';
 
       return {
         id: postId,
         title: postData?.title,
         content: postData?.content,
+        deadlineDate: deadline, // 문자열 그대로 할당
       };
     }),
   );

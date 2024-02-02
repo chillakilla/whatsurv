@@ -20,7 +20,7 @@ interface PostIT {
   id: string;
   title: string;
   content: string;
-  deadlineDate?: Date | null;
+  deadlineDate?: string;
 }
 interface PostLite {
   id: string;
@@ -201,7 +201,7 @@ export default function ProfilePost() {
           tabContent: 'group-data-[selected=true]:text-[#0051FF]',
         }}
       >
-        <Tab title="내가 작성한 IT 서베이">
+        <Tab title="내가 작성한 IT Surv">
           <Card className="bg-transparent border-0  rounded-none shadow-none">
             <CardBody>
               {posts.length > 0 ? (
@@ -216,14 +216,8 @@ export default function ProfilePost() {
                     >
                       <Link href={`/survey-it/${post.id}`} className="text-xl">
                         <p className="text-sm">
-                          마감일 | {''}
-                          {post.deadlineDate
-                            ? post.deadlineDate.toLocaleDateString('ko-KR', {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                              })
-                            : 'No deadline'}
+                          종료일 | {''}
+                          {post.deadlineDate || 'No deadline'}
                         </p>
                         <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
                       </Link>
@@ -285,7 +279,7 @@ export default function ProfilePost() {
             </CardBody>
           </Card>
         </Tab>
-        <Tab title="내가 좋아요한 IT 서베이">
+        <Tab title="내가 좋아요한 IT Surv">
           <Card className="bg-transparent border-0  rounded-none shadow-none">
             <CardBody>
               {likedITPosts.length > 0 ? (
@@ -300,14 +294,8 @@ export default function ProfilePost() {
                     >
                       <Link href={`/survey-it/${post.id}`} className="text-xl">
                         <p className="text-sm">
-                          마감일 | {''}
-                          {post.deadlineDate
-                            ? post.deadlineDate.toLocaleDateString('ko-KR', {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                              })
-                            : 'No deadline'}
+                          종료일 | {''}
+                          {post.deadlineDate ? post.deadlineDate : 'No deadline'}
                         </p>
                         <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
                       </Link>
