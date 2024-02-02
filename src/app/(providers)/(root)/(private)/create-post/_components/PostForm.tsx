@@ -2,11 +2,10 @@ import {FormData} from '@/app/api/typeFormData';
 import {Button, Input, Radio, RadioGroup, Select, SelectItem, Textarea} from '@nextui-org/react';
 import {getAuth} from 'firebase/auth';
 import {useRouter} from 'next/navigation';
-import React, {ChangeEvent, useState} from 'react';
+import React, {useState} from 'react';
 import {FaArrowLeft} from 'react-icons/fa6';
-import {ageGroup, majorCategories, researchLocation, researchTime, researchType, sexType} from './categories';
-import {Question} from '@/app/api/typePost';
 import Swal from 'sweetalert2';
+import {ageGroup, majorCategories, researchLocation, researchTime, researchType, sexType} from './categories';
 
 // next/router 가 아니고 navigation....하
 
