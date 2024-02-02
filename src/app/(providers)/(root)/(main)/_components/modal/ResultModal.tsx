@@ -21,7 +21,6 @@ const ResultModal: React.FC<ResultModalProps> = ({litepost, onClickResultModalCl
           ))}
         </div>
         <div className="mb-2 flex justify-between items-center">
-          <span className="text-sm">조사기간 : 추가해야함</span>
           <span className="text-sm">참여인원 : {totalVotes}명</span>
         </div>
         <h2 className="text-2xl font-bold mb-4 border-b border-black pb-4 mb-4">{litepost.title}</h2>

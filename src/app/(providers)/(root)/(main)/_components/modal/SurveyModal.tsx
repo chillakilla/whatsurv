@@ -129,7 +129,6 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
 
   // 결과보기 모달창 닫기
   const resultModalClosehandler = () => {
-    setShowResultModal(false);
     onCloseLiteSurveyModal();
   };
 
