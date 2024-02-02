@@ -16,12 +16,11 @@ import {collection, doc, getDocs} from 'firebase/firestore';
 import {useEffect, useState} from 'react';
 import {LuPencilLine} from 'react-icons/lu';
 import Swal from 'sweetalert2';
-import Banner from '../../(main)/_components/carousel/Banner';
 import LiteSurveyCreateModal from '../../(main)/_components/modal/CreateModal';
 import LiteSurveyModal from '../../(main)/_components/modal/SurveyModal';
 import UpdateModal from '../../(main)/_components/modal/UpdateModal';
-import LitePostComponent from './_components/LitePostComponent';
 import LiteBanner from './_components/LiteBanner';
+import LitePostComponent from './_components/LitePostComponent';
 
 export default function SurveyLitePage() {
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
@@ -199,7 +198,12 @@ export default function SurveyLitePage() {
             <h1 className="text-2xl font-bold mb-4">참여해 Surv?</h1>
             {isLoading && <div>로딩 중...</div>}
             {isError && <div>로딩 중에 오류가 발생했습니다.</div>}
-            <button onClick={onClickCreateModalOpen}>작성 하기</button>
+            <button
+              onClick={onClickCreateModalOpen}
+              className="h-[35px] text-l w-[90px] border-1 bg-[#0051ff] text-white rounded-md"
+            >
+              작성 하기
+            </button>
           </div>
           <div>
             <div>
