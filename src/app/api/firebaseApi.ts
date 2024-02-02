@@ -19,6 +19,7 @@ import {
 } from 'firebase/firestore';
 import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
 import {Post} from './typePost';
+import {FormData} from './typeFormData';
 
 // 게시글 목록 불러오기 fetchPosts
 export const getPosts = async (): Promise<Post[]> => {
@@ -198,13 +199,19 @@ export const getUserData = async (userId?: string): Promise<UserData | null> => 
 };
 
 // 게시글 수정하기 updatePost
-export const updatePost = async (postId: string, updatedPost: Partial<Post>): Promise<void> => {
+export const updatePost = async (postId: string, updatedPost: FormData) => {
   try {
+    const {id, createdAt, updatedAt, ...postData} = updatedPost;
+
     const postRef = doc(db, 'posts', postId);
-    await updateDoc(postRef, updatedPost);
+    await updateDoc(postRef, {
+      ...postData,
+      updatedAt: new Date(), // Assuming updatedPost.updatedAt is a Date
+    });
+
+    console.log('Post updated successfully');
   } catch (error) {
-    console.error('Error updating document: ', error);
-    throw new Error('게시글을 수정하는 것에 실패했습니다.');
+    console.error('Error updating post:', error);
   }
 };
 

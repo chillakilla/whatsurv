@@ -7,8 +7,6 @@ import {FaArrowLeft} from 'react-icons/fa6';
 import {ageGroup, majorCategories, researchLocation, researchTime, researchType, sexType} from './categories';
 import Swal from 'sweetalert2';
 
-// next/router 가 아니고 navigation....하
-
 interface PostFormProps {
   formData: FormData;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
