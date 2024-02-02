@@ -1,7 +1,5 @@
-import firebase from 'firebase/compat/app';
 import {Timestamp} from 'firebase/firestore';
-import {Question} from './typePost';
-import {Post} from './typePost';
+import {Post, Question} from './typePost';
 
 export type FormData = Omit<Post, 'views' | 'userId' | 'updatedAt' | 'email'> & {
   id: string;
