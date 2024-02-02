@@ -18,7 +18,7 @@ import {
 } from '../../create-post/_components/categories';
 
 export default function EditPostForm() {
-  const {id} = useParams();
+  const {id} = useParams<{id: string}>();
   const auth = getAuth();
   const user = auth.currentUser;
   const router = useRouter();
@@ -68,26 +68,10 @@ export default function EditPostForm() {
           return;
         }
         setFormData({
-          id: '',
-          title: postData.title,
-          content: postData.content,
-          category: postData.category,
-          ageGroup: postData.ageGroup,
-          sexType: postData.sexType,
-          researchType: postData.researchType,
-          researchTime: postData.researchTime,
-          researchLocation: postData.researchLocation,
-          liked: postData.liked,
-          likes: postData.likes,
-          createdAt: postData.createdAt,
-          deadline: postData.deadline,
-          nickname: postData.nickname,
-          email: postData.email,
-          views: postData.views,
-          userId: postData.userId,
-          updatedAt: postData.updatedAt,
-          surveyData: postData.surveyData,
+          ...postData,
+          updatedAt: new Date(),
         });
+        console.log('postdata category', postData.category);
       } catch (error) {
         console.error('Error fetching post data:', error);
       }
@@ -96,18 +80,17 @@ export default function EditPostForm() {
     fetchData();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const SubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await updatePost(id, formData);
       router.push('/');
     } catch (error) {
       console.error('Error updating post:', error);
-      // Handle error (e.g., display error message)
     }
   };
 
-  const handleGoBack = async () => {
+  const goBackHandler = async () => {
     if (isFormChanged) {
       const result = await Swal.fire({
         title: '확실합니까?',
@@ -197,11 +180,11 @@ export default function EditPostForm() {
       <div className="w-[80rem] mt-[5.5rem] rounded-md bg-white flex flex-col justify-center items-center">
         <div className="w-[80rem]">
           <button className="text-3xl p-[10px] bg-blue-100 rounded-full mt-[20px] ml-[20px]">
-            <FaArrowLeft onClick={handleGoBack} />
+            <FaArrowLeft onClick={goBackHandler} />
           </button>
         </div>
         <div className="w-[74rem] px-[20px] pt-[20px] pb-[40px] mb-[10px]">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={SubmitHandler}>
             {' '}
             <div className="flex items-center relative">
               <Input
