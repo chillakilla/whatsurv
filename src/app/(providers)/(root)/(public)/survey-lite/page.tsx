@@ -21,6 +21,7 @@ import LiteSurveyCreateModal from '../../(main)/_components/modal/CreateModal';
 import LiteSurveyModal from '../../(main)/_components/modal/SurveyModal';
 import UpdateModal from '../../(main)/_components/modal/UpdateModal';
 import LitePostComponent from './_components/LitePostComponent';
+import LiteBanner from './_components/LiteBanner';
 
 export default function SurveyLitePage() {
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
@@ -192,7 +193,7 @@ export default function SurveyLitePage() {
   return (
     <>
       <div className="flex-col items-center justify-center w-[88.5rem] m-auto mb-20">
-        <Banner />
+        <LiteBanner />
         <div className="my-20">
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold mb-4">참여해 Surv?</h1>
