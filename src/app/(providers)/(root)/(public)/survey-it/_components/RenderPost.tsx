@@ -52,7 +52,9 @@ export default function RenderPost({post, clickPostHandler, clickLikedButtonHand
       </div>
       <div>
         <p className="text-xs text-[#666]">등록일 {post.createdAt.toLocaleDateString()}</p>
-        <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1 mb-2">{post.title}</h3>
+        <Link href={`/survey-it/${post.id}`}>
+          <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1 mb-2">{post.title}</h3>
+        </Link>
       </div>
       <div className="survey-method flex flex-col gap-2 bg-slate-100 h-[70px] p-2  ">
         <div className="flex text-sm justify-start grid grid-cols-2 ">

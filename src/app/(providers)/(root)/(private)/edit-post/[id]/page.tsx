@@ -5,7 +5,7 @@ import {useRouter, useParams} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 import {FaArrowLeft} from 'react-icons/fa6';
 import Swal from 'sweetalert2';
-import {getPostById, updatePost} from '@/app/api/firebaseApi'; // Assuming you have an updatePost function
+import {getPostToEdit, updatePost} from '@/app/api/firebaseApi'; // Assuming you have an updatePost function
 import {FormData} from '@/app/api/typeFormData';
 import {Button, Input, Radio, RadioGroup, Select, SelectItem, Textarea} from '@nextui-org/react';
 import {
@@ -18,7 +18,7 @@ import {
 } from '../../create-post/_components/categories';
 
 export default function EditPostForm() {
-  const {postId} = useParams<{postId: string}>();
+  const {id} = useParams();
   const auth = getAuth();
   const user = auth.currentUser;
   const router = useRouter();
@@ -54,7 +54,9 @@ export default function EditPostForm() {
       }
 
       try {
-        const postData = await getPostById(postId);
+        console.log('postId:', id);
+
+        const postData = await getPostToEdit(id);
         if (!postData) {
           window.alert('게시글을 찾을 수 없습니다.');
           router.push('/');
@@ -66,7 +68,7 @@ export default function EditPostForm() {
           return;
         }
         setFormData({
-          id: postId,
+          id: '',
           title: postData.title,
           content: postData.content,
           category: postData.category,
@@ -97,7 +99,7 @@ export default function EditPostForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await updatePost(postId, formData);
+      await updatePost(id, formData);
       router.push('/');
     } catch (error) {
       console.error('Error updating post:', error);
@@ -127,7 +129,7 @@ export default function EditPostForm() {
   };
 
   if (!formData) {
-    return null; // Or you can return a loading indicator
+    return null;
   }
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

@@ -81,6 +81,24 @@ export const getPostById = async (postId: string): Promise<Post | null> => {
   }
 };
 
+//
+export const getPostToEdit = async (postId: string): Promise<Post | null> => {
+  try {
+    const postRef = doc(db, 'posts', postId);
+    const postSnapshot: DocumentSnapshot = await getDoc(postRef);
+
+    if (postSnapshot.exists()) {
+      const postData = postSnapshot.data() as Post;
+      return postData;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching post by ID:', error);
+    throw new Error('Failed to fetch post data.');
+  }
+};
+
 // 게시글 추가하기 addPost
 export const addPost = async (newPost: Post): Promise<DocumentReference> => {
   try {
