@@ -40,10 +40,14 @@ export default function JoinPage() {
     setIsAgreedToTerms,
     birthDateCheck,
     setBirthDateCheck,
+    joinPurposeCheck,
+    setJoinPurposeCheck,
     nicknameCheck,
     setNicknameCheck,
     emailValidationClass,
     setEmailValidationClass,
+    joinPurpose,
+    setJoinPurpose,
     nicknameValidationClass,
     setNicknameValidationClass,
   } = JoinUseStateCollection();
@@ -59,6 +63,8 @@ export default function JoinPage() {
     birthDate,
     setBirthDateCheck,
     nickname,
+    joinPurpose,
+    setJoinPurpose,
     isAgreedToTerms,
     termsCheck,
     setTermsCheck,
@@ -66,7 +72,8 @@ export default function JoinPage() {
     isEmailAvailable,
     isNicknameAvailable,
     setIsPasswordMatch,
-
+    joinPurposeCheck,
+    setJoinPurposeCheck,
     step,
     setEmailValidationClass,
     setNicknameValidationClass,
@@ -88,6 +95,8 @@ export default function JoinPage() {
     password,
     setPassword,
     confirmPassword,
+    joinPurposeCheck,
+    setJoinPurposeCheck,
     setConfirmPassword,
     birthDate,
     setBirthDate,
@@ -112,6 +121,8 @@ export default function JoinPage() {
     clickEmailCheckHandler,
     termsCheck,
     clickNicknameCheckHandler,
+    setJoinPurpose,
+    joinPurpose,
   });
 
   return (
