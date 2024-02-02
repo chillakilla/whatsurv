@@ -61,7 +61,7 @@ export default function SearchBar({posts, setSearchResults}: SearchProps) {
       <form className="flex justify-center items-center my-[80px]" onSubmit={searchInputValue}>
         <input
           type="text"
-          className="w-[800px] h-12 bg-white rounded-xl text-[#666] border-1 border-[#0051ffb1] p-4"
+          className="w-[800px] h-12 bg-white rounded-xl text-[#666] border-2 border-[#ddd] p-4"
           placeholder="검색어를 입력해주세요"
           value={searchValue}
           onChange={onChangeHandler}
