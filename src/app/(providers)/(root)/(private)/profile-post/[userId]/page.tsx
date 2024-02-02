@@ -45,9 +45,17 @@ export default function ProfilePost() {
       Promise.all([getUserPostsIT(userId), getUserPostLite(userId), getLikedPostsLite(userId), getLikedPostsIT(userId)])
         .then(([postsIT, postsLite, likedLitePostsData, likedITPostsData]) => {
           setPosts(postsIT);
-          setUserPostLite(postsLite);
+          // setUserPostLite(postsLite);
+          //setLikedITPosts(likedITPostsData);
           setLikedLitePosts(likedLitePostsData);
-          setLikedITPosts(likedITPostsData);
+
+          // 문자열로 된 deadlineDate를 직접 비교하여 정렬
+          const sortedPostsIT = postsIT.sort((a, b) => a.deadlineDate.localeCompare(b.deadlineDate));
+          const sortedLikedITPosts = likedITPostsData.sort((a, b) => a.deadlineDate.localeCompare(b.deadlineDate));
+
+          // 정렬된 결과를 상태에 저장
+          setPosts(sortedPostsIT);
+          setLikedITPosts(sortedLikedITPosts);
         })
         .finally(() => {
           setIsLoading(false);
