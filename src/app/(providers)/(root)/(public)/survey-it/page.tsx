@@ -134,6 +134,7 @@ export default function SurveyIt() {
       <SearchBar posts={posts || []} setSearchResults={setSearchResults} />
       <div className="my-20">
         <div className="title-box flex-col items-center  mb-4">
+          {/* 카테고리 필터링 */}
           <SortCategory
             categories={categories}
             selectCategory={selectCategory}
@@ -142,6 +143,7 @@ export default function SurveyIt() {
           />
           <div className="flex justify-between">
             <h2 className="font-bold text-xl w-[140px]">{selectCategory}</h2>
+            {/* 정렬조건 (최신순, 인기순) */}
             <SortSelect
               filteredPosts={filteredPosts}
               sortOptions={sortOptions}
