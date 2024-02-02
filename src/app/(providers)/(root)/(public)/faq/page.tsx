@@ -114,11 +114,11 @@ export default function FaqPage() {
           </div>
           <div className="mt-4 p-2 flex flex-col">
             <h3 className="font-semibold text-lg">
-              <span className="text-[#0051ff]">Q. </span> 어떤 가치를 얻을 수 있을까요?
+              <span className="text-[#0051ff]">Q. </span> IT surv과 참여해 Surv의 차이는 무엇인가요?
             </h3>
             <p>
-              <span className="text-[#ff0000]">A. </span>참여자들은 다양한 분야에서의 의견을 통해 사회적 영향력을 행사할
-              수 있습니다. 또한, 우리는 참여자들에게 다양한 혜택과 인센티브를 제공하여 참여에 대한 감사를 표현하고
+              <span className="text-[#ff0000]">A. </span>IT Surv에서는 IT 업계 종사자들이 참여하고 설문을 생성할 수
+              있고, 참여해 Surv에서는 일반인을 대상으로 보다 폭넓고 가벼운 주제의 설문조사에 참여하고 생성할 수
               있습니다.
             </p>
           </div>

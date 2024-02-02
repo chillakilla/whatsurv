@@ -134,7 +134,9 @@ export default function Popular() {
 
                     <div className="border-t-1 border-[#eee] flex justify-between items-center p-2">
                       <div className="flex items-center">
-                        <p className=" flex items-center gap-2 text-sm text-[#666]">종료일 출력 오류에 지쳐가는 중..</p>
+                        <p className=" flex items-center gap-2 text-sm text-[#666]">
+                          종료일 {post.deadline ? post.deadline : '--'}
+                        </p>
                       </div>
                       <div className="viewer flex  gap-2 text-[#818490]">
                         <IoPeopleSharp />

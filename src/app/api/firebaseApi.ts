@@ -24,7 +24,7 @@ import {FormData} from './typeFormData';
 // 게시글 목록 불러오기 fetchPosts
 export const getPosts = async (): Promise<Post[]> => {
   try {
-    const postsQuery = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
+    const postsQuery = query(collection(db, 'posts'));
     const snapshot: QuerySnapshot<DocumentData> = await getDocs(postsQuery);
     const posts: Post[] = snapshot.docs.map((doc: DocumentSnapshot<DocumentData>) => {
       const data = doc.data();
