@@ -5,7 +5,6 @@ import {useRouter} from 'next/navigation';
 import React, {ChangeEvent, useState} from 'react';
 import {FaArrowLeft} from 'react-icons/fa6';
 import {ageGroup, majorCategories, researchLocation, researchTime, researchType, sexType} from './categories';
-import {Question} from '@/app/api/typePost';
 import Swal from 'sweetalert2';
 
 // next/router 가 아니고 navigation....하
