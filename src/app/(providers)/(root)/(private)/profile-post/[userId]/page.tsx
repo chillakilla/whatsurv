@@ -20,7 +20,8 @@ interface PostIT {
   id: string;
   title: string;
   content: string;
-  deadlineDate?: Date | null;
+  deadlineDate?: string;
+  category: string;
 }
 interface PostLite {
   id: string;
@@ -46,8 +47,16 @@ export default function ProfilePost() {
         .then(([postsIT, postsLite, likedLitePostsData, likedITPostsData]) => {
           setPosts(postsIT);
           setUserPostLite(postsLite);
+          //setLikedITPosts(likedITPostsData);
           setLikedLitePosts(likedLitePostsData);
-          setLikedITPosts(likedITPostsData);
+
+          // 문자열로 된 deadlineDate를 직접 비교하여 정렬
+          const sortedPostsIT = postsIT.sort((a, b) => a.deadlineDate.localeCompare(b.deadlineDate));
+          const sortedLikedITPosts = likedITPostsData.sort((a, b) => a.deadlineDate.localeCompare(b.deadlineDate));
+
+          // 정렬된 결과를 상태에 저장
+          setPosts(sortedPostsIT);
+          setLikedITPosts(sortedLikedITPosts);
         })
         .finally(() => {
           setIsLoading(false);
@@ -201,7 +210,7 @@ export default function ProfilePost() {
           tabContent: 'group-data-[selected=true]:text-[#0051FF]',
         }}
       >
-        <Tab title="내가 작성한 IT 서베이">
+        <Tab title="내가 작성한 IT Surv">
           <Card className="bg-transparent border-0  rounded-none shadow-none">
             <CardBody>
               {posts.length > 0 ? (
@@ -215,19 +224,16 @@ export default function ProfilePost() {
                       className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
                     >
                       <Link href={`/survey-it/${post.id}`} className="text-xl">
-                        <p className="text-sm">
-                          마감일 | {''}
-                          {post.deadlineDate
-                            ? post.deadlineDate.toLocaleDateString('ko-KR', {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                              })
-                            : 'No deadline'}
+                        <p className="  bg-[#0051ff] mb-[7px] text-center text-[#D6FF00] w-14 p-1 rounded-full font-semibold text-xs">
+                          {post.category}
                         </p>
                         <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
                       </Link>
                       <hr />
+                      <p className="text-sm absolute bottom-[20px]">
+                        종료일 | {''}
+                        {post.deadlineDate || 'No deadline'}
+                      </p>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -265,6 +271,7 @@ export default function ProfilePost() {
                         <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
                       </Link>
                       <hr />
+
                       <Button
                         variant="ghost"
                         size="sm"
@@ -285,7 +292,7 @@ export default function ProfilePost() {
             </CardBody>
           </Card>
         </Tab>
-        <Tab title="내가 좋아요한 IT 서베이">
+        <Tab title="내가 좋아요한 IT Surv">
           <Card className="bg-transparent border-0  rounded-none shadow-none">
             <CardBody>
               {likedITPosts.length > 0 ? (
@@ -299,19 +306,16 @@ export default function ProfilePost() {
                       className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
                     >
                       <Link href={`/survey-it/${post.id}`} className="text-xl">
-                        <p className="text-sm">
-                          마감일 | {''}
-                          {post.deadlineDate
-                            ? post.deadlineDate.toLocaleDateString('ko-KR', {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                              })
-                            : 'No deadline'}
+                        <p className="bg-[#0051ff]  text-center text-[#D6FF00] w-14 p-1 rounded-full font-semibold text-xs mb-[7px]">
+                          {post.category}
                         </p>
                         <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
                       </Link>
                       <hr />
+                      <p className="text-sm absolute bottom-[20px]">
+                        종료일 | {''}
+                        {post.deadlineDate ? post.deadlineDate : 'No deadline'}
+                      </p>
                       <Button
                         variant="ghost"
                         size="sm"

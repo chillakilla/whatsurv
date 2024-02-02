@@ -39,9 +39,16 @@ export default function JoinUseStateCollection() {
   //회원가입 약관 동의 상태
   const [termsCheck, setTermsCheck] = useState('');
 
+  //회원가입시 가입목적 상태
+  const [joinPurpose, setJoinPurpose] = useState('');
+  const [joinPurposeCheck, setJoinPurposeCheck] = useState('');
   return {
     email,
+    joinPurpose,
+    setJoinPurpose,
     setEmail,
+    joinPurposeCheck,
+    setJoinPurposeCheck,
     termsCheck,
     setTermsCheck,
     password,

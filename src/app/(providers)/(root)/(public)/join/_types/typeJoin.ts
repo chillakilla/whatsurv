@@ -18,6 +18,10 @@ export interface ValidateInputTypes {
   isAgreedToTerms: boolean;
   termsCheck: string;
   setTermsCheck: React.Dispatch<React.SetStateAction<string>>;
+  setJoinPurpose: (value: string) => void;
+  joinPurpose: string;
+  joinPurposeCheck: string;
+  setJoinPurposeCheck: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export interface RenderStepJoinTypes {
@@ -50,6 +54,10 @@ export interface RenderStepJoinTypes {
   nicknameValidationClass: string;
   isAgreedToTerms: boolean;
   setIsAgreedToTerms: React.Dispatch<React.SetStateAction<boolean>>;
+  setJoinPurpose: (value: string) => void;
+  joinPurpose: string;
+  joinPurposeCheck: string;
+  setJoinPurposeCheck: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export interface ProgressBarTypes {
