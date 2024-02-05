@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import {useRef} from 'react';
 import SwiperCore from 'swiper';
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -33,13 +32,15 @@ export default function LiteBanner() {
         className="banner-swiper"
       >
         <SwiperSlide className="banner-slide">
-          <div>배너 1</div>
+          <div>
+            {' '}
+            <img src="/image/001.png" />
+          </div>
         </SwiperSlide>
         <SwiperSlide>
-          <div>배너 2</div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div>배너3</div>
+          <div>
+            <img src="/image/002.png" />
+          </div>
         </SwiperSlide>
       </Swiper>
     </>
