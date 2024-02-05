@@ -266,7 +266,7 @@ export default function ProfilePost() {
             </CardBody>
           </Card>
         </Tab>
-        <Tab title="내가 작성한 참여했Surv">
+        <Tab title="내가 작성한 참여해Surv">
           <Card className="bg-transparent border-0  rounded-none shadow-none">
             <CardBody>
               {userPostLite.length > 0 ? (
@@ -351,7 +351,7 @@ export default function ProfilePost() {
             </CardBody>
           </Card>
         </Tab>
-        <Tab title="내가 좋아요한 참여했Surv">
+        <Tab title="내가 좋아요한 참여해Surv">
           <Card className="bg-transparent border-0  rounded-none shadow-none">
             <CardBody>
               {likedLitePosts.length > 0 ? (
