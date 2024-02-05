@@ -57,18 +57,6 @@ export default function Popular() {
     queryFn: getPosts,
   });
 
-  if (isLoading) {
-    return <div>로딩 중...</div>;
-  }
-
-  if (isError) {
-    return <div>로딩 중에 오류가 발생했습니다.</div>;
-  }
-
-  if (!posts) {
-    return <div>불러올 수 있는 게시글이 없습니다.</div>;
-  }
-
   return (
     <>
       <h2 className="text-xl font-bold">
@@ -90,7 +78,7 @@ export default function Popular() {
         className="popular-swiper"
       >
         {posts
-          .filter(post => post.views >= 40)
+          ?.filter(post => post.views >= 40)
           .sort((a, b) => b.views - a.views)
           .map(post => {
             return (
