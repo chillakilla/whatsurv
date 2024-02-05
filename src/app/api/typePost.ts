@@ -45,7 +45,7 @@ export type litePost = {
   deadlineDate: firebase.firestore.Timestamp | null;
   nickname: string;
   userId: string | undefined;
-  userPhotoUrl?: string;
+  userPhotoURL?: string;
 };
 
 export type feedBack = {
