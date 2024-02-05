@@ -150,7 +150,7 @@ const SurveyItDetailPage: React.FC = () => {
       }).then(async result => {
         if (result.isConfirmed) {
           Swal.fire('제출되었습니다.', '설문에 참여해주셔서 감사합니다.');
-          router.replace('/');
+          router.replace('/survey-it');
         }
       });
     } catch (error) {
