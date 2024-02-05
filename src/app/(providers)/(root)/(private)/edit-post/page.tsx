@@ -1,10 +1,10 @@
 import React from 'react';
-import EditPostFormPage from './[id]/page';
+import EditPostForm from './[id]/page';
 
 export default function EditPostPage() {
   return (
     <div>
-      <EditPostFormPage />
+      <EditPostForm />
     </div>
   );
 }

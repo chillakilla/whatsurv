@@ -21,7 +21,7 @@ export type Post = {
   email: string | null;
   nickname: string | null;
   createdAt: Date;
-  updatedAt: Timestamp;
+  updatedAt: Date;
   deadline?: string;
 
   surveyData: Question[];

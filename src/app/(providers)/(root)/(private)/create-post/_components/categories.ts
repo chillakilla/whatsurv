@@ -4,7 +4,6 @@ export type Category = {
 };
 
 export const majorCategories: Category[] = [
-  {value: '직종', label: '직종'},
   {value: '전체', label: '전체'},
   {value: 'IT', label: 'IT'},
   {value: '프론트', label: '프론트'},

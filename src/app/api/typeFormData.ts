@@ -23,5 +23,5 @@ export type FormData = Omit<Post, 'views' | 'userId' | 'updatedAt' | 'email'> & 
 
   views: number;
   userId: string | undefined;
-  updatedAt: Timestamp;
+  updatedAt: Date;
 };

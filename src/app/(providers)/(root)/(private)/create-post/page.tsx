@@ -2,7 +2,6 @@
 
 import {addPost} from '@/app/api/firebaseApi';
 import {FormData} from '@/app/api/typeFormData';
-import {Editor} from '@toast-ui/react-editor';
 import {getAuth} from 'firebase/auth';
 import 'firebase/compat/firestore';
 import {Timestamp} from 'firebase/firestore';
@@ -12,7 +11,6 @@ import Swal from 'sweetalert2';
 import PostForm from './_components/PostForm';
 
 export default function PostPage() {
-  const editorRef = useRef<Editor>(null);
   const auth = getAuth();
   const user = auth.currentUser;
   const router = useRouter();
@@ -34,7 +32,7 @@ export default function PostPage() {
     email: user?.email || null,
     views: 0,
     userId: user?.uid || '',
-    updatedAt: Timestamp.now(),
+    updatedAt: new Date(),
     surveyData: [{question: '', options: ['매우 그렇다', '그렇다', '보통이다', '아니다', '매우 아니다']}],
   });
   const [isLoading, setIsLoading] = useState(false);
