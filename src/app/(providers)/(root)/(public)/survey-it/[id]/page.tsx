@@ -5,7 +5,7 @@ import {db} from '@/firebase';
 import {Radio, RadioGroup} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {getAuth} from 'firebase/auth';
-import {addDoc, collection, doc, getDocs, deleteDoc, query, where} from 'firebase/firestore';
+import {addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where} from 'firebase/firestore';
 import {useParams, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import Swal from 'sweetalert2';
@@ -109,13 +109,16 @@ const SurveyItDetailPage: React.FC = () => {
         return;
       }
 
+      const currentUserDocRef = doc(db, 'users', currentUser);
+      const userDocSnapshot = await getDoc(currentUserDocRef);
+      const userData = userDocSnapshot.data();
+
       const createdAt = new Date();
       await addDoc(collection(db, 'submitedposts'), {
         postId: id,
         email: post?.email,
         nickname: post?.nickname,
         category: post?.category,
-        sexType: post?.sexType,
         ageGroup: post?.ageGroup,
         title: post?.title,
         content: post?.content,
@@ -123,6 +126,9 @@ const SurveyItDetailPage: React.FC = () => {
         researchTime: post?.researchTime,
         researchType: post?.researchType,
         answers: answers,
+        userEmail: userData?.email,
+        userNickname: userData?.nickname,
+        userSexType: userData?.sexType,
       });
       await addDoc(usersPostIsDone, {
         postId: postId,

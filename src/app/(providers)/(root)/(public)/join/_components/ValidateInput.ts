@@ -13,6 +13,10 @@ export default function ValidateInput({
   setConfirmPasswordCheck,
   birthDate,
   isAgreedToTerms,
+  joinPurpose,
+  setJoinPurpose,
+  joinPurposeCheck,
+  setJoinPurposeCheck,
   setTermsCheck,
   setBirthDateCheck,
   nickname,
@@ -20,6 +24,7 @@ export default function ValidateInput({
   setNicknameCheck,
   isEmailAvailable,
   isNicknameAvailable,
+
   step,
 }: ValidateInputTypes) {
   //빈칸에 대한 유효성 검사
@@ -106,6 +111,14 @@ export default function ValidateInput({
         setEmailValidationClass('');
       }
     }
+
+    if (step === 6 && !joinPurpose) {
+      setJoinPurposeCheck('가입 목적을 선택해주세요');
+      isValid = false;
+    } else {
+      setJoinPurposeCheck('');
+    }
+
     return isValid;
   };
   return {validate};
