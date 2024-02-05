@@ -13,6 +13,7 @@ import {IoPeopleSharp} from 'react-icons/io5';
 import {Tooltip} from '@nextui-org/react';
 import {BsFillQuestionCircleFill} from 'react-icons/bs';
 import Swal from 'sweetalert2';
+import {MoonLoader} from 'react-spinners';
 
 // Swiper styles
 import 'swiper/css';
@@ -142,7 +143,12 @@ export default function ItList() {
   });
 
   if (isLoading) {
-    return <div>로딩 중...</div>;
+    return (
+      <div className="flex justify-center flex-wrap items-center overflow-y-hidden mt-[300px]">
+        <MoonLoader color="#0051FF" size={100} />
+        <p className="text-[#0051FF] w-full text-center mt-[30px]">잠시만 기다려 주세요..</p>
+      </div>
+    );
   }
 
   if (isError) {
