@@ -197,6 +197,15 @@ export default function ProfilePost() {
     }
   };
 
+  // 날짜가 현재 날짜를 지났는지 확인하는 함수
+  const isDeadlinePast = (deadline: any) => {
+    if (!deadline || deadline === 'No deadline') return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정하여 오늘 날짜만 비교
+    const deadlineDate = new Date(deadline);
+    return deadlineDate < today;
+  };
+
   return (
     <div className="max-w-[1400px] m-auto mt-[20px] select-none ">
       <Tabs
@@ -231,8 +240,11 @@ export default function ProfilePost() {
                       </Link>
                       <hr />
                       <p className="text-sm absolute bottom-[20px]">
-                        종료일 | {''}
-                        {post.deadlineDate || 'No deadline'}
+                        {isDeadlinePast(post.deadlineDate) ? (
+                          <span className="text-red-500">Surv이 종료되었습니다.</span>
+                        ) : (
+                          ` 종료일 |  ${post.deadlineDate || 'No deadline'}`
+                        )}
                       </p>
                       <Button
                         variant="ghost"
@@ -313,8 +325,11 @@ export default function ProfilePost() {
                       </Link>
                       <hr />
                       <p className="text-sm absolute bottom-[20px]">
-                        종료일 | {''}
-                        {post.deadlineDate ? post.deadlineDate : 'No deadline'}
+                        {isDeadlinePast(post.deadlineDate) ? (
+                          <span className="text-red-500">Surv이 종료되었습니다.</span>
+                        ) : (
+                          ` 종료일 |  ${post.deadlineDate || 'No deadline'}`
+                        )}
                       </p>
                       <Button
                         variant="ghost"
