@@ -7,9 +7,10 @@ interface ResultModalProps {
   contents: string[];
   counts: number[];
   onClickResultModalCloseHandler: () => void;
+  onPreviousButtonClick: () => void;
 }
 
-const ResultModal: React.FC<ResultModalProps> = ({litepost, onClickResultModalCloseHandler}) => {
+const ResultModal: React.FC<ResultModalProps> = ({litepost, onClickResultModalCloseHandler, onPreviousButtonClick}) => {
   // 참여인원수
   const totalVotes = litepost.counts.reduce((acc, count) => acc + count, 0);
   return (
@@ -37,7 +38,13 @@ const ResultModal: React.FC<ResultModalProps> = ({litepost, onClickResultModalCl
             );
           })}
         </div>
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-end mt-4 gap-2">
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
+            onClick={onPreviousButtonClick}
+          >
+            이전
+          </button>
           <button
             className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring focus:border-red-300"
             onClick={onClickResultModalCloseHandler}

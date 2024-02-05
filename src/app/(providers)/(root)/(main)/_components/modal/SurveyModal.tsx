@@ -135,6 +135,11 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
   // 참여인원수
   const totalVotes = litepost.counts.reduce((acc, count) => acc + count, 0);
 
+  // 이전 버튼 클릭
+  const onPreviousButtonClick = () => {
+    setShowResultModal(false);
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
       {imagesLoaded ? (
@@ -196,6 +201,7 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
                 contents={contents}
                 counts={contentsCounts}
                 onClickResultModalCloseHandler={resultModalClosehandler}
+                onPreviousButtonClick={onPreviousButtonClick}
               />
             )}
           </div>

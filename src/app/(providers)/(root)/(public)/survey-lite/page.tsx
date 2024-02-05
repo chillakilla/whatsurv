@@ -233,6 +233,7 @@ export default function SurveyLitePage() {
                 contents={selectedPost.contents}
                 images={selectedPost.images}
                 onCloseLiteSurveyModal={onCloseModalHandler}
+                onClickPostHandler={onClickPostHandler}
               />
             )}
 
