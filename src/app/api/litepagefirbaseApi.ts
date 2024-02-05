@@ -40,6 +40,7 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
         user: {id: '', displayName: '', email: ''},
         nickname: data?.nickname || '',
         userId: data?.userId || '',
+        userPhotoUrl: data?.userPhotoUrl || '',
       };
     });
 
@@ -57,6 +58,7 @@ export const saveDataToFirebase = async (
   images: File[],
   userNickname: string,
   userId: string,
+  userPhotoUrl: string,
 ) => {
   try {
     const liteSurveyPostsCollection = collection(db, 'litesurveyposts');

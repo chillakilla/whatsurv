@@ -106,9 +106,10 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
             const userData = userDoc.data();
             const userNickname = userData.nickname;
             const userId = userData.uid;
+            const userPhotoUrl = userData.photoUrl;
 
             // 데이터 저장
-            saveDataToFirebase(title, contents, selectedImages, userNickname, userId);
+            saveDataToFirebase(title, contents, selectedImages, userNickname, userId, userPhotoUrl);
             onCloseCreateModal();
             Swal.fire({
               icon: 'success',
