@@ -136,7 +136,11 @@ LitePostProps) {
           <div className="bottom-content flex items-end">
             <div className="flex justify-between items-center mt-[3.125rem] w-full">
               <div className="user flex mt-4 gap-2">
-                <FaRegCircleUser />
+                {litepost.userPhotoURL ? (
+                  <img src={litepost.userPhotoURL} className="w-8 h-8 rounded-full" alt="Profile" />
+                ) : (
+                  <FaRegCircleUser className="text-gray-400 w-8 h-8" />
+                )}
                 <p className="font-semibold">{litepost.nickname}</p>
               </div>
               <div className="viewer flex mt-4 gap-2 text-[#818490]">

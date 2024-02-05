@@ -40,6 +40,7 @@ export const getLiteSurveyPosts = async (): Promise<litePost[]> => {
         user: {id: '', displayName: '', email: ''},
         nickname: data?.nickname || '',
         userId: data?.userId || '',
+        userPhotoURL: data?.userPhotoURL || '',
       };
     });
 
@@ -57,6 +58,7 @@ export const saveDataToFirebase = async (
   images: File[],
   userNickname: string,
   userId: string,
+  userPhotoURL: string,
 ) => {
   try {
     const liteSurveyPostsCollection = collection(db, 'litesurveyposts');
@@ -87,6 +89,7 @@ export const saveDataToFirebase = async (
       counts,
       nickname: userNickname,
       userId: user.uid,
+      userPhotoURL: userPhotoURL,
     });
 
     console.log('ID가 포함된 문서 작성 성공: ', docRef.id);

@@ -10,11 +10,9 @@ import {
 } from '@/app/api/litepagefirbaseApi';
 import {litePost} from '@/app/api/typePost';
 import {auth, db} from '@/firebase';
-import {Button} from '@nextui-org/react';
 import {useQuery} from '@tanstack/react-query';
 import {collection, doc, getDocs} from 'firebase/firestore';
 import {useEffect, useState} from 'react';
-import {LuPencilLine} from 'react-icons/lu';
 import Swal from 'sweetalert2';
 import LiteSurveyCreateModal from '../../(main)/_components/modal/CreateModal';
 import LiteSurveyModal from '../../(main)/_components/modal/SurveyModal';
@@ -235,8 +233,7 @@ export default function SurveyLitePage() {
                 onCloseLiteSurveyModal={onCloseModalHandler}
               />
             )}
-
-            <div className="flex justify-end sticky bottom-10">
+            {/* <div className="flex justify-end sticky bottom-10">
               <Button
                 onClick={onClickCreateModalOpen}
                 isIconOnly
@@ -245,7 +242,7 @@ export default function SurveyLitePage() {
               >
                 <LuPencilLine />
               </Button>
-            </div>
+            </div> */}
             {isCreateModalOpen && <LiteSurveyCreateModal onCloseCreateModal={() => setIsCreateModalOpen(false)} />}
             {editingPost && (
               <UpdateModal

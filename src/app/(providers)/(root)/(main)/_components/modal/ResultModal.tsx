@@ -7,9 +7,10 @@ interface ResultModalProps {
   contents: string[];
   counts: number[];
   onClickResultModalCloseHandler: () => void;
+  onPreviousButtonClick: () => void;
 }
 
-const ResultModal: React.FC<ResultModalProps> = ({litepost, onClickResultModalCloseHandler}) => {
+const ResultModal: React.FC<ResultModalProps> = ({litepost, onClickResultModalCloseHandler, onPreviousButtonClick}) => {
   // 참여인원수
   const totalVotes = litepost.counts.reduce((acc, count) => acc + count, 0);
   return (
@@ -20,7 +21,7 @@ const ResultModal: React.FC<ResultModalProps> = ({litepost, onClickResultModalCl
             <img key={index} src={image} alt={`Image ${index}`} className="w-[8rem] h-[8rem] mb-2 justify-center" />
           ))}
         </div>
-        <div className="mb-2 flex justify-between items-center">
+        <div className="mb-2 flex justify-end items-center">
           <span className="text-sm">참여인원 : {totalVotes}명</span>
         </div>
         <h2 className="text-2xl font-bold mb-4 border-b border-black pb-4 mb-4">{litepost.title}</h2>
@@ -37,7 +38,13 @@ const ResultModal: React.FC<ResultModalProps> = ({litepost, onClickResultModalCl
             );
           })}
         </div>
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-end mt-4 gap-2">
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300"
+            onClick={onPreviousButtonClick}
+          >
+            이전
+          </button>
           <button
             className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring focus:border-red-300"
             onClick={onClickResultModalCloseHandler}
