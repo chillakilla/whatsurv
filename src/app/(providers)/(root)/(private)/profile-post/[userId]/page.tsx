@@ -33,6 +33,7 @@ interface PostLite {
 
 interface SubmitedPost {
   id: string;
+  postId: string;
   title: string;
   deadlineDate?: string;
   category: string;
