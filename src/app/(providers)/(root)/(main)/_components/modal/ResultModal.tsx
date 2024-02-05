@@ -21,7 +21,7 @@ const ResultModal: React.FC<ResultModalProps> = ({litepost, onClickResultModalCl
             <img key={index} src={image} alt={`Image ${index}`} className="w-[8rem] h-[8rem] mb-2 justify-center" />
           ))}
         </div>
-        <div className="mb-2 flex justify-between items-center">
+        <div className="mb-2 flex justify-end items-center">
           <span className="text-sm">참여인원 : {totalVotes}명</span>
         </div>
         <h2 className="text-2xl font-bold mb-4 border-b border-black pb-4 mb-4">{litepost.title}</h2>
