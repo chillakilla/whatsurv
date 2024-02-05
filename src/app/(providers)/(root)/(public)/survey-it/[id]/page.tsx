@@ -10,6 +10,7 @@ import {useParams, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import Swal from 'sweetalert2';
 import ProgressBar from '../../../(main)/_components/progress/ProgressBar';
+import {MoonLoader} from 'react-spinners';
 
 const SurveyItDetailPage: React.FC = () => {
   const {id} = useParams();
@@ -43,7 +44,12 @@ const SurveyItDetailPage: React.FC = () => {
   });
 
   if (isLoading) {
-    return <div>로딩 중...</div>;
+    return (
+      <div className="flex justify-center flex-wrap items-center overflow-y-hidden mt-[300px]">
+        <MoonLoader color="#0051FF" size={100} />
+        <p className="text-[#0051FF] w-full text-center mt-[30px]">잠시만 기다려 주세요..</p>
+      </div>
+    );
   }
 
   if (isError) {
@@ -66,7 +72,7 @@ const SurveyItDetailPage: React.FC = () => {
     }).then(result => {
       if (result.isConfirmed) {
         Swal.fire('감사합니다. 다음에 또 이용해주세요!');
-        router.replace('/');
+        router.replace('/survey-it');
       }
     });
   };
@@ -150,7 +156,7 @@ const SurveyItDetailPage: React.FC = () => {
       }).then(async result => {
         if (result.isConfirmed) {
           Swal.fire('제출되었습니다.', '설문에 참여해주셔서 감사합니다.');
-          router.replace('/');
+          router.replace('/survey-it');
         }
       });
     } catch (error) {

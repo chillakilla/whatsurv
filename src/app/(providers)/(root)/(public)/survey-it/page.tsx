@@ -1,10 +1,11 @@
 'use client';
 import {getPosts, updateItPageLikedPostsSubcollection, updateLikesCount, updateViewsCount} from '@/app/api/firebaseApi';
 import {Post} from '@/app/api/typePost';
-import {auth, db} from '@/firebase';
+import {auth} from '@/firebase';
 import {useQuery} from '@tanstack/react-query';
 import 'firebase/compat/firestore';
 import {collection, doc, getDocs} from 'firebase/firestore';
+import {db} from '@/firebase';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import Swal from 'sweetalert2';
@@ -13,6 +14,7 @@ import SearchBar from '../../(main)/searchForm/SearchBar';
 import {Category, majorCategories} from '../../(private)/create-post/_components/categories';
 import RenderPost from './_components/RenderPost';
 import SortSelect from '../../(main)/_components/post/SortSelect';
+import {useParams} from 'next/navigation';
 
 export default function SurveyIt() {
   const [categories, setCategories] = useState<Category[]>(majorCategories);
@@ -62,7 +64,7 @@ export default function SurveyIt() {
         Swal.fire('로그인 회원만 이용 가능합니다.', '', 'warning');
         router.replace('/auth');
       } else {
-        router.replace(`/survey-it/${post.id}`);
+        router.push(`/survey-it/${post.id}`);
         setSelectedPost(post);
         updateViewsCount(post.id);
       }
@@ -124,10 +126,6 @@ export default function SurveyIt() {
   const clickCategoryHandler = (category: string) => {
     setSelectCategory(category);
   };
-
-  // 이미 참여한 설문 비활성화 함수
-  // userid 가져와서 참여했으면 disabled 안했으면 show
-  const blindSurvey = () => {};
 
   return (
     <div className="flex-col items-center justify-center w-[88.5rem] m-auto mt-20">
