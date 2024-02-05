@@ -120,6 +120,7 @@ const SurveyItDetailPage: React.FC = () => {
       const userData = userDocSnapshot.data();
 
       const createdAt = new Date();
+      const deadline = post?.deadline || 'No deadline';
       await addDoc(collection(db, 'submitedposts'), {
         postId: id,
         email: post?.email,
@@ -136,6 +137,8 @@ const SurveyItDetailPage: React.FC = () => {
         userNickname: userData?.nickname,
         userSexType: userData?.sexType,
         userId: currentUser,
+        deadline: deadline,
+
         //addUserEmail: auth.currentUser?.email,
         //addUserNickname: userData?.nickname,
       });

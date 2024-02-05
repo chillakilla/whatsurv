@@ -15,7 +15,9 @@ import {
   getLikedPostsLite,
   getUserPostLite,
   getUserPostsIT,
+  getUserSubmitedPostsIT,
 } from '../_components/getUserPost';
+
 interface PostIT {
   id: string;
   title: string;
@@ -29,12 +31,19 @@ interface PostLite {
   content: string;
 }
 
+interface SubmitedPost {
+  id: string;
+  title: string;
+  deadlineDate?: string;
+  category: string;
+}
+
 export default function ProfilePost() {
   const [posts, setPosts] = useState<PostIT[]>([]);
   const [userPostLite, setUserPostLite] = useState<PostLite[]>([]);
   const [likedLitePosts, setLikedLitePosts] = useState<PostLite[]>([]);
   const [likedITPosts, setLikedITPosts] = useState<PostIT[]>([]);
-
+  const [submitedITPosts, setSubmitedITPosts] = useState<SubmitedPost[]>([]);
   const params = useParams<{userId: string}>();
   const userId = params.userId;
 
@@ -43,8 +52,17 @@ export default function ProfilePost() {
   useEffect(() => {
     if (userId) {
       setIsLoading(true);
-      Promise.all([getUserPostsIT(userId), getUserPostLite(userId), getLikedPostsLite(userId), getLikedPostsIT(userId)])
-        .then(([postsIT, postsLite, likedLitePostsData, likedITPostsData]) => {
+
+      Promise.all([
+        getUserPostsIT(userId),
+        getUserPostLite(userId),
+        getLikedPostsLite(userId),
+        getLikedPostsIT(userId),
+        getUserSubmitedPostsIT(userId),
+      ])
+        .then(([postsIT, postsLite, likedLitePostsData, likedITPostsData, submitedPosts]) => {
+          setSubmitedITPosts(submitedPosts);
+
           setPosts(postsIT);
           setUserPostLite(postsLite);
           //setLikedITPosts(likedITPostsData);
@@ -233,7 +251,7 @@ export default function ProfilePost() {
                       className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
                     >
                       <Link href={`/survey-it/${post.id}`} className="text-xl">
-                        <p className="  bg-[#0051ff] mb-[7px] text-center text-[#D6FF00] w-14 p-1 rounded-full font-semibold text-xs">
+                        <p className="  bg-[#0051ff] mb-[7px] text-center text-[#D6FF00] w-[65px] p-1 rounded-full font-semibold text-xs">
                           {post.category}
                         </p>
                         <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
@@ -318,7 +336,7 @@ export default function ProfilePost() {
                       className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
                     >
                       <Link href={`/survey-it/${post.id}`} className="text-xl">
-                        <p className="bg-[#0051ff]  text-center text-[#D6FF00] w-14 p-1 rounded-full font-semibold text-xs mb-[7px]">
+                        <p className="bg-[#0051ff]  text-center text-[#D6FF00] w-[65px] p-1 rounded-full font-semibold text-xs mb-[7px]">
                           {post.category}
                         </p>
                         <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
@@ -383,6 +401,44 @@ export default function ProfilePost() {
               ) : (
                 <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
                   좋아요한 글이 없습니다.
+                </p>
+              )}
+            </CardBody>
+          </Card>
+        </Tab>
+        <Tab title="내가 참여한 IT Surv">
+          <Card className="bg-transparent border-0  rounded-none shadow-none">
+            <CardBody>
+              {submitedITPosts.length > 0 ? (
+                <ul
+                  className="grid grid-cols-2 md:grid-cols-4 gap-4 auto
+                "
+                >
+                  {submitedITPosts.map(post => (
+                    <li
+                      key={post.id}
+                      className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
+                    >
+                      <Link href={`/survey-it/${post.id}`} className="text-xl">
+                        <p className="bg-[#0051ff]  text-center text-[#D6FF00] w-[65px] p-1 rounded-full font-semibold text-xs mb-[7px]">
+                          {post.category}
+                        </p>
+                        <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
+                      </Link>
+                      <hr />
+                      <p className="text-sm absolute bottom-[20px]">
+                        {isDeadlinePast(post.deadlineDate) ? (
+                          <span className="text-red-500">Surv이 종료되었습니다.</span>
+                        ) : (
+                          ` 종료일 |  ${post.deadlineDate || 'No deadline'}`
+                        )}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
+                  참여한 Surv이 없습니다.
                 </p>
               )}
             </CardBody>

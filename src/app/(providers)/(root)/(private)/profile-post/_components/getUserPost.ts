@@ -108,3 +108,23 @@ export const deleteLikedPostIT = async (userId: string, postId: string) => {
     throw error;
   }
 };
+
+// 내가 참여한 IT Surv 함수
+export const getUserSubmitedPostsIT = async (userId: string) => {
+  const submitedPostsQuery = query(collection(db, 'submitedposts'), where('userId', '==', userId));
+  const querySnapshot = await getDocs(submitedPostsQuery);
+  const submitedPosts = querySnapshot.docs.map(doc => {
+    const docData = doc.data();
+    const deadline = docData.deadline || 'No deadline';
+
+    return {
+      id: doc.id,
+      postId: docData.postId,
+      title: docData.title,
+      deadlineDate: deadline,
+      category: docData?.category || 'No category',
+    };
+  });
+
+  return submitedPosts;
+};
