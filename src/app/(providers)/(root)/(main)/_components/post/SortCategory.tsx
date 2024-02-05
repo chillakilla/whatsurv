@@ -68,7 +68,7 @@ export default function SortCategory({
     <>
       <div className="flex mb-10 justify-between border-b-2 border-[#eee]">
         <div className="category flex gap-8">
-          {categories.slice(1).map(category => (
+          {categories.map(category => (
             <button
               key={category.label}
               onClick={() => onCategorySelect(category.label)}
