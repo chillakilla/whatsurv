@@ -419,7 +419,7 @@ export default function ProfilePost() {
                       key={post.id}
                       className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
                     >
-                      <Link href={`/survey-it/${post.id}`} className="text-xl">
+                      <Link href={`/survey-it/${post.postId}`} className="text-xl">
                         <p className="bg-[#0051ff]  text-center text-[#D6FF00] w-[65px] p-1 rounded-full font-semibold text-xs mb-[7px]">
                           {post.category}
                         </p>
