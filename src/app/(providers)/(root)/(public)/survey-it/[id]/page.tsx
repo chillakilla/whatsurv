@@ -66,7 +66,7 @@ const SurveyItDetailPage: React.FC = () => {
     }).then(result => {
       if (result.isConfirmed) {
         Swal.fire('감사합니다. 다음에 또 이용해주세요!');
-        router.replace('/');
+        router.replace('/survey-it');
       }
     });
   };
