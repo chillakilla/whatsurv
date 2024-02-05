@@ -5,10 +5,13 @@ import {FaHeart, FaRegHeart} from 'react-icons/fa';
 import {Tooltip} from '@nextui-org/react';
 import firebase from 'firebase/compat/app';
 import {BsFillQuestionCircleFill} from 'react-icons/bs';
-import {RenderPostProps} from '@/app/api/typePost';
+import {Post, RenderPostProps} from '@/app/api/typePost';
 import {IoPeopleSharp} from 'react-icons/io5';
+import {useRouter} from 'next/navigation';
+import Swal from 'sweetalert2';
 
 export default function RenderPost({post, clickPostHandler, clickLikedButtonHandler, likedPosts}: RenderPostProps) {
+  const router = useRouter();
   const isWithin24Hours = (createdAt: Date | firebase.firestore.Timestamp): boolean => {
     const currentTime = new Date();
     const createdAtDate = createdAt instanceof firebase.firestore.Timestamp ? createdAt.toDate() : createdAt;
@@ -18,14 +21,33 @@ export default function RenderPost({post, clickPostHandler, clickLikedButtonHand
 
     return hoursDifference <= 24;
   };
+
+  const moveResultHandler = (post: Post) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'center',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: toast => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      },
+    });
+
+    Toast.fire({
+      icon: 'warning',
+      title: '구현 중인 기능입니다. 죄송합니다!',
+    });
+  };
+
+  // 이미 참여한 설문 비활성화 함수
+
   return (
-    <div
-      className={`h-72 border-2 border-[#e1e1e1] flex flex-col justify-between rounded-xl p-4 bg-white `}
-      onClick={() => clickPostHandler(post)}
-    >
+    <div className={`h-72 border-2 border-[#e1e1e1] flex flex-col justify-between rounded-xl p-4 bg-white `}>
       <div className="category-box flex justify-between items-center ">
         <div className="flex gap-2">
-          <div className="bg-[#0051ff] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
+          <div className="bg-[#0051ff] text-[#D6FF00] h-[25px] w-[75px] p-1 text-center rounded-full font-semibold text-xs">
             {post.category}
           </div>
           <div
@@ -87,15 +109,19 @@ export default function RenderPost({post, clickPostHandler, clickLikedButtonHand
 
       <div className=" h-[40px] flex justify-between items-center ">
         <div className="flex gap-2">
-          <button className="w-[100px] h-[32px] border-1 border-[#0051ff] hover:bg-[#0051ff] hover:text-white text-sm rounded-lg ">
+          <button
+            className="w-[100px] h-[32px] border-1 border-[#0051ff] hover:bg-[#0051ff] hover:text-white text-sm rounded-lg "
+            onClick={() => clickPostHandler(post)}
+          >
             참여하기
           </button>
 
-          <Link href={`/survey-it/total-result/${post.id}`}>
-            <button className="w-[100px] h-[32px] border-1 border-[#ddd]  hover:bg-black hover:text-white text-sm rounded-lg ">
-              결과보기
-            </button>
-          </Link>
+          <button
+            className="w-[100px] h-[32px] border-1 border-[#ddd]  hover:bg-black hover:text-white text-sm rounded-lg"
+            onClick={() => moveResultHandler(post)}
+          >
+            결과보기
+          </button>
         </div>
         <div className="viewer flex  gap-2 text-[#818490]">
           <IoPeopleSharp />
