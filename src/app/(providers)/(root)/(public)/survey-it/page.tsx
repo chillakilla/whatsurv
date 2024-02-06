@@ -43,7 +43,6 @@ export default function SurveyIt() {
   const isSubmitDisabled = (post: Post): boolean => {
     return post.deadline ? new Date(post.deadline) < new Date() : false;
   };
-  console.log(isSubmitDisabled);
 
   // 게시물 클릭을 처리하는 함수
   const clickPostHandler = (post: Post) => {
