@@ -117,11 +117,6 @@ input {
   height: 132px;
 }
 
-.user > svg {
-  width: 24px;
-  height: 24px;
-  color: #0051ff;
-}
 .viewer > svg {
   width: 22px;
   height: 22px;
@@ -139,6 +134,16 @@ input {
   width: 20px;
   height: 20px;
   color: #0051ff;
+}
+.profile-img {
+  width: 24px;
+  height: 24px;
+}
+
+.lite-profile {
+  width: 24px;
+  height: 24px;
+  color: #888;
 }
 
 .alternative-img {

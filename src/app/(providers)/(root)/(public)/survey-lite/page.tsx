@@ -19,6 +19,7 @@ import LiteSurveyModal from '../../(main)/_components/modal/SurveyModal';
 import UpdateModal from '../../(main)/_components/modal/UpdateModal';
 import LiteBanner from './_components/LiteBanner';
 import LitePostComponent from './_components/LitePostComponent';
+import {MoonLoader} from 'react-spinners';
 
 export default function SurveyLitePage() {
   const [selectedPost, setSelectedPost] = useState<litePost | null>(null);
@@ -194,7 +195,12 @@ export default function SurveyLitePage() {
         <div className="my-20">
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold mb-4">참여해 Surv?</h1>
-            {isLoading && <div>로딩 중...</div>}
+            {isLoading && (
+              <div className="flex justify-center flex-wrap items-center overflow-y-hidden mt-[300px]">
+                <MoonLoader color="#0051FF" size={100} />
+                <p className="text-[#0051FF] w-full text-center mt-[30px]">잠시만 기다려 주세요..</p>
+              </div>
+            )}
             {isError && <div>로딩 중에 오류가 발생했습니다.</div>}
             <button
               onClick={onClickCreateModalOpen}
