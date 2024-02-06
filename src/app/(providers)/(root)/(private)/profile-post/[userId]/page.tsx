@@ -18,26 +18,26 @@ import {
   getUserSubmitedPostsIT,
 } from '../_components/getUserPost';
 
-interface PostIT {
+export type PostIT = {
   id: string;
   title: string;
   content: string;
   deadlineDate?: string;
   category: string;
-}
-interface PostLite {
+};
+export type PostLite = {
   id: string;
   title: string;
   content: string;
-}
+};
 
-interface SubmitedPost {
+export type SubmitedPost = {
   id: string;
   postId: string;
   title: string;
   deadlineDate?: string;
   category: string;
-}
+};
 
 export default function ProfilePost() {
   const [posts, setPosts] = useState<PostIT[]>([]);

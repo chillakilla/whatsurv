@@ -14,7 +14,6 @@ import SearchBar from '../../(main)/searchForm/SearchBar';
 import {Category, majorCategories} from '../../(private)/create-post/_components/categories';
 import RenderPost from './_components/RenderPost';
 import SortSelect from '../../(main)/_components/post/SortSelect';
-import {useParams} from 'next/navigation';
 
 export default function SurveyIt() {
   const [categories, setCategories] = useState<Category[]>(majorCategories);
@@ -24,6 +23,7 @@ export default function SurveyIt() {
   const [searchResults, setSearchResults] = useState<Post[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
   const [sortOptions, setSortOptions] = useState<string>('정렬');
+  const [endSurvey, setEndSurvey] = useState<boolean>(false);
 
   const router = useRouter();
   const user = auth.currentUser;
@@ -39,10 +39,15 @@ export default function SurveyIt() {
     queryFn: getPosts,
   });
 
+  // 참여하기 버튼이 클릭 가능한지 여부를 결정하는 함수
+  const isSubmitDisabled = (post: Post): boolean => {
+    return post.deadline ? new Date(post.deadline) < new Date() : false;
+  };
+
   // 게시물 클릭을 처리하는 함수
   const clickPostHandler = (post: Post) => {
     //TODO: 이 부분 string 에 맞게끔 수정 필요
-    if (post.deadline && new Date(post.deadline) < new Date()) {
+    if (!endSurvey) {
       const Toast = Swal.mixin({
         toast: true,
         position: 'top',
@@ -59,6 +64,7 @@ export default function SurveyIt() {
         icon: 'warning',
         title: '설문 참여가 종료되었습니다.',
       });
+      return;
     } else {
       if (!user) {
         Swal.fire('로그인 회원만 이용 가능합니다.', '', 'warning');
@@ -160,6 +166,8 @@ export default function SurveyIt() {
                   clickPostHandler={clickPostHandler}
                   clickLikedButtonHandler={clickLikedButtonHandler}
                   likedPosts={likedPosts}
+                  endSurvey={endSurvey}
+                  isSubmitDisabled={isSubmitDisabled}
                 />
               ))
             ) : (
@@ -170,6 +178,8 @@ export default function SurveyIt() {
                   clickPostHandler={clickPostHandler}
                   clickLikedButtonHandler={clickLikedButtonHandler}
                   likedPosts={likedPosts}
+                  endSurvey={endSurvey}
+                  isSubmitDisabled={isSubmitDisabled}
                 />
               ))
             )

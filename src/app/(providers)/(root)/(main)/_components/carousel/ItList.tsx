@@ -185,96 +185,103 @@ export default function ItList() {
         className="popular-swiper"
       >
         {posts.map(post => {
-          return (
-            <SwiperSlide id="it-slide" key={post.id}>
-              <div className={`h-72 border-2 border-[#e1e1e1] flex flex-col justify-between rounded-xl p-4 bg-white `}>
-                <div className="category-box flex justify-between items-center ">
-                  <div className="flex gap-2">
-                    <div className="bg-[#0051ff] text-[#D6FF00] h-[25px] w-[75px] p-1 text-center rounded-full font-semibold text-xs">
-                      {post.category}
-                    </div>
-                    <div
-                      className={`bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs ${
-                        post.views >= 40 ? 'block' : 'hidden'
-                      }`}
-                    >
-                      {post.views >= 40 ? 'HOT🔥' : ''}
-                    </div>
-                  </div>
-                  <button
-                    className="like-button w-[20px] h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent"
-                    onClick={() => clickLikedButtonHandler(post.id)}
-                  >
-                    {likedPosts[post.id] ? <FaHeart /> : <FaRegHeart />}
-                  </button>
-                </div>
-                <div>
-                  <p className="text-xs text-[#666]">등록일 {post.createdAt.toLocaleDateString()}</p>
-                  <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1 mb-2">
-                    {post.title}
-                  </h3>
-                </div>
-                <div className="survey-method flex flex-col gap-2 bg-slate-100 h-[70px] p-2  ">
-                  <div className="flex text-sm justify-start grid grid-cols-2 ">
-                    <p>
-                      <span className="text-[#666]">소요 시간</span> &nbsp; {post.researchTime}
-                    </p>
-                    <p>
-                      <span className="text-[#666]">설문 방식</span> &nbsp; {post.researchType}
-                    </p>
-                  </div>
-                  <div className="survey-method flex text-sm justify-start grid grid-cols-2">
-                    <p>
-                      <span className="text-[#666]">참여 연령</span> &nbsp; {post.ageGroup}
-                    </p>
-                    <p>
-                      <span className="text-[#666]">참여 대상</span> &nbsp; {post.sexType}
-                    </p>
-                  </div>
-                </div>
-                <div className=" flex justify-between items-center">
-                  <div className="flex items-center w-full justify-between">
-                    <p className="flex items-center gap-2 text-sm text-black">
-                      종료일 {post.deadline ? post.deadline : '--'}
-                    </p>
-                    <div className="goal flex  gap-2 text-[#818490]">
-                      <Tooltip
-                        content={`설문 목적 : ${post.content}`}
-                        className="line-clamp-1 text-wrap"
-                        placement="left"
+          const isPastDeadline = post.deadline ? new Date(post.deadline) < new Date() : false;
+
+          if (!isPastDeadline) {
+            return (
+              <SwiperSlide id="it-slide" key={post.id}>
+                <div
+                  className={`h-72 border-2 border-[#e1e1e1] flex flex-col justify-between rounded-xl p-4 bg-white `}
+                >
+                  <div className="category-box flex justify-between items-center ">
+                    <div className="flex gap-2">
+                      <div className="bg-[#0051ff] text-[#D6FF00] h-[25px] w-[75px] p-1 text-center rounded-full font-semibold text-xs">
+                        {post.category}
+                      </div>
+                      <div
+                        className={`bg-[#D6FF00] text-black w-14 p-1 text-center rounded-full font-semibold text-xs ${
+                          post.views >= 40 ? 'block' : 'hidden'
+                        }`}
                       >
-                        <button>
-                          <BsFillQuestionCircleFill className="question" />
-                        </button>
-                      </Tooltip>
+                        {post.views >= 40 ? 'HOT🔥' : ''}
+                      </div>
+                    </div>
+                    <button
+                      className="like-button w-[20px] h-[20px] flex justify-evenly items-center text-[#0051FF] bg-transparent"
+                      onClick={() => clickLikedButtonHandler(post.id)}
+                    >
+                      {likedPosts[post.id] ? <FaHeart /> : <FaRegHeart />}
+                    </button>
+                  </div>
+                  <div>
+                    <p className="text-xs text-[#666]">등록일 {post.createdAt.toLocaleDateString()}</p>
+                    <h3 className="font-semibold text-lg text-ellipsis overflow-hidden  line-clamp-1 mb-2">
+                      {post.title}
+                    </h3>
+                  </div>
+                  <div className="survey-method flex flex-col gap-2 bg-slate-100 h-[70px] p-2  ">
+                    <div className="flex text-sm justify-start grid grid-cols-2 ">
+                      <p>
+                        <span className="text-[#666]">소요 시간</span> &nbsp; {post.researchTime}
+                      </p>
+                      <p>
+                        <span className="text-[#666]">설문 방식</span> &nbsp; {post.researchType}
+                      </p>
+                    </div>
+                    <div className="survey-method flex text-sm justify-start grid grid-cols-2">
+                      <p>
+                        <span className="text-[#666]">참여 연령</span> &nbsp; {post.ageGroup}
+                      </p>
+                      <p>
+                        <span className="text-[#666]">참여 대상</span> &nbsp; {post.sexType}
+                      </p>
+                    </div>
+                  </div>
+                  <div className=" flex justify-between items-center">
+                    <div className="flex items-center w-full justify-between">
+                      <p className="flex items-center gap-2 text-sm text-black">
+                        종료일 {post.deadline ? post.deadline : '--'}
+                      </p>
+                      <div className="goal flex  gap-2 text-[#818490]">
+                        <Tooltip
+                          content={`설문 목적 : ${post.content}`}
+                          className="line-clamp-1 text-wrap"
+                          placement="left"
+                        >
+                          <button>
+                            <BsFillQuestionCircleFill className="question" />
+                          </button>
+                        </Tooltip>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className=" h-[40px] flex justify-between items-center ">
+                    <div className="flex gap-2">
+                      <button
+                        className="w-[100px] h-[32px] border-1 border-[#0051ff] hover:bg-[#0051ff] hover:text-white text-sm rounded-lg "
+                        onClick={() => clickPostHandler(post)}
+                      >
+                        참여하기
+                      </button>
+
+                      <button
+                        className="w-[100px] h-[32px] border-1 border-[#ddd]  hover:bg-black hover:text-white text-sm rounded-lg "
+                        onClick={() => moveResultHandler(post)}
+                      >
+                        결과보기
+                      </button>
+                    </div>
+                    <div className="viewer flex  gap-2 text-[#818490]">
+                      <IoPeopleSharp />
+                      {post.views}
                     </div>
                   </div>
                 </div>
-
-                <div className=" h-[40px] flex justify-between items-center ">
-                  <div className="flex gap-2">
-                    <button
-                      className="w-[100px] h-[32px] border-1 border-[#0051ff] hover:bg-[#0051ff] hover:text-white text-sm rounded-lg "
-                      onClick={() => clickPostHandler(post)}
-                    >
-                      참여하기
-                    </button>
-
-                    <button
-                      className="w-[100px] h-[32px] border-1 border-[#ddd]  hover:bg-black hover:text-white text-sm rounded-lg "
-                      onClick={() => moveResultHandler(post)}
-                    >
-                      결과보기
-                    </button>
-                  </div>
-                  <div className="viewer flex  gap-2 text-[#818490]">
-                    <IoPeopleSharp />
-                    {post.views}
-                  </div>
-                </div>
-              </div>
-            </SwiperSlide>
-          );
+              </SwiperSlide>
+            );
+          }
+          return null;
         })}
       </Swiper>
     </>
