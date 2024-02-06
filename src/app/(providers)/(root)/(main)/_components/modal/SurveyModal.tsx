@@ -144,9 +144,9 @@ const LiteSurveyModal: React.FC<LiteSurveyModalProps> = ({litepost, contents, on
     <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
       {imagesLoaded ? (
         <div className="bg-white w-[39rem] p-8 rounded-lg">
-          <div className="mb-4 flex gap-4 justify-center">
+          <div className="mb-4 flex justify-center gap-2">
             {litepost.images.map((image, index) => (
-              <img key={index} src={image} alt={`Image ${index}`} className="w-[8rem] h-[8rem] mb-2 justify-center" />
+              <img key={index} src={image} alt={`Image ${index}`} className="w-[9rem] h-[9rem] mb-2" />
             ))}
           </div>
           <div className="mb-2 flex justify-end">
