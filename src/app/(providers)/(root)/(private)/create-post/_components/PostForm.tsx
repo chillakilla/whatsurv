@@ -292,7 +292,7 @@ export default function PostForm({
                 <Input
                   className="p-[2px]  rounded-lg"
                   type="text"
-                  label="마감일"
+                  label="종료일"
                   size="lg"
                   labelPlacement="outside-left"
                   pattern="\d{4}.\d{2}.\d{2}"

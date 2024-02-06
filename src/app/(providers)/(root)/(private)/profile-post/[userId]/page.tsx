@@ -238,174 +238,190 @@ export default function ProfilePost() {
           tabContent: 'group-data-[selected=true]:text-[#0051FF]',
         }}
       >
-        <Tab title="내가 작성한 IT Surv">
-          <Card className="bg-transparent border-0  rounded-none shadow-none">
-            <CardBody>
-              {posts.length > 0 ? (
-                <ul
-                  className="grid grid-cols-2 md:grid-cols-4 gap-4 auto
+        <Tab title="내가 작성한 Surv">
+          <Tabs>
+            <Tab title="내가 작성한 IT Surv" className="text-md font-bold">
+              <Card className="bg-transparent border-0  rounded-none shadow-none">
+                <CardBody>
+                  {posts.length > 0 ? (
+                    <ul
+                      className="grid grid-cols-2 md:grid-cols-4 gap-4 auto
                 "
-                >
-                  {posts.map(post => (
-                    <li
-                      key={post.id}
-                      className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
                     >
-                      <Link href={`/survey-it/${post.id}`} className="text-xl">
-                        <p className="  bg-[#0051ff] mb-[7px] text-center text-[#D6FF00] w-[65px] p-1 rounded-full font-semibold text-xs">
-                          {post.category}
-                        </p>
-                        <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
-                      </Link>
-                      <hr />
-                      <p className="text-sm absolute bottom-[20px]">
-                        {isDeadlinePast(post.deadlineDate) ? (
-                          <span className="text-red-500">Surv이 종료되었습니다.</span>
-                        ) : (
-                          ` 종료일 |  ${post.deadlineDate || 'No deadline'}`
-                        )}
-                      </p>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        color="danger"
-                        className="my-[10px] float-right absolute bottom-[6.5px] right-[10px]"
-                        onClick={() => clickDeleteITHandler(post.id)}
-                      >
-                        삭제
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
-                  작성한 글이 없습니다.
-                </p>
-              )}
-            </CardBody>
-          </Card>
-        </Tab>
-        <Tab title="내가 작성한 참여해Surv">
-          <Card className="bg-transparent border-0  rounded-none shadow-none">
-            <CardBody>
-              {userPostLite.length > 0 ? (
-                <ul
-                  className="grid grid-cols-2 md:grid-cols-4 gap-4 auto
+                      {posts.map(post => (
+                        <li
+                          key={post.id}
+                          className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
+                        >
+                          <Link href={`/survey-it/${post.id}`} className="text-xl">
+                            <p className="  bg-[#0051ff] mb-[7px] text-center text-[#D6FF00] w-[65px] p-1 rounded-full font-semibold text-xs">
+                              {post.category}
+                            </p>
+                            <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">
+                              {post.title}
+                            </p>
+                          </Link>
+                          <hr />
+                          <p className="text-sm absolute bottom-[20px]">
+                            {isDeadlinePast(post.deadlineDate) ? (
+                              <span className="text-red-500">Surv이 종료되었습니다.</span>
+                            ) : (
+                              ` 종료일 |  ${post.deadlineDate || 'No deadline'}`
+                            )}
+                          </p>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            color="danger"
+                            className="my-[10px] float-right absolute bottom-[6.5px] right-[10px]"
+                            onClick={() => clickDeleteITHandler(post.id)}
+                          >
+                            삭제
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
+                      작성한 글이 없습니다.
+                    </p>
+                  )}
+                </CardBody>
+              </Card>
+            </Tab>
+            <Tab title="내가 작성한 참여해Surv" className="text-md font-bold">
+              <Card className="bg-transparent border-0  rounded-none shadow-none">
+                <CardBody>
+                  {userPostLite.length > 0 ? (
+                    <ul
+                      className="grid grid-cols-2 md:grid-cols-4 gap-4 auto
                 "
-                >
-                  {userPostLite.map(post => (
-                    <li
-                      key={post.id}
-                      className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
                     >
-                      <Link href="/survey-lite" className="text-xl">
-                        <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
-                      </Link>
-                      <hr />
+                      {userPostLite.map(post => (
+                        <li
+                          key={post.id}
+                          className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
+                        >
+                          <Link href="/survey-lite" className="text-xl">
+                            <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">
+                              {post.title}
+                            </p>
+                          </Link>
+                          <hr />
 
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        color="danger"
-                        className="my-[10px] float-right absolute bottom-[6.5px] right-[10px]"
-                        onClick={() => clickDeleteLiteHandler(post.id)}
-                      >
-                        삭제
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
-                  작성한 글이 없습니다.
-                </p>
-              )}
-            </CardBody>
-          </Card>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            color="danger"
+                            className="my-[10px] float-right absolute bottom-[6.5px] right-[10px]"
+                            onClick={() => clickDeleteLiteHandler(post.id)}
+                          >
+                            삭제
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
+                      작성한 글이 없습니다.
+                    </p>
+                  )}
+                </CardBody>
+              </Card>
+            </Tab>
+          </Tabs>
         </Tab>
-        <Tab title="내가 좋아요한 IT Surv">
-          <Card className="bg-transparent border-0  rounded-none shadow-none">
-            <CardBody>
-              {likedITPosts.length > 0 ? (
-                <ul
-                  className="grid grid-cols-2 md:grid-cols-4 gap-4 auto
+        <Tab title="내가 좋아요한 Surv">
+          <Tabs aria-label="내가 좋아요한 Surv">
+            <Tab title="내가 좋아요한 IT Surv" className="text-md font-bold">
+              <Card className="bg-transparent border-0  rounded-none shadow-none">
+                <CardBody>
+                  {likedITPosts.length > 0 ? (
+                    <ul
+                      className="grid grid-cols-2 md:grid-cols-4 gap-4 auto
                 "
-                >
-                  {likedITPosts.map(post => (
-                    <li
-                      key={post.id}
-                      className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
                     >
-                      <Link href={`/survey-it/${post.id}`} className="text-xl">
-                        <p className="bg-[#0051ff]  text-center text-[#D6FF00] w-[65px] p-1 rounded-full font-semibold text-xs mb-[7px]">
-                          {post.category}
-                        </p>
-                        <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
-                      </Link>
-                      <hr />
-                      <p className="text-sm absolute bottom-[20px]">
-                        {isDeadlinePast(post.deadlineDate) ? (
-                          <span className="text-red-500">Surv이 종료되었습니다.</span>
-                        ) : (
-                          ` 종료일 |  ${post.deadlineDate || 'No deadline'}`
-                        )}
-                      </p>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        color="danger"
-                        className="my-[10px] float-right absolute bottom-[6.5px] right-[10px]"
-                        onClick={() => clickDeleteLikedPostITHandler(post.id)}
-                      >
-                        삭제
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
-                  좋아요한 글이 없습니다.
-                </p>
-              )}
-            </CardBody>
-          </Card>
-        </Tab>
-        <Tab title="내가 좋아요한 참여해Surv">
-          <Card className="bg-transparent border-0  rounded-none shadow-none">
-            <CardBody>
-              {likedLitePosts.length > 0 ? (
-                <ul
-                  className="grid grid-cols-2 md:grid-cols-4 gap-4 auto
+                      {likedITPosts.map(post => (
+                        <li
+                          key={post.id}
+                          className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
+                        >
+                          <Link href={`/survey-it/${post.id}`} className="text-xl">
+                            <p className="bg-[#0051ff]  text-center text-[#D6FF00] w-[65px] p-1 rounded-full font-semibold text-xs mb-[7px]">
+                              {post.category}
+                            </p>
+                            <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">
+                              {post.title}
+                            </p>
+                          </Link>
+                          <hr />
+                          <p className="text-sm absolute bottom-[20px]">
+                            {isDeadlinePast(post.deadlineDate) ? (
+                              <span className="text-red-500">Surv이 종료되었습니다.</span>
+                            ) : (
+                              ` 종료일 |  ${post.deadlineDate || 'No deadline'}`
+                            )}
+                          </p>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            color="danger"
+                            className="my-[10px] float-right absolute bottom-[6.5px] right-[10px]"
+                            onClick={() => clickDeleteLikedPostITHandler(post.id)}
+                          >
+                            삭제
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
+                      좋아요한 글이 없습니다.
+                    </p>
+                  )}
+                </CardBody>
+              </Card>
+            </Tab>
+            <Tab title="내가 좋아요한 참여해Surv" className="text-md font-bold">
+              <Card className="bg-transparent border-0  rounded-none shadow-none">
+                <CardBody>
+                  {likedLitePosts.length > 0 ? (
+                    <ul
+                      className="grid grid-cols-2 md:grid-cols-4 gap-4 auto
                 "
-                >
-                  {likedLitePosts.map(post => (
-                    <li
-                      key={post.id}
-                      className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
                     >
-                      <Link href="/survey-lite" className="text-xl">
-                        <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">{post.title}</p>
-                      </Link>
-                      <hr />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        color="danger"
-                        className="my-[10px] float-right absolute bottom-[6.5px] right-[10px]"
-                        onClick={() => clickDeleteLikedPostLiteHandler(post.id)}
-                      >
-                        삭제
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
-                  좋아요한 글이 없습니다.
-                </p>
-              )}
-            </CardBody>
-          </Card>
+                      {likedLitePosts.map(post => (
+                        <li
+                          key={post.id}
+                          className="relative bg-white mb-[20px] w-[300px]  px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] "
+                        >
+                          <Link href="/survey-lite" className="text-xl">
+                            <p className="py-[8px] h-[69px] text-ellipsis overflow-hidden  line-clamp-2">
+                              {post.title}
+                            </p>
+                          </Link>
+                          <hr />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            color="danger"
+                            className="my-[10px] float-right absolute bottom-[6.5px] right-[10px]"
+                            onClick={() => clickDeleteLikedPostLiteHandler(post.id)}
+                          >
+                            삭제
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="relative bg-white mb-[20px] w-[300px] text-lg px-[20px] h-[180px] rounded-xl py-[20px] border-2 border-[#0051FF80] ">
+                      좋아요한 글이 없습니다.
+                    </p>
+                  )}
+                </CardBody>
+              </Card>
+            </Tab>
+          </Tabs>
         </Tab>
         <Tab title="내가 참여한 IT Surv">
           <Card className="bg-transparent border-0  rounded-none shadow-none">
