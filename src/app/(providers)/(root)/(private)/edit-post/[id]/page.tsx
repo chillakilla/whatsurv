@@ -80,13 +80,38 @@ export default function EditPostForm() {
     surveyData: [{question: '', options: ['매우 그렇다', '그렇다', '보통이다', '아니다', '매우 아니다']}],
   });
 
-  const SubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await updatePost(id, formData);
-      router.push('/');
+      const result = await Swal.fire({
+        title: '수정하시겠습니까?',
+        text: '게시글이 수정됩니다.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      });
+
+      if (result.isConfirmed) {
+        await updatePost(id, formData);
+        Swal.fire({
+          title: '수정 완료',
+          text: '게시글이 성공적으로 수정되었습니다.',
+          icon: 'success',
+          confirmButtonColor: '#3085d6',
+        });
+        router.push('/');
+      }
     } catch (error) {
       console.error('Error updating post:', error);
+      Swal.fire({
+        title: '오류 발생',
+        text: '게시글 수정 중 오류가 발생했습니다.',
+        icon: 'error',
+        confirmButtonColor: '#3085d6',
+      });
     }
   };
 
@@ -184,7 +209,7 @@ export default function EditPostForm() {
           </button>
         </div>
         <div className="w-[74rem] px-[20px] pt-[20px] pb-[40px] mb-[10px]">
-          <form onSubmit={SubmitHandler}>
+          <form onSubmit={submitHandler}>
             {' '}
             <div className="flex items-center relative">
               <Input
@@ -382,9 +407,8 @@ export default function EditPostForm() {
                 color="danger"
                 variant="bordered"
                 size="lg"
+                onClick={goBackHandler}
                 className="
-      
- 
             hover:bg-red-500
             hover:text-white
             mr-[20px]
@@ -403,7 +427,7 @@ export default function EditPostForm() {
                   text-white
                   "
               >
-                등록
+                수정
               </Button>
             </div>
           </form>
