@@ -53,9 +53,9 @@ LitePostProps) {
   return (
     <>
       <div key={litepost.id}>
-        <div className="h-[13.4375rem] bg-white border-1 border-[#C1C5CC] flex flex-col justify-between rounded-md p-4">
-          <div className="top-content h-[50px] flex flex-col justify-between">
-            <div className="flex justify-between items-center">
+        <div className="h-[13.4375rem] bg-white border-1 border-[#C1C5CC] flex-col justify-between rounded-md p-4">
+          <div className="top-content h-[5.625rem]">
+            <div className="flex justify-between items-center mb-4">
               <div className="flex items=center gap-2">
                 <p className="bg-[#0051FF] text-[#D6FF00] w-14 p-1 text-center rounded-full font-semibold text-xs">
                   참여해
@@ -91,51 +91,61 @@ LitePostProps) {
                 onClick={() => onClickLikedPostHandler(litepost.id)}
                 className="like-button w-12 h-[1.25rem] flex justify-end gap-1 items-center text-[#0051FF]"
               >
-                {likedPosts[litepost.id] ? <FaHeart /> : <FaRegHeart />}
                 {litepost.likes}
+                {likedPosts[litepost.id] ? <FaHeart /> : <FaRegHeart />}
               </button>
             </div>
-            <div className="flex justify-between">
-              <p className="text-xs text-[#666]">
-                등록일{' '}
-                {litepost.createdAt
-                  ? litepost.createdAt.toLocaleString('ko-KR', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                    })
-                  : '2099.12.31'}
-              </p>
-              <div className="user flex gap-2 text-xs text-[#666]">
-                작성자 |
-                {/* {litepost.userPhotoURL ? (
-              <img src={litepost.userPhotoURL} className="profile-img  rounded-full" alt="Profile" />
-            ) : (
-              <FaRegCircleUser className="lite-profile" />
-            )} */}
-                <p className="font-md text-xs">{litepost.nickname}</p>
+            <a onClick={() => onClickPostHandler(litepost)} className="cursor-pointer">
+              <div className="flex justify-between">
+                <div>
+                  <p className="text-xs text-[#666] mb-4">
+                    등록일{' '}
+                    {litepost.createdAt
+                      ? litepost.createdAt.toLocaleString('ko-KR', {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                        })
+                      : '2099.12.31'}
+                  </p>
+                </div>
+                {/* <p className="text-xs text-[#666] mb-4">
+                                마감일 | {litepost.deadlineDate ? litepost.deadlineDate.toLocaleString() : '2099.12.31'}
+                              </p> */}
               </div>
+              <h3 className="text-lg font-bold">
+                {litepost.title.length > 18 ? `${litepost.title.substring(0, 18)}...` : litepost.title}
+              </h3>
+            </a>
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={() => onClickPostHandler(litepost)}
+                className="w-[100px] h-[32px] border-1 border-[#0051ff] hover:bg-[#0051ff] hover:text-white text-sm rounded-lg cursor-pointer"
+              >
+                참여하기
+              </button>
+              {/* <button
+                onClick={() => setShowResultModal(true)}
+                className="w-[100px] h-[32px] border-1 border-[#ddd]  hover:bg-black hover:text-white text-sm rounded-lg cursor-pointer"
+              >
+                결과보기
+              </button> */}
             </div>
           </div>
-          <a onClick={() => onClickPostHandler(litepost)} className="cursor-pointer">
-            <h3 className="text-lg font-bold h-[35px]">
-              {litepost.title.length > 18 ? `${litepost.title.substring(0, 18)}...` : litepost.title}
-            </h3>
-          </a>
 
-          <div className="bottom-content flex items-end border-t-1 border-[#eee]">
-            <div className="flex justify-between items-end w-full">
-              <div className="viewer flex gap-2 text-[#818490]">
+          <div className="bottom-content flex items-end">
+            <div className="flex justify-between items-center mt-[3.125rem] w-full">
+              <div className="user flex justify-center items-center mt-4 gap-2">
+                {litepost.userPhotoURL ? (
+                  <img src={litepost.userPhotoURL} className="w-6 h-6 rounded-full" alt="Profile" />
+                ) : (
+                  <FaRegCircleUser className="text-gray-400" />
+                )}
+                <p className="font-semibold">{litepost.nickname}</p>
+              </div>
+              <div className="viewer flex mt-4 gap-2 text-[#818490]">
                 <IoPeopleSharp />
                 {litepost.views}
-              </div>
-              <div className="flex gap-2 mt-4">
-                <button
-                  onClick={() => onClickPostHandler(litepost)}
-                  className="w-[100px] h-[32px] border-1 border-[#0051ff] hover:bg-[#0051ff] hover:text-white text-sm rounded-lg cursor-pointer"
-                >
-                  참여하기
-                </button>
               </div>
             </div>
           </div>
