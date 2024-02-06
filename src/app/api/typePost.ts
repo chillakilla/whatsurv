@@ -55,6 +55,8 @@ export type feedBack = {
 export type RenderPostProps = {
   post: Post;
   clickPostHandler: (post: Post) => void;
-  clickLikedButtonHandler: (postId: string) => void;
+  clickLikedButtonHandler: (postId: string) => Promise<void>;
   likedPosts: {[postId: string]: boolean};
+  endSurvey: boolean;
+  isSubmitDisabled: (post: Post) => boolean;
 };

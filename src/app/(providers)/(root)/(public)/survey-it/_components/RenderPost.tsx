@@ -10,7 +10,14 @@ import {IoPeopleSharp} from 'react-icons/io5';
 import {useRouter} from 'next/navigation';
 import Swal from 'sweetalert2';
 
-export default function RenderPost({post, clickPostHandler, clickLikedButtonHandler, likedPosts}: RenderPostProps) {
+export default function RenderPost({
+  post,
+  clickPostHandler,
+  clickLikedButtonHandler,
+  likedPosts,
+  endSurvey,
+  isSubmitDisabled,
+}: RenderPostProps) {
   const router = useRouter();
   const isWithin24Hours = (createdAt: Date | firebase.firestore.Timestamp): boolean => {
     const currentTime = new Date();
@@ -21,6 +28,8 @@ export default function RenderPost({post, clickPostHandler, clickLikedButtonHand
 
     return hoursDifference <= 24;
   };
+
+  // 참여 여부 판별 함수
 
   const moveResultHandler = (post: Post) => {
     const Toast = Swal.mixin({
@@ -41,10 +50,12 @@ export default function RenderPost({post, clickPostHandler, clickLikedButtonHand
     });
   };
 
-  // 이미 참여한 설문 비활성화 함수
-
   return (
-    <div className={`h-72 border-2 border-[#e1e1e1] flex flex-col justify-between rounded-xl p-4 bg-white `}>
+    <div
+      className={` h-72 border-2 border-[#e1e1e1] flex flex-col justify-between rounded-xl p-4 bg-white ${
+        isSubmitDisabled(post) ? '' : ''
+      }`}
+    >
       <div className="category-box flex justify-between items-center ">
         <div className="flex gap-2">
           <div className="bg-[#0051ff] text-[#D6FF00] h-[25px] w-[75px] p-1 text-center rounded-full font-semibold text-xs">
@@ -112,10 +123,14 @@ export default function RenderPost({post, clickPostHandler, clickLikedButtonHand
       <div className=" h-[40px] flex justify-between items-center ">
         <div className="flex gap-2">
           <button
-            className="w-[100px] h-[32px] border-1 border-[#0051ff] hover:bg-[#0051ff] hover:text-white text-sm rounded-lg "
+            className={`w-[100px] h-[32px]  ${
+              isSubmitDisabled(post)
+                ? 'disabled bg-black text-white rounded-lg text-sm '
+                : ' border-1 border-[#0051ff] hover:bg-[#0051ff] hover:text-white text-sm rounded-lg'
+            } `}
             onClick={() => clickPostHandler(post)}
           >
-            참여하기
+            {isSubmitDisabled(post) ? '설문 종료' : '참여하기'}
           </button>
 
           <button
