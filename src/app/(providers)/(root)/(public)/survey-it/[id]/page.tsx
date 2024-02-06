@@ -56,18 +56,34 @@ const SurveyItDetailPage: React.FC = () => {
     return <div>Error fetching post data</div>;
   }
 
+  const checkPostIdExists = async () => {
+    if (!currentUser) {
+      return false;
+    }
+
+    try {
+      const userDocRef = doc(db, 'users', currentUser);
+      const usersPostIsDone = collection(userDocRef, 'userPosts');
+
+      const querySnapshot = await getDocs(usersPostIsDone);
+
+      return querySnapshot.docs.some(doc => doc.data().postId === postId);
+    } catch (error) {
+      console.error('Error occurred:', error);
+      return false;
+    }
+  };
+
   const cancelHandler = () => {
     Swal.fire({
       title: '취소하시겠습니까?',
       text: '작성한 내용은 저장되지 않습니다. 그래도 취소하시겠습니까?',
       icon: 'warning',
-
       showCancelButton: true,
       confirmButtonColor: '#0051FF',
       cancelButtonColor: '#d33',
       confirmButtonText: '확인',
       cancelButtonText: '취소',
-
       reverseButtons: true,
     }).then(result => {
       if (result.isConfirmed) {
@@ -103,9 +119,7 @@ const SurveyItDetailPage: React.FC = () => {
       const userDocRef = doc(db, 'users', currentUser);
       const usersPostIsDone = collection(userDocRef, 'userPosts');
 
-      const querySnapshot = await getDocs(usersPostIsDone);
-
-      const postIdExists = querySnapshot.docs.some(doc => doc.data().postId === postId);
+      const postIdExists = await checkPostIdExists();
       if (postIdExists) {
         Swal.fire({
           title: '이미 제출된 설문입니다.',
@@ -272,7 +286,7 @@ const SurveyItDetailPage: React.FC = () => {
         </div>
 
         <div className="flex ml-auto p-4 w-56 justify-end gap-4">
-          <button className="w-[80px] h-8 bg-[#eee]" onClick={cancelHandler}>
+          <button type="button" className="w-[80px] h-8 bg-[#eee]" onClick={cancelHandler}>
             취소
           </button>
           <button
