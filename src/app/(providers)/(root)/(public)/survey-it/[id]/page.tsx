@@ -8,9 +8,9 @@ import {getAuth} from 'firebase/auth';
 import {addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where} from 'firebase/firestore';
 import {useParams, useRouter} from 'next/navigation';
 import React, {useState} from 'react';
+import {MoonLoader} from 'react-spinners';
 import Swal from 'sweetalert2';
 import ProgressBar from '../../../(main)/_components/progress/ProgressBar';
-import {MoonLoader} from 'react-spinners';
 
 const SurveyItDetailPage: React.FC = () => {
   const {id} = useParams();
@@ -120,6 +120,7 @@ const SurveyItDetailPage: React.FC = () => {
       const userData = userDocSnapshot.data();
 
       const createdAt = new Date();
+      const deadline = post?.deadline || 'No deadline';
       await addDoc(collection(db, 'submitedposts'), {
         postId: id,
         email: post?.email,
@@ -135,6 +136,11 @@ const SurveyItDetailPage: React.FC = () => {
         userEmail: userData?.email,
         userNickname: userData?.nickname,
         userSexType: userData?.sexType,
+        userId: currentUser,
+        deadline: deadline,
+
+        //addUserEmail: auth.currentUser?.email,
+        //addUserNickname: userData?.nickname,
       });
       await addDoc(usersPostIsDone, {
         postId: postId,
