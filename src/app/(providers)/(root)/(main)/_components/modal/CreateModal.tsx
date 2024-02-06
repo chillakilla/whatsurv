@@ -33,6 +33,17 @@ const LiteSurveyCreateModal: React.FC<LiteSurveyCreateModalProps> = ({onCloseCre
   const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
+      const totalImages = selectedImages.length + files.length;
+      if (totalImages > 4) {
+        Swal.fire({
+          icon: 'warning',
+          title: '이미지 추가 제한',
+          text: '최대 4장까지만 선택할 수 있습니다.',
+          confirmButtonColor: '#0051FF',
+        });
+        return;
+      }
+
       setSelectedImages(prevImages => [...prevImages, ...Array.from(files)]);
       setDefaultImage(false); // 기본 이미지 감추기
     }
